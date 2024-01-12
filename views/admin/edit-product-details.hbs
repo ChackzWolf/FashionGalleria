@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Dashboard - Admin Galleria</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="/assetsAdmin/img/favicon.png" rel="icon">
+  <link href="/assetsAdmin/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/assetsAdmin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assetsAdmin/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/assetsAdmin/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/assetsAdmin/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="/assetsAdmin/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="/assetsAdmin/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="/assetsAdmin/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="/assetsAdmin/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: NiceAdmin
+  * Updated: Aug 30 2023 with Bootstrap v5.3.1
+  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="admin/index" class="logo d-flex align-items-center">
+        <img src="img/logo.png" alt="">
+        <span class="d-none d-lg-block">Admin</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+
+    {{!-- <button onclick="loadAdminChart()">Load Admin Chart</button> --}}
+
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+        <li class="nav-item dropdown">
+
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>
+            <span class="badge bg-primary badge-number">4</span>
+          </a><!-- End Notification Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+            <li class="dropdown-header">
+              You have 4 new notifications
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-exclamation-circle text-warning"></i>
+              <div>
+                <h4>Lorem Ipsum</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>30 min. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-x-circle text-danger"></i>
+              <div>
+                <h4>Atque rerum nesciunt</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>1 hr. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-check-circle text-success"></i>
+              <div>
+                <h4>Sit rerum fuga</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>2 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-info-circle text-primary"></i>
+              <div>
+                <h4>Dicta reprehenderit</h4>
+                <p>Quae dolorem earum veritatis oditseno</p>
+                <p>4 hrs. ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li class="dropdown-footer">
+              <a href="#">Show all notifications</a>
+            </li>
+
+          </ul><!-- End Notification Dropdown Items -->
+
+        </li><!-- End Notification Nav -->
+
+        <li class="nav-item dropdown">
+
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-chat-left-text"></i>
+            <span class="badge bg-success badge-number">3</span>
+          </a><!-- End Messages Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+            <li class="dropdown-header">
+              You have 3 new messages
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
+                <div>
+                  <h4>Maria Hudson</h4>
+                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                  <p>4 hrs. ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="assetsAdmin/img/messages-2.jpg" alt="" class="rounded-circle">
+                <div>
+                  <h4>Anna Nelson</h4>
+                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                  <p>6 hrs. ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="/assetsAdmin/img/messages-3.jpg" alt="" class="rounded-circle">
+                <div>
+                  <h4>David Muldon</h4>
+                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                  <p>8 hrs. ago</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="dropdown-footer">
+              <a href="#">Show all messages</a>
+            </li>
+
+          </ul><!-- End Messages Dropdown Items -->
+
+        </li><!-- End Messages Nav -->
+
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="/assetsAdmin/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">Jackson</span>
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>Jackson Cheriyan Kollareth</h6>
+              <span>Web Developer</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-gear"></i>
+                <span>Account Settings</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-question-circle"></i>
+                <span>Need Help?</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="admin/adminLogout">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="/admin">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Product Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="/admin/add-Product">
+              <i class="bi bi-circle"></i><span>Product Add</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/edit-product">
+              <i class="bi bi-circle"></i><span>Product list</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/deleted-products">
+              <i class="bi bi-circle"></i><span>Deleted Products</span>
+            </a>
+          </li>
+
+
+        </ul>
+      </li><!-- End Forms Nav -->
+
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>#Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>#Add Coupon</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>#Show All Coupon</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>#Show Listed Coupon</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show Unlisted Coupon</span></i>
+            </a>
+          </li>
+
+
+        </ul>
+      </li><!-- End Forms Nav -->
+
+
+
+
+      {{!-- <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Category Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="/admin/addCategory">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Add Category</span></i>
+            </a>
+          </li>
+
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/showCategory">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show All Category</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/listedCategory">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show Listed Category</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/unlistedCategory">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show Unlisted Category</span></i>
+            </a>
+          </li>
+
+
+        </ul>
+      </li><!-- End Forms Nav --> --}}
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav3" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Order Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav3" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show Pending Orders</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show Delivered Orders</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show Cancelled Orders</span></i>
+            </a>
+          </li>
+
+
+        </ul>
+      </li><!-- End Forms Nav -->
+
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav4" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Order return</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav4" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Return Pending</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Return Defective</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Return Non-Defective</span></i>
+            </a>
+          </li>
+
+
+        </ul>
+      </li><!-- End Forms Nav -->
+
+
+
+
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#tables-nav" href="/admin/userList">
+          <i class="bi bi-layout-text-window-reverse"></i><span>User List</span></i>
+        </a>
+
+      </li><!-- End Forms Nav -->
+
+
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+
+
+
+
+
+
+
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Form Elements</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="admin/index">Home</a></li>
+          <li class="breadcrumb-item">Forms</li>
+          <li class="breadcrumb-item active">Edit Product details</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+
+    <section class="section">
+      <div class="row">
+        <div class="col-md-9">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Edit with new Details</h5>
+              {{#if msg}}
+              <p class="text-center text-danger small">Not Updated.Please Try again</p>
+              {{/if}}
+              <!-- General Form Elements -->
+              <form action="/admin/edited-ProductDetails" method="post" enctype="multipart/form-data">
+                <div class="row mb-3">
+                  <label for="inputText" class="col-sm-2 col-form-label">Name</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="name" value="{{editProduct.name}}" class="form-control">
+                    <input type="hidden" name="id" value="{{editProduct._id}}" class="form-control">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="inputNumber" class="col-sm-2 col-form-label">Price</label>
+                  <div class="col-sm-10">
+                    <input type="number" name="price" value="{{editProduct.price}}" class="form-control">
+                  </div>
+                </div>
+
+                {{!-- <div class="row mb-3">
+                  <label for="inputNumber" class="col-sm-2 col-form-label">File Upload</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" type="file" id="formFile">
+                  </div>
+                </div>
+                --}}
+
+
+
+                <div class="row mb-3">
+                  <label for="inputPassword" class="col-sm-2 col-form-label">Description</label>
+                  <div class="col-sm-10">
+                    <textarea name="description" class="form-control"
+                      style="height: 100px">{{editProduct.description}}</textarea>
+                  </div>
+                </div>
+
+
+
+                <fieldset class="row mb-3">
+                  <legend class="col-form-label col-sm-2 pt-0">Category</legend>
+
+                  <div class="col-sm-10">
+                    <legend class="col-form-label col-sm-2 pt-0 text-primary">{{editProduct.category}}</legend>
+                    <div class="form-check">
+
+                      <input class="form-check-input" type="radio" name="category" id="gridRadios1" value="mens">
+                      <label class="form-check-label" for="gridRadios1">
+                        Mens
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="category" id="gridRadios2" value="womens">
+                      <label class="form-check-label" for="gridRadios2">
+                        Womens
+                      </label>
+                    </div>
+                    {{!-- <div class="form-check disabled">
+                      <input class="form-check-input" type="radio" name="category" id="gridRadios" value="kids">
+                      <label class="form-check-label" for="gridRadios3">
+                        Kids
+                      </label>
+                    </div> --}}
+                  </div>
+                </fieldset>
+
+                <div class="container mt-4">
+                  <fieldset class="row mb-5">
+                    <legend class="col-form-label col-sm-2 pt-0">Sizes</legend>
+                    <div class="col-sm-10">
+
+                      {{#if (gt editProduct.sizeStock.sizeLarge.stock -1)}}
+                      <div class="form-check mb-3">
+                        <input class="form-check-input" name="sizeLarge" type="checkbox" value="Large" id="sizeLarge"
+                          checked>
+
+                        <label class="form-check-label" for="sizeLarge">
+                          Large
+                        </label>
+                        <input type="number" name="stockLarge" id="stockLarge"
+                          value="{{editProduct.sizeStock.sizeLarge.stock}}" class="form-control"
+                          placeholder="Stock Amount : {{editProduct.sizeStock.sizeLarge.stock}}">
+                      </div>
+                      {{/if}}
+                      {{#if (gt editProduct.sizeStock.sizeMedium.stock -1)}}
+
+                      <div class="form-check mb-3">
+                        <input class="form-check-input" name="sizeMedium" type="checkbox" value="Medium" id="sizeMedium"
+                          checked>
+                        <label class="form-check-label" for="sizeMedium">
+                          Medium
+                        </label>
+                        <input type="number" name="stockMedium" id="stockMedium"
+                          value="{{editProduct.sizeStock.sizeMedium.stock}}" class="form-control"
+                          placeholder="Stock Amount Medium : {{editProduct.sizeStock.sizeMedium.stock}}">
+                      </div>
+                      {{/if}}
+                      {{#if (gt editProduct.sizeStock.sizeSmall.stock -1)}}
+
+                      <div class="form-check">
+                        <input class="form-check-input" name="sizeSmall" type="checkbox" value="Small" id="sizeSmall"
+                          checked>
+
+                        <label class="form-check-label" for="sizeSmall">
+                          Small
+                        </label>
+                        <input type="number" name="stockSmall" id="stockSmall"
+                          value="{{editProduct.sizeStock.sizeSmall.stock}}" class="form-control"
+                          placeholder="Stock Amount Small : {{editProduct.sizeStock.sizeSmall.stock}}">
+                      </div>
+                      {{/if}}
+                    </div>
+                  </fieldset>
+                </div>
+
+
+<div style="display:flex; justify-content: center; align-items: center;">
+            <div>
+                <div>
+                   <img src="uploaded-images/{{singleProduct.imageUrl.[0]}}" alt="">
+                    <img src="uploaded-images/{{editProduct.imageUrl.[0]}}" alt="">
+                </div>
+                <input type="file" name="image" id="image1" style="display: none;" value="{{editProduct.imageURL.[0]}}"
+                  onchange="displayFileName('image1', this)" accept="image/png, image/webp, image/jpeg">
+                <label for="image1"
+                  style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
+                  1 <span id="image1Label"></span> </label><span class="close-button"
+                  onclick="clearImage('image1')"><span class="close-icon btn"><i
+                      class="fa-solid fa-x "></i></span></span>
+            </div>
+            <div>
+                <div>
+                    <img src="" alt="">
+                </div>
+                <input type="file" name="image" id="image2" style="display: none;"value="{{editProduct.imageURL.[1]}}"
+                  onchange="displayFileName('image2', this)" accept="image/png, image/webp, image/jpeg">
+                <label for="image2"
+                  style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
+                  2 <span id="image2Label"></span></label> <span class="close-button"
+                  onclick="clearImage('image2')"><span class="close-icon btn"><i
+                      class="fa-solid fa-x "></i></span></span>
+            </div>
+            <div>
+                <div>
+                    <img src="" alt="">
+                </div>
+                <input type="file" name="image" id="image3" style="display: none;" value="{{editProduct.imageURL.[2]}}"
+                  onchange="displayFileName('image3', this)" accept="image/png, image/webp, image/jpeg">
+                <label for="image3"
+                  style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
+                  3 <span id="image3Label"></span></label> <span class="close-button"
+                  onclick="clearImage('image3')"><span class="close-icon btn"><i
+                      class="fa-solid fa-x "></i></span></span>
+            </div>          
+</div>
+
+
+
+
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label"></label>
+                  <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary">Submit Form</button>
+                  </div>
+                </div>
+
+              </form><!-- End General Form Elements -->
+
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <script>
+    
+  const urlParams = new URLSearchParams(window.location.search);
+  const success = urlParams.get('success');
+  
+  if (success === 'true') {
+    Swal.fire(
+      'Success',
+      'Product had been updated successfuly',
+      'success'
+    )
+  } if(failed ==="true"){
+    Swal.fire(
+      'Oops!',
+      'Could not add your product.',
+      'error'
+    )
+  }
+  
+  </script>
+
+
+
+
+
+  <!-- Vendor JS Files -->
+  <script src="/assetsAdmin/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="/assetsAdmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/assetsAdmin/vendor/chart.js/chart.umd.js"></script>
+  <script src="/assetsAdmin/vendor/echarts/echarts.min.js"></script>
+  <script src="/assetsAdmin/vendor/quill/quill.min.js"></script>
+  <script src="/assetsAdmin/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="/assetsAdmin/vendor/tinymce/tinymce.min.js"></script>
+  <script src="/assetsAdmin/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="/assetsAdmin/js/main.js"></script>
+
+  <script>
+    function displayFileName(labelId, input) {
+      const span = document.getElementById(labelId + 'Label');
+      if (input.files.length > 0) {
+        span.innerText = ' - ' + input.files[0].name;
+      } else {
+        span.innerText = '';
+      }
+    }
+  </script>
+
+<script>
+  // to display image after selected
+    function displaySelectedImage(input, imgId) {
+      const preview = document.getElementById(imgId);
+      const label = document.getElementById(`${input.id}Label`);
+
+      const file = input.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+          label.innerHTML = ''; // Clear the label content
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        // Handle the case when no file is selected
+        preview.src = ''; // Clear the preview
+        label.innerHTML = 'No image selected'; // Provide a message in the label
+      }
+    }
+</script>
+
+<script>
+// to prevent user to enter '-' or numbers below 0 
+window.onload = function() {
+  var inputs = document.querySelectorAll('input[name="price"], input[name="stockMedium"], input[name="stockSmall"], input[name="stockLarge"]');
+  inputs.forEach(function(input) {
+      input.addEventListener('keypress', function (evt) {
+          var charCode = (evt.which) ? evt.which : evt.keyCode;
+          if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+              evt.preventDefault();
+          } else if (this.value.length === 0 && charCode == 45) { // prevent "-" at the start
+              evt.preventDefault();
+          }
+      });
+  });
+};
+
+</script>
+
+</body>
+
+</html>

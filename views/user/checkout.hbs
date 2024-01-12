@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ashion Template">
+    <meta name="keywords" content="Ashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Checkoy | Urban Vogue</title>
+
+    <link href="assets/img/favicon.png" rel="icon">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="css/checkout.css" type="text/css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet" />
+    <style>
+        /* Style the dropdown container */
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Style the button that will open the dropdown */
+        .user-btn {
+            background-color: #ffffff;
+            color: rgb(31, 30, 30);
+            padding: 10px;
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Style the dropdown content (hidden by default) */
+        .user-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #ffffff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+
+            width:max-content;
+            right: 0;
+        }
+
+        /* Style the individual items in the dropdown */
+        .user-dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Change color on hover */
+        .user-dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        /* Show the dropdown when hovering over the container */
+        .user-dropdown:hover .user-dropdown-content {
+            display: block;
+        }
+    </style>
+
+{{!-- 
+    for search box --}}
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .search-container {
+            position: fixed;
+            top: 11%;
+            
+            right: -300px; /* Initial position off-screen */
+            transform: translateY(-50%);
+            transition: right 0.3s ease;
+        }
+
+        .search-box {
+            width: 300px;
+            padding: 10px;
+            box-sizing: border-box;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+    </style>
+    {{!-- end search box --}}
+    <!-- Custom CSS for transparent heart with border -->
+    <style>
+      .IconColor {
+        border: 2px solid rgb(47, 47, 47);
+      }
+    </style>
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__close">+</div>
+        <ul class="offcanvas__widget">
+            <li><span class="icon_search search-switch"></span></li>
+            <li><a href="#"><span class="icon_heart_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+            <li><a href="#"><span class="icon_bag_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+        </ul>
+        <div class="offcanvas__logo">
+            <a href="./index.html"><img src="img/logo.png" alt=""></a>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__auth">
+            <a href="#">Login</a>
+            <a href="#">Register</a>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+  <!-- Header Section Begin -->
+    <header class="header-area header-sticky">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-3 col-lg-2" style="padding:0%">
+                    <div style="max-height: 100px; max-width:400px">
+                        <a href="/"><img src="img/logo.svg" alt=""></a>
+                    </div>
+                </div>
+                {{!-- <div class="col-xl-3 col-lg-2" style="padding: 0% !important">
+                    <div class="header__logo" style="max-height:100px max-width:200px padding:0% !important">
+                        <a href="/"><img src="img/logo.svg" alt="fashionGaballeria" style="padding: 0% !important" ></a>
+                    </div>
+                </div> --}}
+                <div class="col-xl-6 col-lg-7">
+                    <nav class="header__menu">
+                        <ul>
+                            <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
+                            <li class="scroll-to-section"><a href="#men">Men's</a></li>
+                            <li class="scroll-to-section"><a href="#women">Women's</a></li>
+                             
+
+                            
+                            <li><a href="/shop">Shop</a></li>
+                            <li><a href="#">Pages</a>
+                                <ul class="dropdown">
+                                    <li><a href="/orders">View orders</a></li>
+                                    <li><a href="./shop-cart.html">Shop Cart</a></li>
+                                    <li><a href="./checkout.html">Checkout</a></li>
+                                
+                                </ul>
+                            </li>
+                            <li><a href="/blog">Blog</a></li>
+                            <li><a href="/contact">Contact</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3">
+                    <div class="header__right">
+                        {{!-- <div class="header__right__auth">
+                            <a href="#">Login</a>
+                            <a href="#">Register</a>
+                        </div> --}}
+
+                        <ul class="header__right__widget">
+                            <li>
+                                <div class="fas fa-search" onclick="toggleSearch()">
+                                    <!-- Unicode for magnifying glass icon -->
+                                </div>
+                                <div class="search-container">
+                                    <div class="search-box">
+                                        <!-- Your search input and other content here -->
+                                        <input type="text" placeholder="Search...">
+                                    </div>
+                                </div>
+                            </li>
+                            <li><a href="#"><i class="fas fa-heart"></i>
+                            </a></li>
+                            <li><a href="/cart"><i class="fas fa-shopping-bag"></i>
+                                <div class="tip">2</div>
+                            </a></li>
+                            <li>
+                                   <!-- User icon dropdown container -->
+                                <div class="user-dropdown">
+                                    <!-- Button to open the dropdown -->
+                                    <button class="user-btn"><i class="fas fa-user"></i></button>
+                                    <!-- Dropdown content -->
+                                    <div class="user-dropdown-content">
+                                        <!-- Individual items with icons -->
+                                        <a href="/user-profile"><i class="fas fa-user">  Profile</i></a>
+                                        {{!-- <a href="#"><i class="fas fa-cog"></i></a> --}}
+                                        <a href="/userLogout"><i class="fas fa-sign-out-alt">  Logout</i></a>
+                                    </div>
+                                </div>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+
+            <div class="checkout__form">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h5>Billing detail</h5>
+                        <div class="row">
+
+                            <div class="grid">
+                                {{#each newAddress.address}}
+                                <div class="card">
+                                    <label>
+                                        <input name="address" onclick="enablePlaceOrder()" class="radio" type="radio"
+                                            id="addressId_{{this._id}}">
+                                        <span class="plan-details">
+                                            <span class="plan-type">Address {{increment @key}}</span>
+                                            <hr>
+                                            <input type="text" value="{{this._id}}" id="addressIdValue_{{this._id}}"
+                                                hidden>
+                                            <span>{{name}}</span>
+                                            <span>{{mobile}}</span>
+                                            <span>{{address}}</span>
+                                            <span>{{city}}</span>
+                                            <span>{{state}}</span>
+                                            <span>{{pincode}}</span>
+                                        </span>
+                                        <button type="button" class="btn btn-danger btn-sm ml-2 mt-2" data-mdb-toggle="modal"
+                                            data-mdb-target="#exampleModal{{@key}}">Remove</button>
+                                        
+                                    </label>
+                                </div>
+
+
+                                <div class="modal fade" id="exampleModal{{@key}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                           
+                                                <h5 class="modal-title m-2" id="exampleModalLabel">Warning</h5>
+                                              
+                                            <div class="modal-body">Are you sure?</div>
+                                            <div class="modal-footer">
+
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-mdb-dismiss="modal">Close</button>
+
+                                                <a href="/remove-new-address-checkout?id={{this._id}}"><button
+                                                        type="button" class="btn btn-danger">Remove Address</button></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{/each}}
+                            </div>
+                            <div class="text-center mt-3">
+                                <a href="" class="btn btn-default btn-rounded mb-4 btn-primary" data-toggle="modal"
+                                    data-target="#modalLoginForm">Enter custom address</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="discount__content m-3">
+                            <h6>Discount codes</h6>
+                            <form action="#">
+                                <input type="text" id="couponCode" placeholder="Enter your coupon code">
+                                <button type="submit" class="site-btn" onclick="applyCoupon()">Apply</button>
+                            </form>
+
+
+                        </div>
+
+                        <p class="ml-3 mt-1 text-danger" id="invalidCoupon" style="display: none;">Coupon not validated
+                        </p>
+                        <p class="ml-3 mt-1 text-success" id="validCoupon" style="display: none;">Coupon Added</p>
+
+                        <button class="btn btn-danger ml-3" type="button" onclick="clearCoupon()" id="removeBtn"
+                            style="display: none;">Remove</button>
+
+                        <div>
+                            <div class="checkout__order mt-3">
+                                <h5>Your order</h5>
+                                <div class="checkout__order__total">
+                                    <div style="display: block;" id="onlyTotal">
+                                        <ul>
+                                            {{!-- <li>Subtotal <span>$ 750.0</span></li> --}}
+                                            <li>Total ₹<span id="totalValue">{{total}}</span></li>
+                                        </ul>
+                                    </div>
+                                    <div style="display: none;" id="discountTotal">
+                                        <ul>
+                                            {{!-- <li>Subtotal <span>$ 750.0</span></li> --}}
+                                            <li>Total ₹<span id="totalValue"><strike>{{total}}</strike></span></li>
+                                            <li>Discount Price ₹<span id="discountPrice"></span></li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-10">
+                                    <div class="form-check">
+                                        <p class="text-danger font-weight-bold" id="InsufficientWallet"></p>
+                                        <input class="form-check-input" type="radio" name="paymentMethod"
+                                            id="paymentMethodWallet" value="Wallet">
+                                        <label class="form-check-label font-weight-bold text-success"
+                                            for="paymentMethodOnline">
+
+                                            Wallet : ₹ <span class="" id="walletAmount">{{userDetails.wallet}}</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="paymentMethod"
+                                            id="paymentMethodCOD" value="COD">
+                                        <label class="form-check-label" for="paymentMethodCOD">
+                                            Cash on Delivery
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="paymentMethod"
+                                            id="paymentMethodOnline" value="Online">
+                                        <label class="form-check-label" for="paymentMethodOnline">
+                                            Online Payment
+                                        </label>
+                                    </div>
+
+                                </div>
+                                <button type="submit" onclick="placeOrderSubmit()" class="site-btn mt-4"
+                                    id="placeOrderButton" disabled>Place order</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+
+
+
+    {{!-- Modal --}}
+
+    <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-body mx-3">
+                    <form action="/add-new-address-checkout" method="post" class="row g-3 needs-validation" novalidate>
+                        <div class="col-12">
+                            <label for="yourName" class="form-label">Your Name</label>
+                            <input type="text" name="name" class="form-control" id="yourName" required>
+                            <div class="invalid-feedback">Please enter your name!</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="yourEmail" class="form-label">Your Email</label>
+                            <input type="email" name="email" class="form-control" id="yourEmail" required>
+                            <div class="invalid-feedback">Please enter a valid Email address!
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="yourMobile" class="form-label">Mobile Number</label>
+                            <div class="input-group has-validation">
+                                <input type="number" name="mobile" class="form-control" id="yourUsername" required>
+                                <div class="invalid-feedback">Please enter a mobile number.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="yourAddress" class="form-label">Address</label>
+                            <input type="text" name="address" class="form-control" id="yourAddress" required>
+                            <div class="invalid-feedback">Please enter your address</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="yourCity" class="form-label">State</label>
+                            <input type="text" name="state" class="form-control" id="state" required>
+                            <div class="invalid-feedback">Please enter your State</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="yourCity" class="form-label">City</label>
+                            <input type="text" name="city" class="form-control" id="city" required>
+                            <div class="invalid-feedback">Please enter your City</div>
+                        </div>
+
+
+
+
+                        <div class="col-12">
+                            <label for="yourCity" class="form-label">Pincode</label>
+                            <input type="number" name="pincode" class="form-control" id="mobile" required>
+                            <div class="invalid-feedback">Please enter your City</div>
+                        </div>
+
+
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100" type="submit">Submit</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.nicescroll.min.js"></script>
+    <script src="js/main.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+
+    <!-- MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>
+
+
+    <script>
+     
+     
+     let couponCode = "noCoupon"
+
+        function enablePlaceOrder() {
+            var button2 = document.getElementById("placeOrderButton");
+            button2.style.opacity=1; // Enable button 2 by changing opacity
+            button2.disabled = false;  // Enable button 2
+            button2.style.pointerEvents="auto"; // Enable pointer events on button 2
+        }
+        function applyCoupon() {
+            const couponCode = document.getElementById("couponCode").value;
+            const totalAmount = document.getElementById("totalValue").textContent;
+
+            fetch("/coupon-validate", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    couponCode: couponCode,
+                    totalAmount: totalAmount
+                })
+            }).then(response => response.json())
+                .then(response => {
+                    if (response.status == false) {
+                        document.getElementById("invalidCoupon").style.display = "block";
+                        document.getElementById("validCoupon").style.display = "none";
+                        document.getElementById("discountTotal").style.display = "none"
+                        document.getElementById("onlyTotal").style.display = "block"
+                        document.getElementById("removeBtn").style.display = "none"
+
+                    } else {
+                        document.getElementById("invalidCoupon").style.display = "none";
+                        document.getElementById("validCoupon").style.display = "block";
+                        document.getElementById("onlyTotal").style.display = "none"
+                        document.getElementById("removeBtn").style.display = "block"
+                        document.getElementById("discountTotal").style.display = "block"
+                        document.getElementById('discountPrice').innerText = response.discountTotal;
+                    }
+                })
+        }
+
+        async function clearCoupon() {
+            var couponCodeInput = document.getElementById("couponCode");
+            couponCodeInput.value = ""; // Clears the input field
+            await applyCoupon()
+
+            document.getElementById("emptyCoupon").style.display = "block";
+
+        }
+
+
+        function placeOrderSubmit() {
+
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            console.log('paymentMethod',paymentMethod)
+            let finalAmount= document.getElementById('totalValue').innerText;
+            console.log('finalAmount',finalAmount)
+            paymentMethodCheck(paymentMethod,finalAmount);
+
+            // Find the selected address ID
+            // Find the selected address ID
+        }
+
+        function paymentMethodCheck(paymentMethod,finalAmount) {
+            let selectedAddressId;
+            console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+            // Find the checked radio input
+            const checkedInput = document.querySelector('input[name="address"]:checked');
+
+            if (checkedInput) {
+                selectedAddressId = checkedInput.id.split('_')[1]; // Extract the ID from the input's ID attribute
+
+                console.log(checkedInput)
+            }
+
+            $.ajax({
+                url: '/place-order',
+                method: 'post',
+                data: {
+                    paymentMethod: paymentMethod,
+                    selectedAddressId: selectedAddressId,
+                    finalAmount: finalAmount,
+                    couponCode: couponCode
+                },
+                success: ((response) => {
+                    console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjj')
+                    if (response == false) {
+                        location.href = '/payment-error'
+                    } else {
+                        if (response.pendingOrders) {
+                            console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjj')
+                            console.log(response.pendingOrders)
+                            location.href = '/order-response?id=' + response.pendingOrders.orderId;
+                        }
+                    }
+                })
+            })
+        }
+
+        function verifyPayment(payment, order) {
+            $.ajax({
+                url: '/verify-payment',
+                method: 'POST',
+                data: {
+                    payment,
+                    order
+                },
+                success: function (response) {
+
+                    if (response === false) {
+                        location.href = '/payment-error';
+                    } else {
+                        if (response.onlineDetails) {
+                            console.log('kkfkfkfkfkfkfkfkkfk')
+                            location.href = '/order-response?id=' + response.onlineDetails.orderId;
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            }); 
+        } 
+
+        function updateCustomAddress(selectElement) {
+            const customAddressInput = document.getElementById('customAddressInput');
+
+            if (selectElement.value === '3') {
+                customAddressInput.style.display = 'block';
+            } else {
+                customAddressInput.style.display = 'none';
+                // Clear the custom address input value when not selected
+                customAddressInput.querySelector('input').value = '';
+            }
+        }
+
+        // Function to update the address in the form data
+        function updateAddressInput(inputElement) {
+            const addressInput = document.querySelector('input[name="address"]');
+            addressInput.value = inputElement.value;
+        }
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
