@@ -31,6 +31,8 @@ router.get("/order-detail-view",userControllers.OrderDetailsView);
 router.get("/cancel-user-order",userControllers.cancelUserOrder);
 router.get('/email-verify',userControllers.emailVerify)
 router.get("/otp-pass",otpSend,userControllers.otpViewPass)
+router.get("/signupUser",userControllers.otpView)
+router.get("/otp",userControllers.otpView)
 
 
 router.post("/signupUser",userControllers.signupUser);

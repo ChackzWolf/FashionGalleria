@@ -7,6 +7,7 @@ const CategoryModel = require("../models/Category");
 
 
 const  addProduct = async (req,res) =>{
+  console.log('started adding product')
     const {name,price,description,stockLarge,stockMedium,stockSmall} = req.body;
     const sizeStock = {
       sizeLarge: {
@@ -22,14 +23,14 @@ const  addProduct = async (req,res) =>{
         stock: parseInt(stockSmall) || 0
       }
     }
+    console.log('0000000000000000000')
 
-        if(price<1){
-        
+        console.log('1111111111111111111')
         
             const categoryConnect = await CategoryModel.findOne({name:req.body.category})
         
             console.log(req.files) ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+        console.log('2222222222222222222')
             const images = req.files
                                 .filter((file) =>
                                       file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/webp")
@@ -45,6 +46,7 @@ const  addProduct = async (req,res) =>{
                   listStatus:true,
                   deleteStatus:false,
                 }
+                console.log('33333333333333333333333')
                 console.log(data);
                 let product = await ProductModel.create(data);
               
@@ -79,7 +81,7 @@ const  addProduct = async (req,res) =>{
             const wrongEntry = true;
             res.redirect(`/admin/add-product?worngEntry=${wrongEntry}`)
         }
-    }  
+    
 }                           
   
   

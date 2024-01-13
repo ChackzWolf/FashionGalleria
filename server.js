@@ -111,6 +111,6 @@ app.use("/admin", adminRouter);
 
 app.listen(1212,()=> console.log("server is running"))
 
-app.get('*',function(req,res){
-  res.status(404).render("user/error-handling");
-})
+// app.get('*',function(req,res){
+//   res.status(404).render("user/error-handling");
+// })

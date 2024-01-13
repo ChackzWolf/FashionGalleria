@@ -598,45 +598,50 @@
                 </div>
 
 
-<div style="display:flex; justify-content: center; align-items: center;">
-            <div>
-                <div>
-                   <img src="uploaded-images/{{singleProduct.imageUrl.[0]}}" alt="">
-                    <img src="uploaded-images/{{editProduct.imageUrl.[0]}}" alt="">
+              <div style="display: flex; justify-content: center; align-items: center;">
+                    <div style="max-width: 250px; max-height:500px">
+                           <div style="width: 150px; height:215px;">
+                               <img src="/views/uploaded-images/{{editProduct.imageUrl.[0]}}" alt="" id="previewImage1" style="max-width: 150px; max-height:215px;"><br>
+                           </div>
+
+                           <input type="file" name="image" id="image1" style="display: none;"
+                             onchange="displaySelectedImage(this,'previewImage1'); displayFileName('image1', this)" accept="image/png, image/webp, image/jpeg">
+                           <label for="image1"
+                             style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
+                             1 <span id="image1Label"></span> </label><span class="close-button"
+                             onclick="clearImage('image1')"><span class="close-icon btn"><i
+                                 class="fa-solid fa-x "></i></span></span>
+                         </div>
+
+
+                         <div style="max-width: 250px; max-height:500px">
+                           <div style="width: 150px; height:215px;">
+                               <img src="uploaded-images/{{editProduct.imageUrl.[0]}}" alt="" id="previewImage2" style="max-width: 150px; max-height:215px;"><br>
+                           </div>
+
+                           <input type="file" name="image" id="image2" style="display: none;"
+                           onchange="displayFileName('image2',this); displaySelectedImage(this,'previewImage2')" accept="image/png, image/webp, image/jpeg">
+                           
+                           <label for="image2"
+                           style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
+                           2 <span id="image2Label"></span></label> <span class="close-button"
+                             onclick="clearImage('image2')"><span class="close-icon btn"><i
+                             class="fa-solid fa-x "></i></span></span>
+                         </div>
+
+                          <div style="max-width: 250px; max-height:500px">
+                           <div style="width: 150px; height:215px;">
+                               <img src="" alt="" id="previewImage3" style="max-width: 150px; max-height:215px;"><br>
+                           </div>
+                             <input type="file" name="image" id="image3" style="display: none;"
+                                 onchange="displayFileName('image3', this); displaySelectedImage(this,'previewImage3')" accept="image/png, image/webp, image/jpeg">
+                             <label for="image3"
+                                 style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
+                                 3 <span id="image3Label"></span></label> <span class="close-button"
+                                 onclick="clearImage('image3')"><span class="close-icon btn"><i
+                                     class="fa-solid fa-x "></i></span></span>
+                          </div>
                 </div>
-                <input type="file" name="image" id="image1" style="display: none;" value="{{editProduct.imageURL.[0]}}"
-                  onchange="displayFileName('image1', this)" accept="image/png, image/webp, image/jpeg">
-                <label for="image1"
-                  style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
-                  1 <span id="image1Label"></span> </label><span class="close-button"
-                  onclick="clearImage('image1')"><span class="close-icon btn"><i
-                      class="fa-solid fa-x "></i></span></span>
-            </div>
-            <div>
-                <div>
-                    <img src="" alt="">
-                </div>
-                <input type="file" name="image" id="image2" style="display: none;"value="{{editProduct.imageURL.[1]}}"
-                  onchange="displayFileName('image2', this)" accept="image/png, image/webp, image/jpeg">
-                <label for="image2"
-                  style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
-                  2 <span id="image2Label"></span></label> <span class="close-button"
-                  onclick="clearImage('image2')"><span class="close-icon btn"><i
-                      class="fa-solid fa-x "></i></span></span>
-            </div>
-            <div>
-                <div>
-                    <img src="" alt="">
-                </div>
-                <input type="file" name="image" id="image3" style="display: none;" value="{{editProduct.imageURL.[2]}}"
-                  onchange="displayFileName('image3', this)" accept="image/png, image/webp, image/jpeg">
-                <label for="image3"
-                  style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
-                  3 <span id="image3Label"></span></label> <span class="close-button"
-                  onclick="clearImage('image3')"><span class="close-icon btn"><i
-                      class="fa-solid fa-x "></i></span></span>
-            </div>          
-</div>
 
 
 
@@ -709,15 +714,22 @@
   <script src="/assetsAdmin/js/main.js"></script>
 
   <script>
-    function displayFileName(labelId, input) {
-      const span = document.getElementById(labelId + 'Label');
-      if (input.files.length > 0) {
-        span.innerText = ' - ' + input.files[0].name;
-      } else {
-        span.innerText = '';
-      }
+    function displayFileName(imageId, input) {
+        const labelId = imageId + 'Label';
+        document.getElementById(labelId).textContent = input.files[0].name;
+    }
+
+    function clearImage(imageId) {
+        const labelId = imageId + 'Label';
+        const input = document.getElementById(imageId);
+        input.value = '';
+        document.getElementById(labelId).textContent = '';
     }
   </script>
+
+
+
+
 
 <script>
   // to display image after selected
