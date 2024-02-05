@@ -330,7 +330,7 @@
                                     <input type="text" value="1">
                                 </div>
                             </div>
-                            <a href="/addToCart?id={{this._id}}"  class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
+                            <button onclick="addToCart('{{singleProduct._id}}')"  class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</button>
                             <ul>
                                 <li><a href="#"><span class="icon_heart_alt"></span></a></li>
                                 <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
@@ -346,24 +346,29 @@
                                         </label>
                                     </div>
                                 </li>
-<li>
-   <span>Available size:</span>
-   <div class="size__btn">
-       <label for="s-btn" style="margin-right: 10px;">
-           <input type="radio" name="sizeSmall" value="sizeSmall" id="s-btn">
-           S
-       </label>
-       <label for="m-btn" style="margin-right: 10px;">
-           <input type="radio" name="sizeMedium" value="sizeMedium" id="m-btn">
-           M
-       </label>
-       <label for="l-btn">
-           <input type="radio" name="sizeLarge" value="sizeLarge" id="l-btn">
-           L
-       </label>
-   </div>
-</li>
-
+                                <li>
+                                    <span>Available size:</span>
+                                    <div class="size__btn">
+                                        {{#if (gt singleProduct.sizeStock.sizeSmall.stock 0)}}
+                                        <div class="form-check">
+                                            <input class="form-check-input" value="sizeSmall" type="radio" name="size" id="flexRadioDefault1">
+                                            <label class="form-check-label" for="flexRadioDefault1">S</label>
+                                        </div>
+                                        {{/if}}
+                                        {{#if (gt singleProduct.sizeStock.sizeMedium.stock 0)}}
+                                        <div class="form-check">
+                                            <input class="form-check-input" value="sizeMedium" type="radio" name="size" id="flexRadioDefault2" >
+                                            <label class="form-check-label" for="flexRadioDefault2">M</label>
+                                        </div>
+                                        {{/if}}
+                                        {{#if (gt singleProduct.sizeStock.sizeLarge.stock 0)}}
+                                        <div class="form-check">
+                                            <input class="form-check-input" value="sizeLarge" type="radio" name="size" id="flexRadioDefault3">
+                                            <label class="form-check-label" for="flexRadioDefault3">L</label>
+                                        </div>
+                                        {{/if}}
+                                    </div>
+                                </li>
                                     <span>Promotions:</span>
                                     <p>Free shipping</p>
                                 </li>
@@ -371,6 +376,22 @@
                         </div>
                     </div>
                 </div>
+
+                
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">Please select a size</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal" id="closeModalBtn">Close</button>
+      </div>
+    </div>
+  </div>
+</div> 
                 <div class="col-lg-12">
                     <div class="product__details__tab">
                         <ul class="nav nav-tabs" role="tablist">
@@ -705,6 +726,28 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
+    <script>
+        function addToCart(id) {
+          const selectedSize = document.querySelector('input[name="size"]:checked');
+
+          if (!selectedSize) {
+            // Show the modal if no size is selected
+            $('#exampleModal').modal('show');
+            return;  // Stop the function if no size is selected
+          }
+
+          const selectedValue = selectedSize.value;
+
+          const returnUrl = `/addToCart?id=${id}&size=${selectedValue}`;
+
+          window.location.href = returnUrl;
+        }
+
+        // Close the modal when the "Close" button inside the modal is clicked
+        document.getElementById('closeModalBtn').addEventListener('click', function() {
+          $('#exampleModal').modal('hide');
+        });
+    </script>
 
 </body>
 </html>

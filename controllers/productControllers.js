@@ -35,6 +35,7 @@ const  addProduct = async (req,res) =>{
                                 .filter((file) =>
                                       file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/webp")
                                 .map((file) => file.filename);   
+            console.log(images)
             if(images.length ===3){
                 const data = {
                   name,
@@ -143,32 +144,51 @@ const editedProductDetails = async (req,res)=>{
       stock: stockSmall
     }
   }
-
+ 
   
   const images = req.files
-  .filter((file) =>
-      file.mimetype === "image/png" || file.mimetype === "image/webp" || file.mimetype === "image/jpeg")
-  .map((file) => file.filename);
+                        .filter((file) =>
+                            file.mimetype === "image/png" || file.mimetype === "image/webp" || file.mimetype === "image/jpeg")
+                        .map((file) => file.filename);
 
-  
+
   const existingProduct = await ProductModel.findById(id);
   if(!existingProduct){
     return res.status(404).send("Product not found.");
   }
-  if(!req.file||req.files.length === 0){
+console.log(existingProduct.imageUrl[0])
+console.log(existingProduct.imageUrl[1])
+console.log(existingProduct.imageUrl[2])
+  console.log(images[0])
+  console.log(images[1])
 
-    const updateData = {
-      name: name,
-      price: price,
-      description: description,
-      sizeStock: sizeStock,
-      category: category,
-      imageUrl: images
-    };
+
+  let c = 0
+  for(let i = 0; i<3 ; i++){
+    if(images[i] == undefined){
+        images[i] = existingProduct.imageUrl[i];
+        console.log(images[i],'*');
+    }
+  }
+
+
+  console.log(images)
+
+  if(!req.file||req.files.length === 0){
+      console.log('!req.file   length ====0 ')
+      const updateData = {
+        name: name,
+        price: price,
+        description: description,
+        sizeStock: sizeStock,
+        category: category,
+        imageUrl:[images[0],images[1],images[2]]
+      };
 
 
     const update = await ProductModel.updateOne({_id:id},{$set: updateData})
     if(update){
+      console.log('updated')
       let success = true
       res.redirect(`/admin/edit-product?success=${success}`)
       console.log(success)
@@ -222,14 +242,15 @@ const deleteFile = (filePath) => {
 };
 
 
-const addCategory = async(req,res)=>{
-  console.log(req.body,"dddddddddddddddddddddd")
-  const categoryName = req.body.name;
-  const categoryData = {
-    name:categoryName,
-    listStatus:true
+const addCategory = async(req,res)=>{ 
+  console.log(req.body,"dddddddddddddddddddddd") 
+  const categoryName = req.body.name; 
+  console.log(categoryName); 
+  const categoryData = { 
+    name:categoryName, 
+    listStatus:true 
   }
-    if(categoryName !==''){
+    if(categoryName !== ''){
         const categoryExist  = await CategoryModel.findOne({name:categoryName});
         if(categoryExist){
             console.log('category exists')
@@ -250,12 +271,12 @@ const addCategory = async(req,res)=>{
     else{
         const fieldEmpty = true;
         console.log("field was empty");
-        res.render("admin/add-product",{fieldEmpty});
+        res.render("admin/add-category",{fieldEmpty});
     }    
 }
 
- 
- 
+
+
 module.exports = {
     addProduct,
     listUnlistProduct,

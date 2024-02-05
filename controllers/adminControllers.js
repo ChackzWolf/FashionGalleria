@@ -6,6 +6,9 @@ const ProductModel = require("../models/Product");
 const CategoryModel = require("../models/Category");
 const Swal = require('sweetalert2');
 const OrderModel = require("../models/Order");
+const CouponModel = require("../models/Coupon");
+const { findOne } = require("../models/Address");
+const formatDate = require("../utils/dateGenerator");
 
 
  const dashboardView= (req,res) =>{
@@ -175,6 +178,185 @@ const cancelledOrdersView = async(req,res)=>{
     res.render("admin/cancelled-orders",{cancelledOrders});
 }
 
+const orderDetailView = async(req,res)=>{
+    const orderId = req.query.id;
+    const orderDetails = await OrderModel.findById({_id:orderId});
+    res.render("admin/order-details",{orderDetails})
+}
+
+
+const addCouponView = (req,res) =>{
+  res.render("admin/add-coupon");
+}
+
+const addNewCoupon = async(req,res)=>{
+    const {couponName,couponType,percentageValue,description} = req.body;
+    const data = {
+      couponCode:couponName,
+      offerPercentage:percentageValue,
+      couponType:couponType,
+      description:description,
+      listStatus:true
+    }
+    if(couponName !== ''){
+
+          console.log(data,'dataaaaaa')
+          const couponExists = await CouponModel.findOne({couponCode:couponName});
+          if(!couponExists){
+              console.log("coupon deos'nt exists")
+              const coupon = await CouponModel.create(data)
+              if(coupon){
+                console.log('coupon created')
+                let msgTrue = true;
+                res.render("admin/add-coupon",{msgTrue})
+              }else{
+                console.log('coupon not created')
+                let msgFalse = true;
+                res.render("admin/add-coupon",{msgFalse});
+              }
+          }else{
+            console.log('coupon already exists')
+            let msgExists = true;
+            res.render("admin/add-coupon",{msgExists});
+          }
+    }else{
+        console.log('couponCode is empty')
+        let msgCouponEmpty = true;
+        res.render("admin/add-coupon",{msgCouponEmpty});
+    }
+}
+
+const couponListView = async(req,res)=>{
+    const listedCoupon = await CouponModel.find();
+    res.render("admin/listed-coupon",{listedCoupon});
+}
+
+const listUnlistCoupon = async(req,res)=>{
+  console.log("step1");
+  const coupon = await CouponModel.findById({_id:req.params.id});
+  if(coupon){
+    console.log('step2');
+    const update = await CouponModel.updateOne({_id:coupon.id},{$set:{listStatus:!coupon.listStatus}});
+    if(update){
+      console.log('list status updated')
+      const listedCoupon = await CouponModel.find();
+      res.render("admin/listed-coupon",{listedCoupon})
+    }
+  }
+}
+
+
+const returnPending =  async (req,res)=>{
+    const returnPending = await OrderModel.find({status:{$in:['returnNonDefective','returnDefective']}})
+    res.render("admin/return-pending",{returnPending});
+}
+
+const returnDefective = async(req,res)=>{
+    const returnDefective = await OrderModel.find({status:'returnAcceptDef'})
+    res.render("admin/return-defective",{returnDefective})
+}
+
+const returnNonDefective = async(req,res)=>{
+    const returnAcceptNonDef = await OrderModel.find({status:'returnAcceptNonDef'})
+    res.render("admin/return-non-defective",{returnAcceptNonDef});
+}
+
+const orderCancel = async(req,res)=>{
+    const orderId = req.query.id;
+    const defective = await OrderModel.findOne({orderId:orderId,status:'returnDefective'})
+    const nonDefective = await OrderModel.findOne({orderId:orderId,status:'returnNonDefective'}); 
+    if(defective){
+        const updated = await OrderModel.updateOne({orderId:orderId},{$set:{status:'returnAcceptDef'}})
+    }else{
+        const updated = await OrderModel.updateOne({orderId:orderId},{$set:{status:'returnAcceptNonDef'}})
+    }
+
+}
+
+const returnAccept = async (req, res) => {
+    try {
+
+    } catch (err) {
+        res.status(500).render("user/error-handling");
+    }
+    const orderId = req.query.id
+    const status = req.query.status
+    const order = await OrderModel.findOne({_id:orderId});
+    const returnPending = await OrderModel.find({status:{$in:['returnNonDefective','returnDefective']}})
+    const orderDetails = await OrderModel.findOne({_id:orderId});
+    const currentDate = new Date();
+    const formattedDate = formatDate(currentDate);
+
+    if(order.status === 'returnDefective'){
+      console.log('Status:',order.status)
+      const orderUpdate = await OrderModel.updateOne({ _id:orderId},{$set:{status:'returnAcceptDef'}})
+    }else{
+      console.log('Status:',order.status)
+      const orderUpdate = await OrderModel.updateOne({ _id:orderId},{$set:{status:'returnAcceptNonDef'}})
+    }
+    const transaction = {
+        transaction:"Credited",
+        amount:orderDetails.amount,
+        orderId:orderDetails.orderId,
+        date:formattedDate
+    }
+    console.log(orderDetails.amount)
+    const walletUpdate = await UserModel.updateOne({ _id: orderDetails.userId }, { $inc: { wallet: orderDetails.amount } }); // Here I'm adding back the amount to the user's wallet.
+    const walletHistory = await UserModel.updateOne({_id:orderDetails.userId},{$push:{walletHistory:transaction}}) // here I'm journaling transaction history to the user model
+
+
+  
+    // Check the result of the update
+    if (walletUpdate) {
+      console.log(walletUpdate)
+        res.render("admin/return-pending",{returnPending})
+    } else {
+        res.render("admin/return-pending",{returnPending})
+    }
+
+}
+
+const editCouponDetails = async(req,res)=>{
+    const editCoupon = await CouponModel.findOne({_id:req.query.id});
+    res.render("admin/edit-coupon-details",{editCoupon});
+}
+
+const editCoupon = async(req,res)=>{
+    const {id,couponName,couponType,percentageValue,description} = req.body;
+    const updateData = {
+        couponCode:couponName,
+        couponType:couponType,
+        offerPercentage:percentageValue,
+        description:description
+    }
+    const couponExist = await CouponModel.findOne({_id:id})
+    if(couponExist){
+        const update = await CouponModel.updateOne({_id:id},{$set: updateData});
+        if(update){
+            const updated = true;
+            const listedCoupon = await CouponModel.find();
+            res.render('admin/listed-coupon',{updated,listedCoupon});
+        }
+    }
+}
+
+const deleteCoupon = async(req,res)=>{
+    const couponId = req.params.id;
+    const deletedCoupon = await CouponModel.deleteOne({_id:couponId});
+    if(deletedCoupon){
+        const couponDeleted = true;
+        const listedCoupon = await CouponModel.find();
+        res.render("admin/listed-coupon",{couponDeleted,listedCoupon});
+    }else{
+        const couponDeletedFailed = true;
+        const listedCoupon = await CouponModel.find();
+        res.render("admin/listed-coupon",{couponDeletedFailed,listedCoupon});
+    }
+
+}
+// const walletUpdate = await UserModel.updateOne({ _id: orderDetails.userId }, { $inc: { wallet: orderDetails.amount } });
+
+
  module.exports = {
    loginView,
    dashboardView,
@@ -192,5 +374,18 @@ const cancelledOrdersView = async(req,res)=>{
    deliveredOrdersView,
    cancelledOrdersView,
    orderDelivered,
-   orderShipped
+   orderShipped,
+   orderDetailView,
+   addCouponView,
+   addNewCoupon,
+   couponListView,
+   listUnlistCoupon,
+   returnPending,
+   returnDefective,
+   returnNonDefective,
+   orderCancel,
+   returnAccept,
+   editCouponDetails,
+   editCoupon,
+   deleteCoupon
 }  

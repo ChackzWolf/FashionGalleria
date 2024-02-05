@@ -21,6 +21,17 @@ const UserSchema = new mongoose.Schema({
     wallet:{
         type: Number
     },
+    walletHistory:[{
+        transaction:{
+            type:String
+        },amount:{
+            type:Number
+        },orderId:{
+            type:String
+        },date:{
+            type:String
+        }
+    }],
     address:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Address'
@@ -31,8 +42,10 @@ const UserSchema = new mongoose.Schema({
     status:{
         type: Boolean,
         required: true
+    },
+    referenceId:{
+        type:String,
     }
-
 })
 
 const UserModel = mongoose.model("User", UserSchema)

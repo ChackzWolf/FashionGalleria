@@ -7,7 +7,7 @@
     <meta name="keywords" content="Ashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Checkoy | Urban Vogue</title>
+    <title>Checkout | Urban Vogue</title>
 
     <link href="assets/img/favicon.png" rel="icon">
 
@@ -164,7 +164,7 @@
             <div class="row">
                 <div class="col-xl-3 col-lg-2" style="padding:0%">
                     <div style="max-height: 100px; max-width:400px">
-                        <a href="/"><img src="img/logo.svg" alt=""></a>
+                        <a href="/"><img src="" alt=""></a>
                     </div>
                 </div>
                 {{!-- <div class="col-xl-3 col-lg-2" style="padding: 0% !important">
@@ -299,7 +299,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 {{/each}}
                             </div>
                             <div class="text-center mt-3">
@@ -313,11 +312,16 @@
                     <div class="col-lg-4">
                         <div class="discount__content m-3">
                             <h6>Discount codes</h6>
+
                             <form action="#">
                                 <input type="text" id="couponCode" placeholder="Enter your coupon code">
                                 <button type="submit" class="site-btn" onclick="applyCoupon()">Apply</button>
-                            </form>
 
+                                <div class="text-center mt-3">
+                                    <a href="" class="btn btn-default btn-rounded mb-4 btn-primary" data-toggle="modal"
+                                        data-target="#modalCoupon">Available coupons</a>
+                                </div>
+                            </form>
 
                         </div>
 
@@ -354,7 +358,6 @@
                                             id="paymentMethodWallet" value="Wallet">
                                         <label class="form-check-label font-weight-bold text-success"
                                             for="paymentMethodOnline">
-
                                             Wallet : ₹ <span class="" id="walletAmount">{{userDetails.wallet}}</span>
                                         </label>
                                     </div>
@@ -390,6 +393,45 @@
 
 
 
+
+
+
+
+    {{!-- Modal for coupon --}}
+
+    <div class="modal fade" id="modalCoupon" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                            <div class="grid">
+                                {{#each coupons}}
+                                <div class="card">
+                                    <label>
+                                      <input name="coupon"  class="radio" type="radio" id="couponId_{{this._id}}" data-coupon-code="{{this.couponCode}}">
+                                        <span class="plan-details">
+                                            <span class="plan-type">Address {{increment @key}}</span>
+                                            <hr>
+                                        
+                                            <span>{{couponCode}}</span>
+                                            <span>{{description}}</span>
+             
+                                        </span>
+                       
+                                        <button id="closeButton" class="btn btn-primary">Close</button>
+
+                                    </label>
+                                </div>
+                                {{/each}}
+                            </div>
+
+            </div>
+        </div>
+    </div>
+    
+
+
+
     {{!-- Modal --}}
 
     <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -415,7 +457,7 @@
                         <div class="col-12">
                             <label for="yourMobile" class="form-label">Mobile Number</label>
                             <div class="input-group has-validation">
-                                <input type="number" name="mobile" class="form-control" id="yourUsername" required>
+                                <input type="number" name="number" class="form-control" id="yourUsername" required>
                                 <div class="invalid-feedback">Please enter a mobile number.
                                 </div>
                             </div>
@@ -489,8 +531,20 @@
 
 
     <script>
-     
-     
+        
+
+
+$('.radio').click(function() {
+ var couponCode = $(this).data('coupon-code');
+ $('#couponCode').val(couponCode);
+ $('#modalCoupon').modal('hide');
+
+});
+$('#closeButton').click(function() {
+ $('#modalCoupon').modal('hide');
+});
+
+          
      let couponCode = "noCoupon"
 
         function enablePlaceOrder() {
@@ -500,6 +554,7 @@
             button2.style.pointerEvents="auto"; // Enable pointer events on button 2
         }
         function applyCoupon() {
+            console.log('coupon trig 1')
             const couponCode = document.getElementById("couponCode").value;
             const totalAmount = document.getElementById("totalValue").textContent;
 
@@ -513,23 +568,22 @@
                     totalAmount: totalAmount
                 })
             }).then(response => response.json())
-                .then(response => {
-                    if (response.status == false) {
-                        document.getElementById("invalidCoupon").style.display = "block";
-                        document.getElementById("validCoupon").style.display = "none";
-                        document.getElementById("discountTotal").style.display = "none"
-                        document.getElementById("onlyTotal").style.display = "block"
-                        document.getElementById("removeBtn").style.display = "none"
-
-                    } else {
-                        document.getElementById("invalidCoupon").style.display = "none";
-                        document.getElementById("validCoupon").style.display = "block";
-                        document.getElementById("onlyTotal").style.display = "none"
-                        document.getElementById("removeBtn").style.display = "block"
-                        document.getElementById("discountTotal").style.display = "block"
-                        document.getElementById('discountPrice').innerText = response.discountTotal;
-                    }
-                })
+              .then(response => {
+                  if (response.status == false) {
+                      document.getElementById("invalidCoupon").style.display = "block";
+                      document.getElementById("validCoupon").style.display = "none";
+                      document.getElementById("discountTotal").style.display = "none"
+                      document.getElementById("onlyTotal").style.display = "block"
+                      document.getElementById("removeBtn").style.display = "none" 
+                  } else {
+                      document.getElementById("invalidCoupon").style.display = "none";
+                      document.getElementById("validCoupon").style.display = "block";
+                      document.getElementById("onlyTotal").style.display = "none"
+                      document.getElementById("removeBtn").style.display = "block"
+                      document.getElementById("discountTotal").style.display = "block"
+                      document.getElementById('discountPrice').innerText = response.discountTotal;
+                  }
+              })
         }
 
         async function clearCoupon() {
@@ -538,7 +592,6 @@
             await applyCoupon()
 
             document.getElementById("emptyCoupon").style.display = "block";
-
         }
 
 
@@ -546,10 +599,32 @@
 
             const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
             console.log('paymentMethod',paymentMethod)
-            let finalAmount= document.getElementById('totalValue').innerText;
-            console.log('finalAmount',finalAmount)
-            paymentMethodCheck(paymentMethod,finalAmount);
+            const discountTotal = document.getElementById('discountPrice').innerText
+            let finalAmount;
+            if(discountTotal){
+                finalAmount = document.getElementById('discountPrice').innerText
+            } else{
+                finalAmount= document.getElementById('totalValue').innerText;
+            }
 
+            console.log('finalAmount',finalAmount)
+
+            paymentMethodCheck(paymentMethod,finalAmount);
+            if(paymentMethod == "Wallet"){
+                var walletAmount= walletElement.innerText;
+                var totalAmount= finalAmount;
+
+                var walletAmount = parseInt(walletAmount);
+                var totalAmount = parseInt(totalAmount);
+
+                if(totalAmount <= walletAmount){
+                    paymentMethodCheck(paymentMethod, finalAmount)
+                }else{
+                    document.getElementById('insufficientWallet').textContent = "Insufficient wallet amount";
+                }
+            }else{
+                paymentMethaodCheck(paymentMethod,finalAmount)
+            }
             // Find the selected address ID
             // Find the selected address ID
         }
@@ -561,8 +636,9 @@
             const checkedInput = document.querySelector('input[name="address"]:checked');
 
             if (checkedInput) {
+                console.log(checkedInput,"Checked inputt");
                 selectedAddressId = checkedInput.id.split('_')[1]; // Extract the ID from the input's ID attribute
-
+                console.log(selectedAddressId,'selectedAddressId');
                 console.log(checkedInput)
             }
 
@@ -583,37 +659,16 @@
                         if (response.pendingOrders) {
                             console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjj')
                             console.log(response.pendingOrders)
-                            location.href = '/order-response?id=' + response.pendingOrders.orderId;
+                            window.location.href = '/order-response?id=' + response.pendingOrders.orderId;
+                        }else{
+                            razorpayPayment(response.order)
                         }
                     }
                 })
             })
         }
 
-        function verifyPayment(payment, order) {
-            $.ajax({
-                url: '/verify-payment',
-                method: 'POST',
-                data: {
-                    payment,
-                    order
-                },
-                success: function (response) {
 
-                    if (response === false) {
-                        location.href = '/payment-error';
-                    } else {
-                        if (response.onlineDetails) {
-                            console.log('kkfkfkfkfkfkfkfkkfk')
-                            location.href = '/order-response?id=' + response.onlineDetails.orderId;
-                        }
-                    }
-                },
-                error: function (error) {
-                    console.error('Error:', error);
-                }
-            }); 
-        } 
 
         function updateCustomAddress(selectElement) {
             const customAddressInput = document.getElementById('customAddressInput');
@@ -632,22 +687,76 @@
             const addressInput = document.querySelector('input[name="address"]');
             addressInput.value = inputElement.value;
         }
+        
+
+
+
+        
+        function razorpayPayment(order) {
+
+            var options = {
+                "key": "rzp_test_lc7R4jCpEpM90Q", // Enter the Key ID generated from the Dashboard
+                "amount": order.amount * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to
+                "currency": "INR",
+                "name": "Fashion Galleria", //your business name
+                "description": "Test Transaction",
+                "image": "img/logo.svg",
+                "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (response) {
+                    verifyPayment(response, order)
+                },
+                "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially
+
+                    "name": "Gaurav Kumar", //your customer's name
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000" //Provide the customer's phone number for better conversion rates
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+
+        function verifyPayment(payment, order) {
+            console.log('rached here')
+            $.ajax({
+                url: '/verify-payment',
+                method: 'POST',
+                data: {
+                    payment,
+                    order
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response === false) {
+                        location.href = '/payment-error';
+                    } else {
+                        if (response.onlineDetails) {
+                            console.log('kkfkfkfkfkfkfkfkkfk')
+                            let cod = true
+                            console.log(response.onlineDetails.orderId)
+                            location.href = '/order-response?id=' + response.onlineDetails.orderId;
+                        }else{
+                            razorpayPayment(response.order); 
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            }); 
+        } 
 
 
     </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
+  <!-- MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>
 </body>
 
 </html>

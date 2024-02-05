@@ -469,30 +469,21 @@
                     <div class="col-lg-9 col-md-8">{{userDetails.number}}</div>
                   </div>
 
-                  <div class="row">
+                  
+
+                  {{!-- <div class="row">
                     <div class="col-lg-3 col-md-4 label">Default address</div>
                     <div class="col-lg-9 col-md-8">{{#each newAddress.address}}{{#if default}} {{address}}, {{city}}, {{state}}-{{pincode}}{{/if}}{{/each}}</div>
-                  </div>
-{{!-- 
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">State</div>
-                    <div class="col-lg-9 col-md-8">{{newAddress.state}}</div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">City</div>
-                    <div class="col-lg-9 col-md-8">{{newAddress.city}}</div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Pincode</div>
-                    <div class="col-lg-9 col-md-8">{{newAddress.pincode}}</div>
                   </div> --}}
+
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Wallet Amount</div>
                     <div class="col-lg-9 col-md-8 text-success font-weight-bold">₹ {{userDetails.wallet}}</div>
+                    <a href="/wallet-history">See transaction history</a>
                   </div>
+
+                    
 
 
 
@@ -500,7 +491,13 @@
 
 
                 </div>
-
+ <div class="row">
+    <div class="col-2">
+        <a href="/orders" class="text-left">
+            <button type="button" class="btn btn-primary">View orders</button>
+        </a>
+    </div>
+</div>
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                   <!-- Profile Edit Form -->
@@ -545,36 +542,6 @@
                     </div>
 
 
-
-                    {{!-- <div class="row mb-3">
-                      <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="address" type="text" class="form-control" id="Address"
-                          value="{{userDetails.address}}">
-                      </div>
-                    </div> --}}
-
-                    {{!-- <div class="row mb-3">
-                      <label for="State" class="col-md-4 col-lg-3 col-form-label">State</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="state" type="text" class="form-control" id="State" value="{{userDetails.state}}">
-                      </div>
-                    </div> --}}
-{{!-- 
-                    <div class="row mb-3">
-                      <label for="City" class="col-md-4 col-lg-3 col-form-label">City</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="city" type="text" class="form-control" id="Email" value="{{userDetails.city}}">
-                      </div>
-                    </div> --}}
-
-                    {{!-- <div class="row mb-3">
-                      <label for="Pincode" class="col-md-4 col-lg-3 col-form-label">Pincode</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="pincode" type="text" class="form-control" id="Pincode"
-                          value="{{userDetails.pincode}}">
-                      </div>
-                    </div> --}}
 
 
 
@@ -984,9 +951,6 @@
             }
         }
     </script>
-
-
-
 
 </body>
 

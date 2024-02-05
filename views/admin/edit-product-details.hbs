@@ -314,55 +314,20 @@
         </ul>
       </li><!-- End Forms Nav -->
 
-
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>#Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="forms-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-
-          <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="#">
-              <i class="bi bi-layout-text-window-reverse"></i><span>#Add Coupon</span></i>
-            </a>
-          </li>
-          <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
-              <i class="bi bi-layout-text-window-reverse"></i><span>#Show All Coupon</span></i>
-            </a>
-          </li>
-          <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
-              <i class="bi bi-layout-text-window-reverse"></i><span>#Show Listed Coupon</span></i>
-            </a>
-          </li>
-          <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
-              <i class="bi bi-layout-text-window-reverse"></i><span>Show Unlisted Coupon</span></i>
-            </a>
-          </li>
-
-
-        </ul>
-      </li><!-- End Forms Nav -->
-
-
-
-
-      {{!-- <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Category Management</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="forms-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="/admin/addCategory">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="/admin/add-category">
               <i class="bi bi-layout-text-window-reverse"></i><span>Add Category</span></i>
             </a>
           </li>
 
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/showCategory">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/category-list">
               <i class="bi bi-layout-text-window-reverse"></i><span>Show All Category</span></i>
             </a>
           </li>
@@ -379,7 +344,31 @@
 
 
         </ul>
-      </li><!-- End Forms Nav --> --}}
+      </li><!-- End Forms Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>#Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="/admin/add-coupon">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Add Coupon</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/coupon-list">
+              <i class="bi bi-layout-text-window-reverse"></i><span>#Show All Coupon</span></i>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Forms Nav -->
+
+
+
+
+
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav3" data-bs-toggle="collapse" href="#">
@@ -388,17 +377,17 @@
         <ul id="forms-nav3" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/pending-orders">
               <i class="bi bi-layout-text-window-reverse"></i><span>Show Pending Orders</span></i>
             </a>
           </li>
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/delivered-orders">
               <i class="bi bi-layout-text-window-reverse"></i><span>Show Delivered Orders</span></i>
             </a>
           </li>
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/cancelled-orders">
               <i class="bi bi-layout-text-window-reverse"></i><span>Show Cancelled Orders</span></i>
             </a>
           </li>
@@ -415,17 +404,17 @@
         <ul id="forms-nav4" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/return-pending">
               <i class="bi bi-layout-text-window-reverse"></i><span>Return Pending</span></i>
             </a>
           </li>
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/return-defective">
               <i class="bi bi-layout-text-window-reverse"></i><span>Return Defective</span></i>
             </a>
           </li>
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/return-non-defective">
               <i class="bi bi-layout-text-window-reverse"></i><span>Return Non-Defective</span></i>
             </a>
           </li>
@@ -434,6 +423,22 @@
         </ul>
       </li><!-- End Forms Nav -->
 
+
+
+
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#tables-nav" href="/admin/userList">
+          <i class="bi bi-layout-text-window-reverse"></i><span>User List</span></i>
+        </a>
+
+      </li><!-- End Forms Nav -->
+
+
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
 
 
 
@@ -601,11 +606,11 @@
               <div style="display: flex; justify-content: center; align-items: center;">
                     <div style="max-width: 250px; max-height:500px">
                            <div style="width: 150px; height:215px;">
-                               <img src="/views/uploaded-images/{{editProduct.imageUrl.[0]}}" alt="" id="previewImage1" style="max-width: 150px; max-height:215px;"><br>
+                          <img src="/uploaded-images/{{editProduct.imageUrl.[0]}}" alt="" id="previewImage1" style="max-width: 150px; max-height:215px;"><br>
                            </div>
 
                            <input type="file" name="image" id="image1" style="display: none;"
-                             onchange="displaySelectedImage(this,'previewImage1'); displayFileName('image1', this)" accept="image/png, image/webp, image/jpeg">
+                           123  onchange="displaySelectedImage(this,'previewImage1'); displayFileName('image1', this)" accept="image/png, image/webp, image/jpeg">
                            <label for="image1"
                              style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
                              1 <span id="image1Label"></span> </label><span class="close-button"
@@ -616,7 +621,7 @@
 
                          <div style="max-width: 250px; max-height:500px">
                            <div style="width: 150px; height:215px;">
-                               <img src="uploaded-images/{{editProduct.imageUrl.[0]}}" alt="" id="previewImage2" style="max-width: 150px; max-height:215px;"><br>
+                               <img src="/uploaded-images/{{editProduct.imageUrl.[1]}}" alt="" id="previewImage2" style="max-width: 150px; max-height:215px;"><br>
                            </div>
 
                            <input type="file" name="image" id="image2" style="display: none;"
@@ -631,7 +636,7 @@
 
                           <div style="max-width: 250px; max-height:500px">
                            <div style="width: 150px; height:215px;">
-                               <img src="" alt="" id="previewImage3" style="max-width: 150px; max-height:215px;"><br>
+                               <img src="/uploaded-images/{{editProduct.imageUrl.[2]}}" alt="" id="previewImage3" style="max-width: 150px; max-height:215px;"><br>
                            </div>
                              <input type="file" name="image" id="image3" style="display: none;"
                                  onchange="displayFileName('image3', this); displaySelectedImage(this,'previewImage3')" accept="image/png, image/webp, image/jpeg">

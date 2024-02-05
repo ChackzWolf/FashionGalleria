@@ -4,16 +4,16 @@ const session = require("express-session")
 const app = express();
 const hbs = require("hbs");
 const path = require("path")
-// const nocache = require("nocache")
+
 const userRouter = require("./routes/user");
 const adminRouter = require("./routes/admin");
 const connectDB = require("./config/connections");
 
+const Razorpay = require('razorpay');
 
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
-
 
 app.set("view engine","hbs");
 
@@ -25,7 +25,7 @@ app.set("view engine","hbs");
 
 app.set('views', path.join(__dirname, 'views'));
 // 
-app.use(express.static(path.join(__dirname,"public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const partialsPath = path.join(__dirname,"views/partials")
 hbs.registerPartials(partialsPath)
@@ -34,6 +34,7 @@ hbs.registerPartials(partialsPath)
 
 
 
+  
 
 
 
@@ -41,7 +42,7 @@ hbs.registerPartials(partialsPath)
 // Register a Handlebars helper function
 hbs.registerHelper('isInArray', function (value, array, options) {
   if (array && array.includes(value)) {
-    return options.fn(this);
+    return options.fn(this);   
   } else {
     return options.inverse(this);
   }
@@ -91,14 +92,16 @@ app.use(function(req, res, next) {
 // app.use(nocache())
 
 //session
-app.set("trust proxy", 1)
-app.use(session({
-    secret: "keyboard cat",
-    resave : false,
-    saveUninitialized : true,
-    cookie : {
-        secure:false,
-    }
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({  
+  name: `daffyduck`,
+  secret: 'some-secret-example',  
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: false, // This will only work if you have https enabled!
+    maxAge: 60000000 // 1000 min
+  } 
 }))
 
 connectDB()
@@ -109,8 +112,8 @@ app.use("/", userRouter);
 
 app.use("/admin", adminRouter);
 
-app.listen(1212,()=> console.log("server is running"))
+app.listen(3000,()=> console.log("server is running"))
 
-// app.get('*',function(req,res){
-//   res.status(404).render("user/error-handling");
-// })
+app.get('*',function(req,res){
+  res.status(404).render("user/error-handling");
+})

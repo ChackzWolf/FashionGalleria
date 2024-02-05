@@ -7,7 +7,7 @@
   <meta name="keywords" content="Ashion, unica, creative, html">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title> Order-Details | FashionGalleria</title>
+  <title>Fashion Galleria</title>
 
   <link href="assets/img/favicon.png" rel="icon">
 
@@ -38,8 +38,7 @@
   <link rel="stylesheet" href="css/style.css" type="text/css">
 
 
-
-      <style>
+    <style>
         /* Style the dropdown container */
         .user-dropdown {
             position: relative;
@@ -88,46 +87,6 @@
         }
     </style>
 
-{{!-- 
-    for search box --}}
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .search-container {
-            position: fixed;
-            top: 11%;
-            
-            right: -300px; /* Initial position off-screen */
-            transform: translateY(-50%);
-            transition: right 0.3s ease;
-        }
-
-        .search-box {
-            width: 300px;
-            padding: 10px;
-            box-sizing: border-box;
-            background: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .search-icon {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            font-size: 20px;
-        }
-    </style>
-    {{!-- end search box --}}
-    <!-- Custom CSS for transparent heart with border -->
-    <style>
-      .IconColor {
-        border: 2px solid rgb(47, 47, 47);
-      }
-    </style>
 </head>
 
 <script>
@@ -143,35 +102,33 @@
 </script>
 
 <body>
-    <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
+  <!-- Page Preloder -->
+  <div id="preloder">
+    <div class="loader"></div>
+  </div>
 
-    {{!-- <!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__close">+</div>
-        <ul class="offcanvas__widget">
-            <li><span class="icon_search search-switch"></span></li>
-            <li><a href="#"><span class="icon_heart_alt"></span>
-                <div class="tip">2</div>
-            </a></li>
-            <li><a href="#"><span class="icon_bag_alt"></span>
-                <div class="tip">2</div>
-            </a></li>
-        </ul>
-        <div class="offcanvas__logo">
-             <img src="" alt="SVG Image" width="100" height="100">
-            <a href="/index"><img src="#Logooooo" alt=""></a>
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__auth">
-            <a href="#">Login</a>
-            <a href="#">Register</a>
-        </div>
+  <!-- Offcanvas Menu Begin -->
+  <div class="offcanvas-menu-overlay"></div>
+  <div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__close">+</div>
+    <ul class="offcanvas__widget">
+      <li><a href="#"><span class="icon_heart_alt"></span>
+          <div class="tip">2</div>
+        </a></li>
+      <li><a href="#"><span class="icon_bag_alt"></span>
+          <div class="tip">2</div>
+        </a></li>
+    </ul>
+    <div class="offcanvas__logo">
+      <a href="/"><img src="img/logo.png" alt=""></a>
     </div>
-    <!-- Offcanvas Menu End --> --}}
+    <div id="mobile-menu-wrap"></div>
+    <div class="offcanvas__auth">
+      <a href="#">Login</a>
+      <a href="#">Register</a>
+    </div>
+  </div>
+  <!-- Offcanvas Menu End -->
 
     <!-- Header Section Begin -->
     <header class="header-area header-sticky">
@@ -190,20 +147,11 @@
                 <div class="col-xl-6 col-lg-7">
                     <nav class="header__menu">
                         <ul>
-                            <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
-                            <li class="scroll-to-section"><a href="#men">Men's</a></li>
-                            <li class="scroll-to-section"><a href="#women">Women's</a></li>
                              
 
                             
                             <li><a href="/shop">Shop</a></li>
                             <li><a href="#">Pages</a>
-                                <ul class="dropdown">
-                                    <li><a href="/orders">View orders</a></li>
-                                    <li><a href="./shop-cart.html">Shop Cart</a></li>
-                                    <li><a href="./checkout.html">Checkout</a></li>
-                                
-                                </ul>
                             </li>
                             <li><a href="/blog">Blog</a></li>
                             <li><a href="/contact">Contact</a></li>
@@ -218,16 +166,7 @@
                         </div> --}}
 
                         <ul class="header__right__widget">
-                            <li>
-                                <div class="fas fa-search" onclick="toggleSearch()">
-                                    <!-- Unicode for magnifying glass icon -->
-                                </div>
-                                <div class="search-container">
-                                    <div class="search-box">
-                                        <!-- Your search input and other content here -->
-                                        <input type="text" placeholder="Search...">
-                                    </div>
-                                </div>
+
                             </li>
                             <li><a href="#"><i class="fas fa-heart"></i>
                             </a></li>
@@ -267,7 +206,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="breadcrumb__links">
-            <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+            <a href="/"><i class="fa fa-home"></i> Home</a>
             <span>Order Details</span>
           </div>
         </div>
@@ -317,9 +256,10 @@
 
                       <div class="col-md-4">
                         <h5 class="card-title mb-3">Additional Information</h5>
-                        <p class="mb-2"><strong>Mobile:</strong> {{orderDetails.address.number}}</p>
+                        <p class="mb-2"><strong>Mobile:</strong> {{orderDetails.address.mobile}}</p>
                         <p class="mb-2"><strong>Payment: </strong>{{orderDetails.paymentMethod}}</p>
-
+                  
+                         <p class="mb-2"><strong>Order status: </strong>{{orderDetails.status}}</p>
 
                       </div>
                     </div>
@@ -348,7 +288,7 @@
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody>dd
                   {{#each orderDetails.products}}
                   <tr>
                     <th scope="row">{{increment @index}}</th>

@@ -87,6 +87,13 @@
         }
     </style>
 
+
+   <style>
+       html, body {
+           overflow-x: hidden;
+       }
+   </style>
+
 {{!-- 
     for search box --}}
     <style>
@@ -254,7 +261,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="breadcrumb__links">
-            <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+            <a href="/"><i class="fa fa-home"></i> Home</a>
             <span>Orders</span>
           </div>
         </div>
@@ -287,7 +294,7 @@
                   <tr>
                     <th scope="col">#</th>
 
-                    <th scope="col">Order ID</th>
+                    <th scope="col">Name</th>
                     <th scope="col">Pincode</th>
                     <th scope="col">status</th>
                     <th scope="col">Date</th>
@@ -300,9 +307,11 @@
                   {{#each pendingOrders}}
                   <tr>
                     <th scope="row">{{increment @key}}</th>
-
-                    <td>{{orderId}}</td>
-                    
+{{#each products}}
+ {{#if @first}}
+    <td>{{this.name}}</td>
+ {{/if}}
+{{/each}}
                     <td>{{address.pincode}}</td>
                     <td>{{status}}</td>
 
@@ -321,13 +330,11 @@
                       {{/if}}
 
                       {{#if (eq status "returnDefective")}}
-                      <button type="button" class="btn btn-info" data-mdb-toggle=""
-                        data-mdb-target="#exampleModal2{{@key}}">Return Pending</button>
+                      <a href="" style="color:rgb(255, 123, 0); pointer-events: none;" disabled>Return pending</a>
                       {{/if}}
 
                       {{#if (eq status "returnNonDefective")}}
-                      <button type="button" class="btn btn-info" data-mdb-toggle=""
-                        data-mdb-target="#exampleModal2{{@key}}">Return Pending</button>
+                      <a href="" style="color:rgb(255, 123, 0); pointer-events: none;" disabled>Return pending</a>
                       {{/if}}
 
 
@@ -343,7 +350,7 @@
                       <a href="" style="color:rgb(0, 189, 6); pointer-events: none;" disabled> Delivered</a>
                       {{/if}}
                       {{#if (eq status "returnPending")}}
-                      <a href="" style="color:rgb(255, 123, 0); pointer-events: none;" disabled>return pending</a>
+                      <a href="" style="color:rgb(255, 123, 0); pointer-events: none;" disabled>Return pending</a>
                       {{/if}}
                       {{#if (eq status "cancelled")}}
                           <a href="" style="color:red; pointer-events: none;" disabled> Cancelled</a>

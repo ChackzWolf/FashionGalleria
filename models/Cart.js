@@ -21,10 +21,6 @@ const CartSchema = new mongoose.Schema({
             }
         }
     ],
-    wishlist:{
-        type: Boolean,
-        default:false,
-    },
 });
 const CartModel = mongoose.model("Cart",CartSchema);
 module.exports = CartModel;

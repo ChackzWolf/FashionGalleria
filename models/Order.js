@@ -21,7 +21,7 @@ const OrderSchema = mongoose.Schema({
         city:{
             type:String,
             required:true
-        },
+        }, 
         state:{
             type:String,
             required:true
@@ -57,9 +57,16 @@ const OrderSchema = mongoose.Schema({
         },
         count:{
             type:Number,
-            required:true,
+            required:true, 
         },
+        productStatus:{
+            type:String,
+        }
     }],
+    couponCode:{
+        type:String,
+       
+    },
     amount:{
         type:Number,
         required:true,
@@ -72,7 +79,6 @@ const OrderSchema = mongoose.Schema({
         type:String,
         required:true
     }
-    
 })
 
 const OrderModel = mongoose.model("Order",OrderSchema);
