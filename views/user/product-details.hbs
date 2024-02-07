@@ -322,7 +322,13 @@
                             <i class="fa fa-star"></i>
                             <span>( 138 reviews )</span>
                         </div>
-                        <div class="product__details__price">₹ {{singleProduct.price}}<span>$ 83.0</span></div>
+
+                        {{#if (gt singleProduct.offerPrice 0)}}
+                            <div class="product__details__price">₹ {{singleProduct.offerPrice}}<span>{{singleProduct.price}}</span></div>
+                        {{else}}
+                            <div class="product__details__price">₹ {{singleProduct.price}}</div>
+                        {{/if}}
+
                         <div class="product__details__button">
                             <div class="quantity">
                                 <span>Quantity:</span>
@@ -377,21 +383,21 @@
                     </div>
                 </div>
 
-                
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
-        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">Please select a size</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal" id="closeModalBtn">Close</button>
-      </div>
-    </div>
-  </div>
-</div> 
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">Please select a size</div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal" id="closeModalBtn">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+
                 <div class="col-lg-12">
                     <div class="product__details__tab">
                         <ul class="nav nav-tabs" role="tablist">
@@ -403,6 +409,7 @@
                             </li>
                         </ul>
                         <div class="tab-content">
+                            
                             <div class="tab-pane active" id="tabs-1" role="tabpanel">
                                 <h6>Description</h6>
                                 <p>{{singleProduct.description}}</p>
@@ -421,6 +428,7 @@
                                     nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
                                 quis, sem.</p>
                             </div>
+
                         </div>
                     </div>
                 </div>

@@ -47,6 +47,7 @@ const addProductView = async(req,res)=>{
   res.render("admin/add-product",{category,subCategory})
 }
 
+
 const editProductView = async(req,res) =>{
   const products = await ProductModel.find({deleteStatus:false}).populate('category');
   const category = await CategoryModel.find()
@@ -151,13 +152,8 @@ const orderShipped = async(req,res)=>{
 
 
 const categoryListView = async(req,res)=>{
-    const categories = await CategoryModel.distinct('category');
-
-    
-    console.log(categories)
-    const subCategory = await CategoryModel.distinct('subCategory');
-    console.log(subCategory);
-    res.render("admin/category-list",{categories,subCategory});
+    const categories = await CategoryModel.find();
+    res.render("admin/category-list",{categories});
 }
 
 
@@ -354,8 +350,68 @@ const deleteCoupon = async(req,res)=>{
     }
 
 }
-// const walletUpdate = await UserModel.updateOne({ _id: orderDetails.userId }, { $inc: { wallet: orderDetails.amount } });
+const editCategoryView = async(req,res)=>{
+  console.log(req.query.id,'iddd');
+  const editCategory = await CategoryModel.findOne({_id:req.query.id});
+  console.log(editCategory);
+  res.render("admin/edit-category-details",{editCategory})
+}
 
+// const walletUpdate = await UserModel.updateOne({ _id: orderDetails.userId }, { $inc: { wallet: orderDetails.amount } });
+const editCategory = async(req,res)=>{
+  const {id,name,offer} = req.body;
+  let offerNum = parseFloat(offer);
+  const updateData = {
+      name:name,
+      listStatus:true,
+      offer:offerNum
+  }
+
+  
+
+//  const test = await ProductModel.findOne({category:name});
+//  const test2 = await CategoryModel.findOne({_id:id});
+
+//  console.log(typeof offerNum)
+//  console.log(typeof test.price)
+//  console.log(typeof test.offerPrice);
+
+  console.log(updateData)
+  
+  const updateCategory = await CategoryModel.updateOne({_id:id},{$set:{updateData}})
+  const update = await CategoryModel.updateOne({_id:id},{$set:{offer:offerNum}});
+  // console.log(typeof test2.offer);
+  const productsUpdate = await ProductModel.updateMany(
+    { category: name },
+    [
+       {
+         $set: {
+           offerPrice: {
+             $toInt: {
+               $subtract: ["$price", { $multiply: ["$price", { $divide: [offerNum,  100] }] }]
+             }
+           }
+         }
+       }
+    ]
+  );
+   
+
+  console.log(update)
+  if(updateCategory){
+        if(offer==0){
+          console.log('was 0')
+          const backtoback =await ProductModel.updateMany({category:name},{$set:{offerPrice:0}});
+          console.log(backtoback,'000')
+        
+        }
+      console.log('updated')
+      let success = true
+      res.redirect(`/admin/category-list?success=${success}`)
+  }else{
+      console.log('failed');  
+  }
+}
 
  module.exports = {
    loginView,
@@ -387,5 +443,7 @@ const deleteCoupon = async(req,res)=>{
    returnAccept,
    editCouponDetails,
    editCoupon,
-   deleteCoupon
+   deleteCoupon,
+   editCategoryView,
+   editCategory
 }  

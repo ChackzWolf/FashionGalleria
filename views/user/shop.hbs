@@ -289,8 +289,9 @@
                             <div class=" col-lg-4 col-md-6  product__item mix {{category}}">
                                 <div class="product__item__pic set-bg" >
                                     <a href="/product-details?id={{this.id}}" > <img src="uploaded-images/{{imageUrl.[1]}}" alt="" href="/product-details?id={{this.id}}"></a>
-                                    <div class="label new">New</div>
-                              
+                                    {{#if (gt offerPrice 0)}}
+                                    <div class="label new">On sale</div>
+                                    {{/if}}
                                     <ul class="product__hover">
                                         <li><a href="img/shop/shop-1.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
                                         <li><a href="#"><span class="icon_heart_alt fas fa-heart"></span></a></li>
@@ -300,14 +301,24 @@
                                 </div>
                                 <div class="product__item__text">
                                     <h6>{{name}}</h6>
+                                    
                                     <div class="rating">
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
+                                      
                                     </div>
-                                    <div class="product__price">₹ {{price}}</div>
+                                    <div>
+                                    
+                                    {{#if (gt offerPrice 0)}}
+                                        <div class="product__price"><del style="font-size: small;"><small>₹{{price}}</small></del>  ₹ {{offerPrice}}</div>
+                                    {{else}}
+                                        <div class="product__price">₹ {{price}}</div>
+                                    {{/if}}
+
+                                    </div>
                                 </div>
                             </div>
                             </a>

@@ -7,7 +7,8 @@ const router = express.Router();
 
 
 
-//------------------------------------Get methods------------------------------------------
+//------------------------------------Get methods------------------------------------------//
+
 
 router.get("/",adminLoginChecker,adminControllers.dashboardView);
 router.get("/login",adminLoginVarify,adminControllers.loginView);
@@ -26,6 +27,7 @@ router.get("/deleted-products",adminLoginChecker,adminControllers.deletedProduct
 //category management
 router.get("/add-category",adminLoginChecker,adminControllers.addCategory);
 router.get("/category-list",adminLoginChecker,adminControllers.categoryListView);
+router.get("/edit-category",adminControllers.editCategoryView);
 router.get("/list-unlist-category",adminLoginChecker,productControllers.listUnlistCategory);
 
 //order management
@@ -50,15 +52,12 @@ router.get("/return-non-defective",adminControllers.returnNonDefective);
 router.get("order-cancelled",adminControllers.orderCancel);
 router.get("/return-accept",adminControllers.returnAccept);
 
-
-
-
-//---------------------------------------post methods-----------------------------------------
+//post methods-----------------------------------------
 router.post("/loginAdmin",adminControllers.loginAdmin);
 router.post("/addProduct",upload.array('image',3),productControllers.addProduct)
-// router.post("/editProduct",adminControllers.editProduct)
 router.post("/edited-productDetails",upload.array('image',3),productControllers.editedProductDetails)
 router.post("/addCategory",productControllers.addCategory)
+router.post("/editCategory",adminControllers.editCategory)
 router.post("/addNewCoupon",adminControllers.addNewCoupon)
 router.post("/edit-coupon",adminControllers.editCoupon)
 

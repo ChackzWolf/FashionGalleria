@@ -502,7 +502,7 @@
                 <div class="row mb-3">
                   <label for="inputNumber" class="col-sm-2 col-form-label">Price</label>
                   <div class="col-sm-10">
-                    <input type="number" name="price" value="{{editProduct.price}}" class="form-control">
+                    <input type="number" name="price" min="0" value="{{editProduct.price}}" min="0" class="form-control">
                   </div>
                 </div>
 
@@ -566,7 +566,7 @@
                         <label class="form-check-label" for="sizeLarge">
                           Large
                         </label>
-                        <input type="number" name="stockLarge" id="stockLarge"
+                        <input type="number" min="0" name="stockLarge" id="stockLarge"
                           value="{{editProduct.sizeStock.sizeLarge.stock}}" class="form-control"
                           placeholder="Stock Amount : {{editProduct.sizeStock.sizeLarge.stock}}">
                       </div>
@@ -574,12 +574,12 @@
                       {{#if (gt editProduct.sizeStock.sizeMedium.stock -1)}}
 
                       <div class="form-check mb-3">
-                        <input class="form-check-input" name="sizeMedium" type="checkbox" value="Medium" id="sizeMedium"
+                        <input class="form-check-input" name="sizeMedium"  type="checkbox" value="Medium" id="sizeMedium"
                           checked>
                         <label class="form-check-label" for="sizeMedium">
                           Medium
                         </label>
-                        <input type="number" name="stockMedium" id="stockMedium"
+                        <input type="number" name="stockMedium" min="0" id="stockMedium"
                           value="{{editProduct.sizeStock.sizeMedium.stock}}" class="form-control"
                           placeholder="Stock Amount Medium : {{editProduct.sizeStock.sizeMedium.stock}}">
                       </div>
@@ -587,13 +587,13 @@
                       {{#if (gt editProduct.sizeStock.sizeSmall.stock -1)}}
 
                       <div class="form-check">
-                        <input class="form-check-input" name="sizeSmall" type="checkbox" value="Small" id="sizeSmall"
+                        <input class="form-check-input" v name="sizeSmall" type="checkbox" value="Small" id="sizeSmall"
                           checked>
 
                         <label class="form-check-label" for="sizeSmall">
                           Small
                         </label>
-                        <input type="number" name="stockSmall" id="stockSmall"
+                        <input type="number" min="0" name="stockSmall" id="stockSmall"
                           value="{{editProduct.sizeStock.sizeSmall.stock}}" class="form-control"
                           placeholder="Stock Amount Small : {{editProduct.sizeStock.sizeSmall.stock}}">
                       </div>
@@ -760,7 +760,6 @@
       }
     }
 </script>
-
 <script>
 // to prevent user to enter '-' or numbers below 0 
 window.onload = function() {

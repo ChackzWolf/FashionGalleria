@@ -3,10 +3,6 @@ const Schema = mongoose.Schema;  // Import Schema for better readability
 const CategoryModel =require("../models/Category");
 
 
-
-
-
-
 const ProductSchema = new mongoose.Schema({
     name:{
         type: String,
@@ -15,6 +11,10 @@ const ProductSchema = new mongoose.Schema({
     price:{
         type: Number,
         required: true
+    },
+    offerPrice:{
+        type: Number,
+        default:0
     },
     sizeStock:{
         sizeLarge:{

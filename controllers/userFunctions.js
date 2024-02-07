@@ -7,57 +7,119 @@ const AddressModel = require("../models/Address");
 const formatDate = require("../utils/dateGenerator");
 const UserModel = require("../models/User")
 
+
+
 const getTotalAmount = async (req,res)=>{
     try{
         console.log(req,'req')
         userId = req;
         console.log(userId,'userId')
-        const total = await CartModel.aggregate([
-            {
-                $match:{userId: userId}
-            },
-            {
-                $unwind:  '$cart'
-            },
-            {
-                $project:{
-                    product: {$toObjectId: '$cart.productId'},
-                    count: '$cart.count',
-                }
-            },
-            {
-                $lookup:{
-                    from:'products',
-                    localField: 'product',
-                    foreignField: '_id',
-                    as: 'product'
-                }
-            },
-            {
-                $unwind: '$product'
-            },
-            {
-                $project:{
-                    price:'$product.price',
-                    name: '$product.name',
-                    quantity: '$count'
-                }
-            },
-            {
-                $group: {
-                    _id: null,
-                    total: {$sum: {$multiply: ['$quantity','$price']}}
+        let productId;
+        let product;
+        const cartDocument = await CartModel.findOne({userId:userId});
+
+        console.log(cartDocument,'cart')
+
+        if(cartDocument.cart.length !==  0  ){
+            productId = cartDocument.cart[0].productId;
+            console.log(cartDocument,'cart')
+            product = await ProductModel.findOne({_id:productId});
+            console.log(product,'product');
+            if(product.offerPrice > 0){
+                console.log(product.offerPrice, 'offerPrice')
+                const total = await CartModel.aggregate([
+                    {
+                        $match:{userId: userId}
+                    },
+                    {
+                        $unwind:  '$cart'
+                    },
+                    {
+                        $project:{
+                            product: {$toObjectId: '$cart.productId'},
+                            count: '$cart.count',
+                        }
+                    },
+                    {
+                        $lookup:{
+                            from:'products',
+                            localField: 'product',
+                            foreignField: '_id',
+                            as: 'product'
+                        }
+                    },
+                    {
+                        $unwind: '$product'
+                    },
+                    {
+                        $project:{
+                            price:'$product.offerPrice',
+                            name: '$product.name',
+                            quantity: '$count'
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: {$sum: {$multiply: ['$quantity','$price']}}
+                        },
                     
+                    },
+                    {
+                        $unwind: '$total'
+                    }    
+                ])
+                console.log(typeof price)
+                console.log(total,"in function total")
+                return total
+            } 
+
+        } else {
+            const total = await CartModel.aggregate([
+                {
+                    $match:{userId: userId}
                 },
-            
-            },
-            {
-                $unwind: '$total'
-            }    
-        ])
-        console.log(typeof price)
-        console.log(total,"in function total")
-        return total
+                {
+                    $unwind:  '$cart'
+                },
+                {
+                    $project:{
+                        product: {$toObjectId: '$cart.productId'},
+                        count: '$cart.count',
+                    }
+                },
+                {
+                    $lookup:{
+                        from:'products',
+                        localField: 'product',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $unwind: '$product'
+                },
+                {
+                    $project:{
+                        price:'$product.price',
+                        name: '$product.name',
+                        quantity: '$count'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: {$sum: {$multiply: ['$quantity','$price']}}
+                    },
+                },
+                {
+                    $unwind: '$total'
+                }    
+            ])
+            console.log(typeof price)
+            console.log(total,"in function total")
+            return total
+        }
     }
     catch(err){
         console.log(req,userId)
@@ -69,36 +131,36 @@ const getTotalAmount = async (req,res)=>{
 
 const getProducts = async(userId)=>{
   
-        const cartItems = await CartModel.aggregate([
+    const cartItems = await CartModel.aggregate([
+        {
+            $match: {userId: userId}
+        },
+        {
+            $unwind: '$cart'
+        },
+        {
+            $project:
             {
-                $match: {userId: userId}
+                product: {$toObjectId:"$cart.productId"},
+                count: '$cart.count',
+                size: "$cart.size"
             },
+        },
+        {
+            $lookup:
             {
-                $unwind: '$cart'
-            },
-            {
-                $project:
-                {
-                    product: {$toObjectId:"$cart.productId"},
-                    count: '$cart.count',
-                    size: "$cart.size"
-                },
-            },
-            {
-                $lookup:
-                {
-                    from: "products",
-                    localField: "product",
-                    foreignField: "_id",
-                    as: 'product'
-                }
-            },
-            {          
-                $unwind: '$product'
+                from: "products",
+                localField: "product",
+                foreignField: "_id",
+                as: 'product'
             }
-        ])
-        console.log(cartItems)
-        return cartItems
+        },
+        {          
+            $unwind: '$product'
+        }
+    ])
+    console.log(cartItems)
+    return cartItems
 
 }
 
@@ -213,10 +275,7 @@ const changePaymentStatus = async (orderId) => {
         console.log(orderId);
         const updatedDetails = await OrderModel.updateOne({ orderId: orderId }, { $set: { paymentMethod: "Online" } });
         // const orderDetails = await OrderModel.findOne({ orderId: orderId });
-
-        console.log(updatedDetails, ";;;;;;;;;;;;;;;;;;;;;;;");
         if (updatedDetails) {
-            console.log("thenfiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
             return true;
         } else {
             return false;
@@ -239,6 +298,8 @@ const generateRandomReferenceId = () => {
 
     return referenceId;
 };
+
+
 const referenceIdApplyOffer = async(referenceId)=>{
     const findReference = await UserModel.findOne({referenceId:referenceId});
     const currentDate = new Date();
@@ -279,5 +340,6 @@ module.exports = {
     paymentVarification,
     changePaymentStatus,
     generateRandomReferenceId,
-    referenceIdApplyOffer
+    referenceIdApplyOffer,
+
 }

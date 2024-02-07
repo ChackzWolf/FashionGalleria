@@ -8,6 +8,9 @@ const CategorySchema = new mongoose.Schema({
     },listStatus:{
         type:Boolean,
         default:true,
+    },offer:{
+        type:Number,
+        default:0
     }
 })
  

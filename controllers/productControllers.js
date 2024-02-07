@@ -204,6 +204,8 @@ const editProductDetailsView = async(req,res)=>{
   res.render("admin/edit-product-details",{editProduct});
 }
 
+ 
+
 const deleteProduct = async(req,res)=>{
   const productID = req.params.id
   const product = await ProductModel.findById({_id:productID})

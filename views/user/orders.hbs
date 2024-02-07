@@ -305,13 +305,10 @@
                 </thead>
                 <tbody>
                   {{#each pendingOrders}}
+                  {{#each products}}
                   <tr>
                     <th scope="row">{{increment @key}}</th>
-{{#each products}}
- {{#if @first}}
-    <td>{{this.name}}</td>
- {{/if}}
-{{/each}}
+                    <td>{{this.name}}</td>
                     <td>{{address.pincode}}</td>
                     <td>{{status}}</td>
 
@@ -423,6 +420,7 @@
                       </div>
                     </div>
                   </div>
+                  {{/each}}
                   {{/each}}
                 </tbody>
               </table>

@@ -357,7 +357,7 @@ const cartView = async(req,res) =>{
         const stockLimit = req.query.stockLimit;
         const userId = req.session.user._id;
         const cartItems = await userFunc.getProducts(userId);
-
+        // let total = await userFunc.getTotalAmount2(userId);   
         let total = await userFunc.getTotalAmount(userId);       
         total = total[0]?total[0].total:0;
 
@@ -380,16 +380,28 @@ const  addToCart = async(req,res)=>{
         console.log('11')
         let size = req.query.size;
         console.log('22')
+
         if(size == undefined){
             console.log("size was undefined")
             size = 'sizeMedium'
         }
         
+        const product = await ProductModel.findOne({_id:productId});
+        console.log(product)
+        if(product.offerPrice > 0){
+            var price = product.offerPrice
+        }else{
+            var price = product.price
+        }
+        console.log(price,"price")
         const data = {
             productId:productId,
             count:1,
-            size:size
+            size:size,
+            price:price
         };
+        console.log('cart data', data)
+        
 
         console.log(size)
         console.log(data);
@@ -408,7 +420,7 @@ const  addToCart = async(req,res)=>{
                 for(const item of cart.cart){///changed cart to cart.cart
                     if(item.productId === productId && item.size === size){
                         console.log("Match is found.")
-                        count = item.count
+                        count = item.count;
                         break; //breaking once the match is found
                     }
                 }
@@ -725,7 +737,8 @@ const orderResponseView =  (req,res)=>{
 
 const ordersView =  async(req,res) =>{
     try{
-    const pendingOrders = await OrderModel.find().sort({$natural: -1});
+    const userId = req.session.user._id
+    const pendingOrders = await OrderModel.find({userId:userId}).sort({$natural: -1});
     console.log(pendingOrders,'pendingOrderssssssssssssssss');
     res.render('user/orders',{pendingOrders});
 } catch (error) {
@@ -913,8 +926,6 @@ const addNewAddress = async(req,res)=>{
 }
 
 
-
-
 const addNewAddressCheckout = async(req,res)=>{
     try{
         const details = req.body;
@@ -957,8 +968,6 @@ const addNewAddressCheckout = async(req,res)=>{
 }
 
 
-
-
 const editProfile = async(req,res)=>{
     try{
     const userId = req.session.user._id;
@@ -989,7 +998,6 @@ const editProfile = async(req,res)=>{
 }
 
 
-
 const changePassword = async (req, res) => { // changing existing password from user's profile
 
     try {
@@ -1014,23 +1022,23 @@ const changePassword = async (req, res) => { // changing existing password from 
         const updated = await UserModel.updateOne({ _id: userId }, { $set: { password: newPassword } })
         if (updated) {
             console.log('passsword updated,')
-          msgNewPass = true
+            msgNewPass = true
   
-          res.render("user/user-profile", { msgNewPass, userDetails })
+            res.render("user/user-profile", { msgNewPass, userDetails })
         } else {
   
-          errNewPass = true
-          res.render("user/user-profile", { errNewPass, userDetails })
+            errNewPass = true
+            res.render("user/user-profile", { errNewPass, userDetails })
         }
       } else {
-        errMatchPass = true
-        res.render("user/user-profile", { errMatchPass, userDetails })
+            errMatchPass = true
+            res.render("user/user-profile", { errMatchPass, userDetails })
       }
     } catch (error) {
-      errOccurred = true
-      res.render("user/user-profile", { errOccurred, userDetails })
+        errOccurred = true
+        res.render("user/user-profile", { errOccurred, userDetails })
     }
-  }
+}
 
 const createNewPasswrod = async(req,res)=>{ // for forgot password
     const currentPassword = req.body.password
@@ -1050,108 +1058,58 @@ const createNewPasswrod = async(req,res)=>{ // for forgot password
     }
 }
 
-    // const changeProductQuantity = async(req,res)=>{
-    //     // try{
-    //         console.log('change product function')
-    //         let{cart,product,size,count,quantity}= req.body;
-    //         count = parseInt(count);
-    //         quantity = parseInt(quantity);
-    //         const requestedSize = size;
-    //         let response;
+const changeProductQuantity = async (req, res) => {
+    try {
+        console.log('change product function');
+        let { cart, product, size, count, quantity } = req.body;
+        count = parseInt(count);
+        quantity = parseInt(quantity);
+        const requestedSize = size;
+        let response;
 
-    //         if(count === -1 && quantity ===1){
-    //             console.log("quantity below 1");
-    //             response = {removeProduct:true};
-    //             const removeProduct = await CartModel.updateOne({_id:cart},{$pull:{"cart":{productId:product,size:size}}});
-    //             if(removeProduct){
-    //                 console.log("product removed");
-    //                 response = {removeProduct:true}
-    //                 res.json(response);
-    //             }else{
-    //                 console.log('request...');
-    //                 response = {removeProduct:false}
-    //             }
-    //         }else{
+        if (count === -1 && quantity === 1) {
+            console.log("quantity below 1");
+            const removeProduct = await CartModel.updateOne({_id: cart}, {$pull: {"cart": {productId: product, size: size}}});
 
-    //             const productDetails = await ProductModel.findOne({_id:product})
-    //             if(productDetails.sizeStock[requestedSize].stock >= quantity + count){
-                    
-    //                 const updated = await CartModel.updateOne({_id:cart, 'cart.productId':product, 'cart.size':requestedSize},{$inc:{'cart.$.count':count}})
-    //                 console.log('count added')
-    //                 if(updated){
-    //                     const userId = req.session.user._id;
-    //                     let total = await getTotalAmount(userId)
-    //                     response = {status:true,total};
-    //                     console.log('if updated',total)
-    //                 }else{
-    //                     console.log("not updated")
-    //                     response = {status:false};
-    //                 }
-    //             }else{
-    //                 console.log('reached stock limit')
-    //                 response = {stockLimit:true};
-                  
-    //             }
-    //         }
-    //         console.log(response);
-    //         res.json(response)
+            if (removeProduct) {
+                console.log("product removed");
+                response = {removeProduct: true};
+            } else {
+                console.log('request...');
+                response = {removeProduct: false};
+            }
+        } else {
+            const productDetails = await ProductModel.findOne({_id: product});
 
+            if (productDetails.sizeStock[requestedSize].stock >= quantity + count) {
+                const updated = await CartModel.updateOne({_id: cart, 'cart.productId': product, 'cart.size': requestedSize}, {$inc: {'cart.$.count': count}});
+                console.log('count added');
 
-    //     // }
-    // }
-    const changeProductQuantity = async (req, res) => {
-        try {
-            console.log('change product function');
-            let { cart, product, size, count, quantity } = req.body;
-            count = parseInt(count);
-            quantity = parseInt(quantity);
-            const requestedSize = size;
-            let response;
-    
-            if (count === -1 && quantity === 1) {
-                console.log("quantity below 1");
-                const removeProduct = await CartModel.updateOne({_id: cart}, {$pull: {"cart": {productId: product, size: size}}});
-    
-                if (removeProduct) {
-                    console.log("product removed");
-                    response = {removeProduct: true};
+                if (updated) {
+                    const userId = req.session.user._id;
+                    console.log('type of ')
+                    console.log(typeof price);
+                    console.log(typeof quantity);
+                    let total = await userFunc.getTotalAmount(userId);
+                    response = {status: true, total};
+                    console.log('if updated', total);
                 } else {
-                    console.log('request...');
-                    response = {removeProduct: false};
+                    console.log("not updated");
+                    response = {status: false};
                 }
             } else {
-                const productDetails = await ProductModel.findOne({_id: product});
-    
-                if (productDetails.sizeStock[requestedSize].stock >= quantity + count) {
-                    const updated = await CartModel.updateOne({_id: cart, 'cart.productId': product, 'cart.size': requestedSize}, {$inc: {'cart.$.count': count}});
-                    console.log('count added');
-    
-                    if (updated) {
-                        const userId = req.session.user._id;
-                        console.log('type of ')
-                        console.log(typeof price);
-                        console.log(typeof quantity);
-                        let total = await userFunc.getTotalAmount(userId);
-                        response = {status: true, total};
-                        console.log('if updated', total);
-                    } else {
-                        console.log("not updated");
-                        response = {status: false};
-                    }
-                } else {
-                    console.log('reached stock limit');
-                    response = {stockLimit: true};
-                }
+                console.log('reached stock limit');
+                response = {stockLimit: true};
             }
-    
-            console.log(response);
-            res.json(response);
-        } catch (error) {
-            console.error("Error in changeProductQuantity:", error);
-            res.status(500).json({error: "Internal Server Error"});
         }
-    };
 
+        console.log(response);
+        res.json(response);
+    } catch (error) {
+        console.error("Error in changeProductQuantity:", error);
+        res.status(500).json({error: "Internal Server Error"});
+    }
+};
 
 
 

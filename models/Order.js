@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const OrderSchema = mongoose.Schema({
     userId:{
         type:String,
@@ -79,7 +80,7 @@ const OrderSchema = mongoose.Schema({
         type:String,
         required:true
     }
-})
+});
 
 const OrderModel = mongoose.model("Order",OrderSchema);
 module.exports = OrderModel
