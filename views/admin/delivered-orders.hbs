@@ -486,13 +486,14 @@
                 </thead>
                 <tbody>
                   {{#each deliveredOrders}}
+                  {{#each products}}
                   <tr>
                     <th scope="row"> {{increment @key}}</th>
-                    <td>{{orderId}}</td>
-                    <td>{{address.pincode}}</td>
-                    <td>{{date}}</td>
-                    <td>{{amount}}</td>
-                    <td> <a href="/admin/order-detail-view?id={{this._id}}">Order Details</a> </td>
+                    <td>{{../orderId}}</td>
+                    <td>{{../address.pincode}}</td>
+                    <td>{{../date}}</td>
+                    <td>{{price}}</td>
+                    <td> <a href="/admin/order-detail-view?id={{../_id}}">Order Details</a> </td>
 
 
                   </tr>
@@ -516,6 +517,7 @@
                       </div>
                     </div>
                   </div>
+                  {{/each}}
                   {{/each}}
                 </tbody>
               </table>

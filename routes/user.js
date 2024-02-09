@@ -18,17 +18,21 @@ router.get("/contact",userControllers.contactView);
 router.get("/otp",userControllers.otpView);
 // router.get("/otp",otpSend,userControllers.otpView);
 router.get("/cart",userLoginVarify,userControllers.cartView);
+
 router.get("/addToCart",userLoginVarify,userControllers.addToCart);
+
 router.get("/checkout",userLoginVarify,userControllers.checkout);
 router.get("/delete-cart-item",userLoginVarify,userControllers.deleteCartItem);
 router.get("/user-profile",userLoginVarify,userControllers.userProfile);
 router.get("/remove-new-address-user",userLoginVarify,userControllers.removeAddress);
 router.get("/remove-new-address-checkout",userLoginVarify,userControllers.removeAddressCheckout);
 router.get("/default-address",userLoginVarify,userControllers.defaultAddress);
+
 router.get("/order-response",userControllers.orderResponseView);
 router.get("/orders",userLoginVarify,userControllers.ordersView);
 router.get("/order-detail-view",userControllers.orderDetailView);
 router.get("/cancel-user-order",userControllers.cancelUserOrder);
+router.get("/return-user-order",userControllers.returnUserOrder)
 router.get('/email-verify',userControllers.emailVerify);
 router.get("/otp-pass",otpSend,userControllers.otpViewPass);
 router.get("/transaction-order-details-view",userControllers.transactionOrderDetailView);

@@ -8,26 +8,41 @@ const formatDate = require("../utils/dateGenerator");
 const UserModel = require("../models/User")
 
 
+function calculatePercentageDifference(num1, num2) {
+    // Calculate the absolute difference between the two numbers
+    var absoluteDifference = Math.abs(num1 - num2);
+    
+    // Calculate the average of the two numbers
+    var average = (num1 + num2) / 2;
+    
+    // Calculate the percentage difference
+    var percentageDifference = (absoluteDifference / average) * 100;
+    
+    return percentageDifference.toFixed(2); // Round to 2 decimal places
+}
+
 
 const getTotalAmount = async (req,res)=>{
-    try{
+    // try{
+        console.log('_______________________________________________kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
         console.log(req,'req')
         userId = req;
         console.log(userId,'userId')
         let productId;
         let product;
         const cartDocument = await CartModel.findOne({userId:userId});
-
+        
         console.log(cartDocument,'cart')
 
-        if(cartDocument.cart.length !==  0  ){
+        if(cartDocument.cart.length !==  0  ){  // if cart is not empty
             productId = cartDocument.cart[0].productId;
             console.log(cartDocument,'cart')
             product = await ProductModel.findOne({_id:productId});
-            console.log(product,'product');
-            if(product.offerPrice > 0){
-                console.log(product.offerPrice, 'offerPrice')
-                const total = await CartModel.aggregate([
+            console.log(productId,'productId');
+
+            if(product.offerPrice > 0){         // if offer price is greater than zero (not zero);
+                    console.log(product.offerPrice, 'offerPrice')
+                    const total = await CartModel.aggregate([
                     {
                         $match:{userId: userId}
                     },
@@ -69,10 +84,55 @@ const getTotalAmount = async (req,res)=>{
                         $unwind: '$total'
                     }    
                 ])
+                // console.log(typeof price)
+                console.log(total,"in function total")
+                return total
+            }else{                                     // if cart is not empty and offer price is 0;
+                const total = await CartModel.aggregate([
+                    {
+                        $match:{userId: userId}
+                    },
+                    {
+                        $unwind:  '$cart'
+                    },
+                    {
+                        $project:{
+                            product: {$toObjectId: '$cart.productId'},
+                            count: '$cart.count',
+                        }
+                    },
+                    {
+                        $lookup:{
+                            from:'products',
+                            localField: 'product',
+                            foreignField: '_id',
+                            as: 'product'
+                        }
+                    },
+                    {
+                        $unwind: '$product'
+                    },
+                    {
+                        $project:{
+                            price:'$product.price',
+                            name: '$product.name',
+                            quantity: '$count'
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: {$sum: {$multiply: ['$quantity','$price']}}
+                        },
+                    },
+                    {
+                        $unwind: '$total'
+                    }    
+                ])
                 console.log(typeof price)
                 console.log(total,"in function total")
                 return total
-            } 
+            }
 
         } else {
             const total = await CartModel.aggregate([
@@ -120,13 +180,13 @@ const getTotalAmount = async (req,res)=>{
             console.log(total,"in function total")
             return total
         }
-    }
-    catch(err){
-        console.log(req,userId)
+    // }
+    // catch(err){
+    //     console.log(req,userId)
 
-        console.log('total amount error.')
-        res.status(500).render("user/error-handling");       
-    }
+    //     console.log('total amount error.')
+    //     res.status(500).render("user/error-handling");       
+    // }
 }
 
 const getProducts = async(userId)=>{
@@ -159,7 +219,7 @@ const getProducts = async(userId)=>{
             $unwind: '$product'
         }
     ])
-    console.log(cartItems)
+    console.log(cartItems,'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
     return cartItems
 
 }

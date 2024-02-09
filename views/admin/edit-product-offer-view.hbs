@@ -10,8 +10,8 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="/assets/img/favicon.png" rel="icon">
-  <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="/assetsAdmin/img/favicon.png" rel="icon">
+  <link href="/assetsAdmin/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -28,10 +28,8 @@
   <link href="/assetsAdmin/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="/assetsAdmin/vendor/simple-datatables/style.css" rel="stylesheet">
 
-  <!-- Template Main CSS File 6788y87 -->
+  <!-- Template Main CSS File -->
   <link href="/assetsAdmin/css/style.css" rel="stylesheet">
-  <!-- MDB -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet" />
 
   <!-- =======================================================
   * Template Name: NiceAdmin
@@ -43,6 +41,7 @@
 </head>
 
 <body>
+
 {{!-- {{> header}} --}}
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
@@ -441,87 +440,81 @@
 
 
 
+
+
+
+
+
   <main id="main" class="main">
-    <!-- Modal -->
-
-
-
 
     <div class="pagetitle">
-      <h1>Pending Orders</h1>
+      <h1>Form Elements</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Admin</a></li>
-          <li class="breadcrumb-item">Pending Orders</li>
+          <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+          <li class="breadcrumb-item">Offer</li>
+          <li class="breadcrumb-item active">Add product offer</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
 
+
     <section class="section">
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-9">
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Users</h5>
+              <h5 class="card-title">Add product offer
+              </h5>
+              {{#if errMsg}}
+              <p class="text-center text-danger small">Offer not added .Please Try again</p>
+              {{/if}}
 
-              <!-- Table with stripped rows -->
-              <table class="table datatable">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Order ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Status</th>
+              {{#if empty}}
+                <p class="text-center text-danger small">Offer feild should contain a valid value</p>
+              {{/if}}
+              <!-- General Form Elements -->
+                    <form action="/admin/add-product-offer" method="post">
 
-                  </tr>
-                </thead>
-                <tbody>
-                  {{#each returnAcceptNonDef}}
-                  <tr>
-                    <th scope="row"> {{@key}}</th>
-                    <td>{{orderId}}</td>
-                    <td>{{name}}</td>
-                    <td>{{zip}}</td>
-                    <td>{{date}}</td>
-
-                    <td>{{amount}}</td>
-                    <td>Non Defective</td>
-
-                  </tr>
-                  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
-                          <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                        <div class="card mb-3" style="max-width: 540px;">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                  <img class="card-img" src="/uploaded-images/{{singleProduct.imageUrl.[0]}}" alt="" id="previewImage1" style="max-width: 150px; max-height:215px;"><br>
+                                </div>
+                                <div class="col-md-8">
+                                  <div class="card-body">
+                                    <h5 class="card-title">{{singleProduct.name}}</h5>
+                                    <p class="card-text">{{singleProduct.description}}</p>
+                                    <p class="card-text">Price: {{singleProduct.price}}</p>
+                                  </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal-body">Are you sure?</div>
-                        <div class="modal-footer">
-
-                          <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-
-                          <a href="/admin/order-cancelled?id={{this._id}}"><button type="button"
-                              class="btn btn-danger">Cancel order</button></a>
-
+                        <input type="hidden" name="id" value="{{singleProduct._id}}" class="form-control">
+                        <div class="row mb-4">
+                            <label for="inputNumber" class="col-sm-2 col-form-label">Offer</label>
+                            <div class="col-sm-7">
+                                <input type="number" placeholder="Offer percentage %" value="{{percentage}}" name="offerPercentage" min="0"  min="0" class="form-control">
+                            </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  {{/each}}
-                </tbody>
-              </table>
-              <!-- End Table with stripped rows -->
 
-              <!-- Button trigger modal -->
 
+                        <div class="row mb-3">
+                          <label class="col-sm-2 col-form-label"></label>
+                          <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">Submit Form</button>
+                          </div>
+                        </div>
+
+                    </form><!-- End General Form Elements -->
+                </div>
             </div>
           </div>
 
         </div>
+
+
       </div>
     </section>
 
@@ -529,11 +522,34 @@
 
 
 
-
-
-
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
       class="bi bi-arrow-up-short"></i></a>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <script>
+    
+  const urlParams = new URLSearchParams(window.location.search);
+  const success = urlParams.get('success');
+  
+  if (success === 'true') {
+    Swal.fire(
+      'Success',
+      'Product had been updated successfuly',
+      'success'
+    )
+  } if(failed ==="true"){
+    Swal.fire(
+      'Oops!',
+      'Could not add your product.',
+      'error'
+    )
+  }
+  
+  </script>
+
+
 
 
 
@@ -550,8 +566,65 @@
   <!-- Template Main JS File -->
   <script src="/assetsAdmin/js/main.js"></script>
 
-  <!-- MDB -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>
+  <script>
+    function displayFileName(imageId, input) {
+        const labelId = imageId + 'Label';
+        document.getElementById(labelId).textContent = input.files[0].name;
+    }
+
+    function clearImage(imageId) {
+        const labelId = imageId + 'Label';
+        const input = document.getElementById(imageId);
+        input.value = '';
+        document.getElementById(labelId).textContent = '';
+    }
+  </script>
+
+
+
+
+
+<script>
+  // to display image after selected
+    function displaySelectedImage(input, imgId) {
+      const preview = document.getElementById(imgId);
+      const label = document.getElementById(`${input.id}Label`);
+
+      const file = input.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+          label.innerHTML = ''; // Clear the label content
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        // Handle the case when no file is selected
+        preview.src = ''; // Clear the preview
+        label.innerHTML = 'No image selected'; // Provide a message in the label
+      }
+    }
+</script>
+<script>
+// to prevent user to enter '-' or numbers below 0 
+window.onload = function() {
+  var inputs = document.querySelectorAll('input[name="price"], input[name="stockMedium"], input[name="stockSmall"], input[name="stockLarge"]');
+  inputs.forEach(function(input) {
+      input.addEventListener('keypress', function (evt) {
+          var charCode = (evt.which) ? evt.which : evt.keyCode;
+          if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+              evt.preventDefault();
+          } else if (this.value.length === 0 && charCode == 45) { // prevent "-" at the start
+              evt.preventDefault();
+          }
+      });
+  });
+};
+
+</script>
 
 </body>
 

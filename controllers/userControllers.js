@@ -357,7 +357,8 @@ const cartView = async(req,res) =>{
         const stockLimit = req.query.stockLimit;
         const userId = req.session.user._id;
         const cartItems = await userFunc.getProducts(userId);
-        // let total = await userFunc.getTotalAmount2(userId);   
+        console.log(userId,'userId')
+
         let total = await userFunc.getTotalAmount(userId);       
         total = total[0]?total[0].total:0;
 
@@ -601,13 +602,24 @@ const checkout = async(req,res)=>{
     console.log("---------------------1111111111111111111---------------------",address)
     console.log(cartItems)
     
-    const products = cartItems.map(cartItems =>({
-        productId: cartItems.product._id,
-        name:cartItems.product.name,
-        price: cartItems.product.price,
-        count:cartItems.count,
-        size: cartItems.size
+    // const products = cartItems.map(cartItems =>({
+    //     productId: cartItems.product._id,
+    //     name:cartItems.product.name,//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //     price: cartItems.product.price,//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //     count:cartItems.count,
+    //     size: cartItems.size,
+    //     status:'pending'
+    // }));
+
+    const products = cartItems.map(({ product, count, size }) => ({
+        productId: product._id,
+        name: product.name,
+        price: product.price,
+        count: count,
+        size: size,
+        status: 'pending'
     }));
+    
     console.log("==========",products)
     const data = {
         "userId":userId,
@@ -749,65 +761,75 @@ const ordersView =  async(req,res) =>{
 
 const cancelUserOrder = async(req,res)=>{
     try{
-    const orderId = req.query.id;
-    const orderDetails = await OrderModel.findById({_id: orderId});
-    const userId = req.session.user._id
-    const currentDate = new Date();
-    const formattedDate = formatDate(currentDate);
-    console.log(orderDetails, 'orderDetialssssssssss');
-    if(orderDetails.paymentMethod === 'Online'){
-        console.log('It was online----------------------------------------------------')
-        const amount = orderDetails.amount
+        const orderId = req.query.id; // this is Id of order doc
+        const productId = req.query.pro_Id;// this is the Id of produt Array in the Order
 
-        const transaction = {// This is for wallet transaction history.
-            transaction:'Credited',
-            amount:amount,
-            orderId:orderDetails.orderId,
-            date:formattedDate
-        }
+        console.log(orderId,'orderId');
+        console.log(productId,'productId');
+        const orderDetails = await OrderModel.findById({_id: orderId});
+        console.log(orderDetails,'order details');
+        const userId = req.session.user._id
+        const currentDate = new Date();
+        const formattedDate = formatDate(currentDate);
+        console.log(orderDetails, 'orderDetialssssssssss');
+        if(orderDetails.paymentMethod === 'Online'){
+            console.log('It was online----------------------------------------------------')
+            const amount = orderDetails.amount
 
+            const transaction = {// This is for wallet transaction history.
+                transaction:'Credited',
+                amount:amount,
+                orderId:orderDetails.orderId,
+                date:formattedDate
+            }
 
+            const userDetails = await UserModel.updateOne({_id:userId},{$inc:{wallet:amount}});  // Refunding money to the user's wallet.
 
-        const userDetails = await UserModel.updateOne({_id:userId},{$inc:{wallet:amount}});  // Refunding money to the user's wallet.
-
-        await UserModel.updateOne({_id:userId},{$push:{walletHistory:transaction}})//creating a transaction history of the wallet. Here I'm creating credit transaction history.
-        if(userDetails){
-            console.log('Money added to wallet.')
-        }else{
-            console.log('paisa poi')
-        }
-    }
-    
-    if(orderDetails.status == 'pending'){
-        for(let product of orderDetails.products){
-            console.log(product.productId,'productIDdddd')
-            const productDetails = await ProductModel.findById(product.productId);
-            console.log(productDetails, ' product detailssssssss')
-            if(productDetails && productDetails.sizeStock[product.size].stock >= product.count){
-                //increasing the stock count for the specific size in the product model
-
-                console.log('readched heree')
-                const updatedStock = productDetails.sizeStock[product.size].stock+product.count;
-                productDetails.sizeStock[product.size].stock = updatedStock;
-                // save the updated product model
-                await productDetails.save()
+            await UserModel.updateOne({_id:userId},{$push:{walletHistory:transaction}})//creating a transaction history of the wallet. Here I'm creating credit transaction history.
+            if(userDetails){
+                console.log('Money added to wallet.')
             }else{
-                console.log('Failed2222222222');
+                console.log('paisa poi')
             }
         }
-        // updateing the orderModel
-        const success = await OrderModel.updateOne({_id:orderId},{$set:{status:'cancelled'}});
-        if(success){
-            console.log('Order has been cancelled');
-            res.redirect("/orders");
-        }else{
-            console.log('failed to update orderModel.');
-            res.redirect('/orders');
-        }
-        
 
-    }           } catch (error) {
-        console.error("Error in changeProductQuantity:", error);
+        if(orderDetails.status == 'pending'){
+            for(let product of orderDetails.products){
+                console.log(product.productId,'productIDdddd')
+                const productDetails = await ProductModel.findById(product.productId);
+                console.log(productDetails, ' product detailssssssss')
+                if(productDetails && productDetails.sizeStock[product.size].stock >= product.count){
+                    //increasing the stock count for the specific size in the product model
+
+                    console.log('readched heree')
+                    const updatedStock = productDetails.sizeStock[product.size].stock+product.count;
+                    productDetails.sizeStock[product.size].stock = updatedStock;
+                    // save the updated product model
+                    await productDetails.save()
+                }else{
+                    console.log('Failed2222222222');
+                }
+            }
+            //updateing the orderModel
+            const success = await OrderModel.updateOne(
+                { _id: orderId, 'products._id': productId }, // Filter
+                { $set: { 'products.$.status': 'cancelled' } } // Update
+              );
+              console.log(success,'success')
+              console.log(orderDetails,'order details updated');
+            if(success){
+                console.log('Order has been cancelled');
+                res.redirect("/orders");
+            }else{
+                console.log('failed to update orderModel.');
+                res.redirect('/orders');
+            }
+        } else {
+            console.log('order was already cancelled.');
+            res.redirect("/orders");
+        }       
+    } catch (error) {
+        console.error("Error in canceling order:", error);
         res.status(500).json({error: "Internal Server Error"});
     }
 }
@@ -818,7 +840,7 @@ const orderDetailView = async(req,res)=>{
     const orderDetails = await OrderModel.findById({_id:orderId});
 
     if(!orderDetails){
-      return res.ststus(404).json({message:'Order not found.'});
+      return res.status(404).json({message:'Order not found.'});
     }
 
     const today = new Date();
@@ -1162,6 +1184,11 @@ const search = async (req,res)=>{
 const returnUserOrder = async(req,res)=>{
     console.log('start')
     const orderId = req.query.orderId;
+    const productId =req.query.pro_id;
+
+    console.log(orderId,"orderId")
+    console.log(productId,'productId');
+
     const returnType = req.query.returnType;
 
     console.log(orderId,'orderId');
@@ -1171,7 +1198,7 @@ const returnUserOrder = async(req,res)=>{
         const orderDetails = await OrderModel.findById({_id:orderId});
         console.log('step1')
         for(const product of orderDetails.products){
-            const productDetails = await ProductModel.findById(product.productId); 
+            const productDetails = await ProductModel.findById(productId); 
             console.log('step 2')
             if(productDetails && productDetails.sizeStock[product.size].stock >= product.count){
                 console.log('step 3')
@@ -1186,7 +1213,8 @@ const returnUserOrder = async(req,res)=>{
                 // I will handle insufficient stock scenario  here, eg. notify the user
             }
         }
-        const returnNonDefective = await OrderModel.updateOne({_id:orderId},{$set:{status:"returnNonDefective"}});
+        // const returnNonDefective = await OrderModel.updateOne({_id:orderId},{$set:{status:"returnNonDefective"}});
+        const returnNonDefective = await OrderModel.updateOne({_id:orderId,'products._id':productId},{ $set: { 'products.$.status': 'returnNonDefective' }});
         if(returnNonDefective){
             const orderDetails = await OrderModel.find() 
             res.render("user/orders",{returnSuccess:true,pendingOrders:orderDetails});
@@ -1194,7 +1222,8 @@ const returnUserOrder = async(req,res)=>{
             res.render("user/orders",{returnErr:true});
         }
     }else{
-        const returnDefective = await OrderModel.updateOne({_id:orderId},{$set:{status:"returnDefective"}})
+        // const returnDefective = await OrderModel.updateOne({_id:orderId},{$set:{status:"returnDefective"}})
+        const returnDefective = await OrderModel.updateOne({_id:orderId,'products._id':productId},{ $set: { 'products.$.status': 'returnDefective' }});
         if(returnDefective){
             const orderDetails = await OrderModel.find() 
             res.render("user/orders",{returnSuccess:true,pendingOrders:orderDetails});

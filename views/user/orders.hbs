@@ -19,13 +19,13 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-  <!-- MDB -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <!-- MDB -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet" />
 
   <!-- Css Styles -->
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
@@ -184,9 +184,8 @@
                 <div class="col-xl-6 col-lg-7">
                     <nav class="header__menu">
                         <ul>
-                            <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
-                            <li class="scroll-to-section"><a href="#men">Men's</a></li>
-                            <li class="scroll-to-section"><a href="#women">Women's</a></li>
+                            <li class="scroll-to-section"><a href="/" class="active">Home</a></li>
+
                              
 
                             
@@ -194,13 +193,12 @@
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
                                     <li><a href="/orders">View orders</a></li>
-                                    <li><a href="./shop-cart.html">Shop Cart</a></li>
-                                    <li><a href="./checkout.html">Checkout</a></li>
+                                    <li><a href="/cart">Shop Cart</a></li>
+                    
                                 
                                 </ul>
                             </li>
-                            <li><a href="/blog">Blog</a></li>
-                            <li><a href="/contact">Contact</a></li>
+
                         </ul>
                     </nav>
                 </div>
@@ -308,17 +306,17 @@
                   {{#each products}}
                   <tr>
                     <th scope="row">{{increment @key}}</th>
-                    <td>{{this.name}}</td>
-                    <td>{{address.pincode}}</td>
+                    <td>{{name}}</td>
+                    <td>{{../address.pincode}}</td>
                     <td>{{status}}</td>
 
-                    <td>{{date}}</td>
-                    <td>{{amount}}</td>
-                    <td>{{paymentMethod}}</td>
+                    <td>{{../date}}</td>
+                    <td>{{price}}</td>
+                    <td>{{../paymentMethod}}</td>
 
 
                     <td>
-                      <a href="/order-detail-view?id={{this._id}}"><button type="button" class="btn btn-primary">View Details</button></a>
+                      <a href="/order-detail-view?id={{../_id}}"><button type="button" class="btn btn-primary">View Details</button></a>
 
                       {{#if (eq status "pending")}}
 
@@ -413,7 +411,7 @@
 
                           <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
 
-                          <a href="/cancel-user-order?id={{this._id}}"><button type="button"
+                          <a href="/cancel-user-order?id={{../_id}}&&pro_Id={{this._id}}"><button type="button"
                               class="btn btn-danger">Cancel Order</button></a>
 
                         </div>

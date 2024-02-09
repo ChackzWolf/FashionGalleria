@@ -45,12 +45,12 @@ Admin
 </head>
 
 <body>
-
+{{!-- {{> header}} --}}
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="admin/index" class="logo d-flex align-items-center">
+      <a href="/admin" class="logo d-flex align-items-center">
         <img src="img/logo.png" alt="">
         <span class="d-none d-lg-block">Admin Galleria</span>
       </a>
@@ -60,8 +60,6 @@ Admin
 
 
     {{!-- <button onclick="loadAdminChart()">Load Admin Chart</button> --}}
-
-
     <div class="search-bar">
       <form class="search-form d-flex align-items-center" method="POST" action="#">
         <input type="text" name="query" placeholder="Search" title="Enter search keyword">
@@ -165,7 +163,7 @@ Admin
               You have 3 new messages
               <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
             </li>
-            <li>
+            <li> 
               <hr class="dropdown-divider">
             </li>
 
@@ -353,10 +351,10 @@ Admin
       </li><!-- End Forms Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>#Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link collapsed" data-bs-target="#forms-nav5" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="forms-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="forms-nav5" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
           <li>
             <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="/admin/add-coupon">
@@ -365,7 +363,7 @@ Admin
           </li>
           <li>
             <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/coupon-list">
-              <i class="bi bi-layout-text-window-reverse"></i><span>#Show All Coupon</span></i>
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show All Coupon</span></i>
             </a>
           </li>
         </ul>
@@ -431,8 +429,6 @@ Admin
 
 
 
-
-
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" href="/admin/userList">
           <i class="bi bi-layout-text-window-reverse"></i><span>User List</span></i>
@@ -440,13 +436,9 @@ Admin
 
       </li><!-- End Forms Nav -->
 
-
-
     </ul>
 
   </aside><!-- End Sidebar-->
-
-
 
 
 
@@ -508,24 +500,24 @@ Admin
 
 
                 <div class="row mb-3">
-                  <label for="inputPassword" class="col-sm-2 col-form-label">Description</label>
-                  <div class="col-sm-10">
-                    <textarea name="description" class="form-control" style="height: 100px"></textarea>
-                  </div>
+                    <label for="inputPassword" class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-10">
+                        <textarea name="description" class="form-control" style="height: 100px"></textarea>
+                    </div>
                 </div>
 
                 <fieldset class="row mb-3">
-                  <legend class="col-form-label col-sm-2 pt-0">Category</legend>
-                  <div class="col-sm-10">
-                    <div class="form-check">
-                        <select id="subCategoryDropdown" name="category" class="form-select" onchange="toggleTextInput()">
-                            <option value="0">Select category</option>
-                            {{#each category}}
-                                <option value="{{name}}">{{name}}</option>
-                            {{/each}}
-                        </select>
-                  </div>
-                  
+                    <legend class="col-form-label col-sm-2 pt-0">Category</legend>
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <select id="subCategoryDropdown" name="category" class="form-select" onchange="toggleTextInput()">
+                                <option value="0">Select category</option>
+                                {{#each category}}
+                                    <option value="{{name}}">{{name}}</option>
+                                {{/each}}
+                            </select>
+                        </div> 
+                    </div>
                 </fieldset>
 {{!-- 
                 <fieldset class="row mb-3">

@@ -7,8 +7,12 @@ const CategoryModel = require("../models/Category");
 
 
 const  addProduct = async (req,res) =>{
+
+
   console.log('started adding product')
     const {name,price,description,stockLarge,stockMedium,stockSmall} = req.body;
+
+
     const sizeStock = {
       sizeLarge: {
         large: "Large",

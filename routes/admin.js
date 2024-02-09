@@ -6,9 +6,8 @@ const { upload } = require('../utils/imageHandler')
 const router = express.Router();
 
 
-
+ /////////////////////////////////////////////////////////////////////////////////////////////
 //------------------------------------Get methods------------------------------------------//
-
 
 router.get("/",adminLoginChecker,adminControllers.dashboardView);
 router.get("/login",adminLoginVarify,adminControllers.loginView);
@@ -45,21 +44,39 @@ router.get("/list-unlist-coupon/:id",adminControllers.listUnlistCoupon);
 router.get("/edit-couponDetails",adminControllers.editCouponDetails)
 router.get("/delete-coupon/:id",adminControllers.deleteCoupon);
 
-//return product managment;
+//return product managment
 router.get("/return-pending",adminControllers.returnPending);
 router.get("/return-defective",adminControllers.returnDefective);
 router.get("/return-non-defective",adminControllers.returnNonDefective);
 router.get("order-cancelled",adminControllers.orderCancel);
 router.get("/return-accept",adminControllers.returnAccept);
 
-//post methods-----------------------------------------
+//offer management
+router.get("/product-offer",adminControllers.productOfferList);
+router.get("/add-product-offer",adminControllers.addPrdouctOfferView);
+router.get("/edit-product-offer",adminControllers.editProductOfferView);
+
+
+
+ /////////////////////////////////////////////////////////////////////////////////////////////
+//------------------------------------post methods-----------------------------------------//
+
 router.post("/loginAdmin",adminControllers.loginAdmin);
+
+//products
 router.post("/addProduct",upload.array('image',3),productControllers.addProduct)
 router.post("/edited-productDetails",upload.array('image',3),productControllers.editedProductDetails)
+
+//category
 router.post("/addCategory",productControllers.addCategory)
 router.post("/editCategory",adminControllers.editCategory)
+
+//coupon
 router.post("/addNewCoupon",adminControllers.addNewCoupon)
 router.post("/edit-coupon",adminControllers.editCoupon)
+
+//offer
+router.post("/add-product-offer",adminControllers.addProductOffer);
 
 
 module.exports = router

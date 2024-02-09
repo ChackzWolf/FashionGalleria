@@ -62,6 +62,9 @@ const OrderSchema = mongoose.Schema({
         },
         productStatus:{
             type:String,
+        },
+        status:{
+            type:String,
         }
     }],
     couponCode:{
@@ -75,10 +78,6 @@ const OrderSchema = mongoose.Schema({
     paymentMethod:{
         type:String,
         required:true,
-    },
-    status:{
-        type:String,
-        required:true
     }
 });
 

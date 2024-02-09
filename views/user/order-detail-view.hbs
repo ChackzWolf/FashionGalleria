@@ -26,7 +26,6 @@
   <!-- MDB -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet" />
 
-
   <!-- Css Styles -->
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
   <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
@@ -259,7 +258,7 @@
                         <p class="mb-2"><strong>Mobile:</strong> {{orderDetails.address.mobile}}</p>
                         <p class="mb-2"><strong>Payment: </strong>{{orderDetails.paymentMethod}}</p>
                   
-                         <p class="mb-2"><strong>Order status: </strong>{{orderDetails.status}}</p>
+                  
 
                       </div>
                     </div>
@@ -283,6 +282,7 @@
                     <th scope="col">Price</th>
                     <th scope="col">Count</th>
                     <th scope="col">Size</th>
+                    <th scope="col">Status</th>
 
                     <th scope="col">7 Day Return</th>
                   </tr>
@@ -305,21 +305,19 @@
                     {{#if (eq size "sizeLarge")}}
                     <td>Large</td>
                     {{/if}}
+                    <td>{{this.status}}</td>
 
-
-                    {{/each}}
+                    
                     <td>
-                      {{#if (eq orderDetails.status "delivered")}}
-                      {{#if orderReturn}}
-                      <button type="button" class="btn btn-warning" data-mdb-toggle="modal"
-                        data-mdb-target="#exampleModal2{{@key}}">Return</button>
-                      {{else}}
-                      <p>Return window closed</p>
-                      {{/if}}
+                        {{#if (eq this.status "delivered")}}
+                        
+                        <button type="button" class="btn btn-info" data-mdb-toggle="modal"
+                        data-mdb-target="#exampleModal2{{@key}}">Return order</button>
+                        {{/if}}
                     </td>
+                     
                   </tr>
-                  {{/if}}
-
+                 
                   <div class="modal fade" id="exampleModal2{{@key}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
@@ -348,13 +346,15 @@
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
                           <button type="button" class="btn btn-warning" name="order_id" id="order_id"
-                            onclick="returnOrder('{{this._id}}')">Return
-                            Order</button>
+                            onclick="returnOrder('{{this._id}}')">Return Order</button>
 
                         </div>
                       </div>
                     </div>
                   </div>
+                  {{/each}}
+
+
 
 
                 </tbody>
@@ -417,13 +417,13 @@
 
 
   <script>
-    function returnOrder(id) {
+    function returnOrder(id,orderId) {
       const selectedValue = document.getElementById('orderId').value;
       const returnType = document.querySelector('input[name="returnType"]:checked').value;
 
       const userId = document.getElementById('userId').value;
 
-      const returnUrl = `/return-user-order?id=${id}&orderId=${selectedValue}&userId=${userId}&returnType=${returnType}`;
+      const returnUrl = `/return-user-order?ordId=${orderId}&pro_id=${id}&orderId=${selectedValue}&userId=${userId}&returnType=${returnType}`;
 
       window.location.href = returnUrl;
     }

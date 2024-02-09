@@ -42,21 +42,21 @@
 
 <body>
 
+{{!-- {{> header}} --}}
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="admin/index" class="logo d-flex align-items-center">
+      <a href="/admin" class="logo d-flex align-items-center">
         <img src="img/logo.png" alt="">
-        <span class="d-none d-lg-block">Admin</span>
+        <span class="d-none d-lg-block">Admin Galleria</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
 
+
     {{!-- <button onclick="loadAdminChart()">Load Admin Chart</button> --}}
-
-
     <div class="search-bar">
       <form class="search-form d-flex align-items-center" method="POST" action="#">
         <input type="text" name="query" placeholder="Search" title="Enter search keyword">
@@ -160,7 +160,7 @@
               You have 3 new messages
               <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
             </li>
-            <li>
+            <li> 
               <hr class="dropdown-divider">
             </li>
 
@@ -261,7 +261,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="admin/adminLogout">
+              <a class="dropdown-item d-flex align-items-center" href="/admin/adminLogout">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
@@ -314,6 +314,7 @@
         </ul>
       </li><!-- End Forms Nav -->
 
+
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Category Management</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -347,10 +348,10 @@
       </li><!-- End Forms Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>#Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link collapsed" data-bs-target="#forms-nav5" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="forms-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="forms-nav5" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
           <li>
             <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="/admin/add-coupon">
@@ -359,7 +360,7 @@
           </li>
           <li>
             <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/coupon-list">
-              <i class="bi bi-layout-text-window-reverse"></i><span>#Show All Coupon</span></i>
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show All Coupon</span></i>
             </a>
           </li>
         </ul>
@@ -425,8 +426,6 @@
 
 
 
-
-
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" href="/admin/userList">
           <i class="bi bi-layout-text-window-reverse"></i><span>User List</span></i>
@@ -434,28 +433,9 @@
 
       </li><!-- End Forms Nav -->
 
-
-
     </ul>
 
   </aside><!-- End Sidebar-->
-
-
-
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#tables-nav" href="/admin/userList">
-          <i class="bi bi-layout-text-window-reverse"></i><span>User List</span></i>
-        </a>
-
-      </li><!-- End Forms Nav -->
-
-
-
-    </ul>
-
-  </aside><!-- End Sidebar-->
-
 
 
 
@@ -530,29 +510,17 @@
                   <legend class="col-form-label col-sm-2 pt-0">Category</legend>
 
                   <div class="col-sm-10">
-                    <legend class="col-form-label col-sm-2 pt-0 text-primary">{{editProduct.category}}</legend>
-                    <div class="form-check">
-
-                      <input class="form-check-input" type="radio" name="category" id="gridRadios1" value="mens">
-                      <label class="form-check-label" for="gridRadios1">
-                        Mens
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="category" id="gridRadios2" value="womens">
-                      <label class="form-check-label" for="gridRadios2">
-                        Womens
-                      </label>
-                    </div>
-                    {{!-- <div class="form-check disabled">
-                      <input class="form-check-input" type="radio" name="category" id="gridRadios" value="kids">
-                      <label class="form-check-label" for="gridRadios3">
-                        Kids
-                      </label>
-                    </div> --}}
-                  </div>
-                </fieldset>
-
+                   
+                  
+<div class="form-check">
+    <select id="subCategoryDropdown" name="category" class="form-select" onchange="toggleTextInput()">
+        <option value="0">Select category</option>
+        {{#each category}}
+            <option value="{{name}}">{{name}}</option>
+        {{/each}}
+    </select>
+</div> 
+             
                 <div class="container mt-4">
                   <fieldset class="row mb-5">
                     <legend class="col-form-label col-sm-2 pt-0">Sizes</legend>

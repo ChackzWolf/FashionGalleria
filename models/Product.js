@@ -2,7 +2,6 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema;  // Import Schema for better readability 
 const CategoryModel =require("../models/Category");
 
-
 const ProductSchema = new mongoose.Schema({
     name:{
         type: String,
@@ -66,8 +65,9 @@ const ProductSchema = new mongoose.Schema({
     category:{
         type:String,
     },
-    subCategory:{
-        type:String
+    productOffer:{
+        type:Boolean,
+        default:false
     }
 })
 const ProductModel = mongoose.model("Product",ProductSchema)

@@ -350,33 +350,21 @@
       </li><!-- End Forms Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>#Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link collapsed" data-bs-target="#forms-nav5" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="forms-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="forms-nav5" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="#">
-              <i class="bi bi-layout-text-window-reverse"></i><span>#Add Coupon</span></i>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="/admin/add-coupon">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Add Coupon</span></i>
             </a>
           </li>
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
-              <i class="bi bi-layout-text-window-reverse"></i><span>#Show All Coupon</span></i>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/coupon-list">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show All Coupon</span></i>
             </a>
           </li>
-          <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
-              <i class="bi bi-layout-text-window-reverse"></i><span>#Show Listed Coupon</span></i>
-            </a>
-          </li>
-          <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
-              <i class="bi bi-layout-text-window-reverse"></i><span>Show Unlisted Coupon</span></i>
-            </a>
-          </li>
-
-
         </ul>
       </li><!-- End Forms Nav -->
 
@@ -419,17 +407,17 @@
         <ul id="forms-nav4" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/return-pending">
               <i class="bi bi-layout-text-window-reverse"></i><span>Return Pending</span></i>
             </a>
           </li>
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/return-defective">
               <i class="bi bi-layout-text-window-reverse"></i><span>Return Defective</span></i>
             </a>
           </li>
           <li>
-            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="#">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/return-non-defective">
               <i class="bi bi-layout-text-window-reverse"></i><span>Return Non-Defective</span></i>
             </a>
           </li>
@@ -440,16 +428,12 @@
 
 
 
-
-
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" href="/admin/userList">
           <i class="bi bi-layout-text-window-reverse"></i><span>User List</span></i>
         </a>
 
       </li><!-- End Forms Nav -->
-
-
 
     </ul>
 
@@ -497,32 +481,39 @@
                     <th scope="col">Date</th>
                     <th scope="col">Amount</th>
                     <th scope="col">status</th>
+                    <th scope="col"></th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {{#each pendingOrders}}
+                  {{#each products}}
                   <tr>
                     <th scope="row"> {{increment @key}}</th>
-                    <td>{{orderId}}</td>
-                    <td>{{address.pincode}}</td>
-                    <td>{{date}}</td>
-                    <td>{{amount}}</td>
+                    <td>{{../orderId}}</td>
+                    <td>{{../address.pincode}}</td>
+                    <td>{{../date}}</td>
+                    <td>{{price}}</td>
+                  
                     <td>{{status}}</td>
-
+                    <td> <a href="/admin/order-detail-view?id={{../_id}}&&pro_id={{_id}}">Order Details</a> </td>
                     <td>
-                      {{#if (eq status "pending")}}
-                      <a href="/admin/order-shipped?id={{this._id}}"><button class="btn btn-success">Ready to
-                          ship</button></a>
-                      {{/if}}
+                        
+                        {{#if (eq status "pending")}}
+                        <a href="/admin/order-shipped?id={{../_id}}&&pro_id={{_id}}"><button class="btn btn-success">Ready to
+                            ship</button></a>
+                        {{/if}}
 
-                      {{#if (eq status "shipped")}}
-                      <a href="/admin/order-delivered?id={{_id}}"><button class="btn btn-success">Delivered</button></a>
-                      {{/if}}
-                      <button type="button" class="btn btn-danger" data-mdb-toggle="modal"
-                        data-mdb-target="#exampleModal">Cancel</button>
-                        <a href="/admin/order-detail-view?id={{this._id}}">Order Details</a>
-
+                        {{#if (eq status "shipped")}}
+                        <a href="/admin/order-delivered?id={{../_id}}&&pro_id={{_id}}"><button class="btn btn-success">set to delivered</button></a>
+                        {{/if}}
+                         
+                        {{#if (eq status "shipped" or "pending")}}
+                        <button type="button" class="btn btn-danger" data-mdb-toggle="modal"
+                          data-mdb-target="#exampleModal">Cancel</button>
+                        {{/if}}  
+                        
+                      
                     </td>
 
 
@@ -540,13 +531,14 @@
 
                           <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
 
-                          <a href="/admin/order-cancelled?id={{this._id}}"><button type="button"
+                          <a href="/admin/order-cancelled?id={{../_id}}&&pro_id={{_id}}"><button type="button"
                               class="btn btn-danger">Cancel order</button></a>
 
                         </div>
                       </div>
                     </div>
                   </div>
+                  {{/each}}
                   {{/each}}
                 </tbody>
               </table>

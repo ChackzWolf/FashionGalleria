@@ -54,11 +54,12 @@
 
 <body>
 
+{{!-- {{> header}} --}}
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="admin/index" class="logo d-flex align-items-center">
+      <a href="/admin" class="logo d-flex align-items-center">
         <img src="img/logo.png" alt="">
         <span class="d-none d-lg-block">Admin Galleria</span>
       </a>
@@ -68,8 +69,6 @@
 
 
     {{!-- <button onclick="loadAdminChart()">Load Admin Chart</button> --}}
-
-
     <div class="search-bar">
       <form class="search-form d-flex align-items-center" method="POST" action="#">
         <input type="text" name="query" placeholder="Search" title="Enter search keyword">
@@ -173,7 +172,7 @@
               You have 3 new messages
               <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
             </li>
-            <li>
+            <li> 
               <hr class="dropdown-divider">
             </li>
 
@@ -274,7 +273,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="admin/adminLogout">
+              <a class="dropdown-item d-flex align-items-center" href="/admin/adminLogout">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
@@ -361,10 +360,10 @@
       </li><!-- End Forms Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav2" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>#Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link collapsed" data-bs-target="#forms-nav5" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Coupon Management</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="forms-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="forms-nav5" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
           <li>
             <a class="nav-link collapsed" data-bs-target="#tables-nav1" href="/admin/add-coupon">
@@ -373,7 +372,7 @@
           </li>
           <li>
             <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/coupon-list">
-              <i class="bi bi-layout-text-window-reverse"></i><span>#Show All Coupon</span></i>
+              <i class="bi bi-layout-text-window-reverse"></i><span>Show All Coupon</span></i>
             </a>
           </li>
         </ul>
@@ -439,8 +438,6 @@
 
 
 
-
-
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" href="/admin/userList">
           <i class="bi bi-layout-text-window-reverse"></i><span>User List</span></i>
@@ -448,13 +445,9 @@
 
       </li><!-- End Forms Nav -->
 
-
-
     </ul>
 
   </aside><!-- End Sidebar-->
-
-
 
 
 

@@ -9,6 +9,7 @@ const OrderModel = require("../models/Order");
 const CouponModel = require("../models/Coupon");
 const { findOne } = require("../models/Address");
 const formatDate = require("../utils/dateGenerator");
+const adminFunc = require("../controllers/adminFunctions");
 
 
  const dashboardView= (req,res) =>{
@@ -20,7 +21,7 @@ const formatDate = require("../utils/dateGenerator");
  }
  
  const adminLogout = (req,res)=>{
-  req.session.destroy((err)=>{
+    req.session.destroy((err)=>{
     console.log("session deleted")
     res.redirect("/admin/login")
   })
@@ -29,82 +30,77 @@ const formatDate = require("../utils/dateGenerator");
  }
 
  const userList = async (req,res)=>{
-   const users = await UserModel.find()
-   Swal.fire("SweetAlert2 is working!");
-   res.render("admin/user-list",{users})
+    const users = await UserModel.find()
+    Swal.fire("SweetAlert2 is working!");
+    res.render("admin/user-list",{users})
  }
 
 
- const addCategory = async(req,res)=>{
-  const category = await CategoryModel.find();
-  res.render("admin/add-category",{category});
+const addCategory = async(req,res)=>{
+    const category = await CategoryModel.find();
+    res.render("admin/add-category",{category});
 }
 
 
 const addProductView = async(req,res)=>{
-  const category = await CategoryModel.find()
-  const subCategory =await CategoryModel.distinct("subCategory")
-  res.render("admin/add-product",{category,subCategory})
+    const category = await CategoryModel.find()
+    const subCategory =await CategoryModel.distinct("subCategory")
+    res.render("admin/add-product",{category,subCategory})
 }
 
 
 const editProductView = async(req,res) =>{
-  const products = await ProductModel.find({deleteStatus:false}).populate('category');
-  const category = await CategoryModel.find()
-  res.render("admin/edit-product",{products,category});
+    const products = await ProductModel.find({deleteStatus:false}).populate('category');
+    const category = await CategoryModel.find()
+    res.render("admin/edit-product",{products,category});
 }
 
 
- const userBlockUnblock = async (req,res) => {
-   const userData = await UserModel.findOne({_id: req.query.id});
-   await UserModel.updateOne({_id:req.query.id},{$set: {status: !userData.status}})
-   const users = await UserModel.find()
-   res.render("admin/user-list",{users});
- }
+const userBlockUnblock = async (req,res) => {
+    const userData = await UserModel.findOne({_id: req.query.id});
+    await UserModel.updateOne({_id:req.query.id},{$set: {status: !userData.status}})
+    const users = await UserModel.find()
+    res.render("admin/user-list",{users});
+}
  
 
-
-
-
-
-
 const loginAdmin = async (req,res)=>{
-   const data = {
-      email : req.body.adminID,
-      password: req.body.password
-   }
-   
-   console.log("Triggered")
-   
-   const adminData = await AdminModel.findOne({adminID:req.body.adminID})
-   if(req.body.adminID != ''){
-      if(adminData){
-        console.log("email checked")
-        
-        if(admin = req.body.password === adminData.password){
-           req.session.admin = admin;
-           
-           console.log("password matched")
-           console.log("session:",req.session.admin)
-           res.redirect('/admin')
-  
-        }
-        else{
-          const failedPassword = true;
-          res.redirect(`/admin/login?failedPassword=${failedPassword}`)
-          console.log("Password not matching.")
-        }
-     }
-     else{
-        const failedEmail = true
-        res.redirect(`/admin/login?failedEmail=${failedEmail}`);
-        console.log("email is not matching.")
-     }
-   }else{
-    let fieldEmpty = true
-    res.redirect(`/admin/login?fieldEmpty=${fieldEmpty}`);
-    console.log("Field is empty");
-   }
+    const data = {
+       email : req.body.adminID,
+       password: req.body.password
+    }
+
+    console.log("Triggered")
+
+    const adminData = await AdminModel.findOne({adminID:req.body.adminID})
+    if(req.body.adminID != ''){
+       if(adminData){
+         console.log("email checked")
+
+         if(admin = req.body.password === adminData.password){
+            req.session.admin = admin;
+            
+            console.log("password matched")
+            console.log("session:",req.session.admin)
+            res.redirect('/admin')
+            
+         }
+         else{
+           const failedPassword = true;
+           res.redirect(`/admin/login?failedPassword=${failedPassword}`)
+           console.log("Password not matching.")
+         }
+      }
+      else{
+         const failedEmail = true
+         res.redirect(`/admin/login?failedEmail=${failedEmail}`);
+         console.log("email is not matching.")
+      }
+    }else{
+     let fieldEmpty = true
+     res.redirect(`/admin/login?fieldEmpty=${fieldEmpty}`);
+     console.log("Field is empty");
+    }
  }
 
 const deletedProductsView = async(req,res)=>{
@@ -115,50 +111,84 @@ const deletedProductsView = async(req,res)=>{
         res.status(500).render("user/error-handling")
     }    
 }
-
-
-const orderDelivered = async(req,res)=>{
-
-    const pendingOrderId = req.query.id;
-    console.log(pendingOrderId);
-    const product = await OrderModel.findOne({_id:pendingOrderId})
-    if(product){
-      console.log('order foung',product)
-      const deliveredOrder = await OrderModel.updateOne({_id:pendingOrderId},{$set:{status:'delivered'}});
-      if(deliveredOrder){
-        console.log('order Delivered')
-        const pendingOrders = await OrderModel.find({status:{$in:['pending','shipped']}});
-        res.render("admin/pending-orders",{pendingOrders});
-      }
-    }else{
-      console.log('order not found')
-    }
-}
-
-const orderShipped = async(req,res)=>{
-  const pendingOrderId = req.query.id;
-  console.log(pendingOrderId);
-  const product = await OrderModel.findOne({_id:pendingOrderId})
-  if(product){
-    console.log('order found',product);
-    const shippedOrders = await OrderModel.updateOne({_id:pendingOrderId},{$set:{status:'shipped'}});
-    if(shippedOrders){
-      console.log('order has been shipped');
-      const pendingOrders = await OrderModel.find({status:{$in:['pending','shipped']}});
-      res.render("admin/pending-orders",{pendingOrders});
-    }
-  }
-}
-
-
 const categoryListView = async(req,res)=>{
     const categories = await CategoryModel.find();
     res.render("admin/category-list",{categories});
 }
 
+const orderDelivered = async(req,res)=>{
+
+    const orderId = req.query.id;
+    const productId = req.query.pro_id
+    console.log(orderId);
+    const product = await OrderModel.findOne({_id:orderId})
+    if(product){
+      console.log('order found',product)
+    //   const deliveredOrder = await OrderModel.updateOne({_id:pendingOrderId},{$set:{status:'delivered'}});
+        const deliveredOrder = await OrderModel.updateOne(
+            {
+                _id:orderId,  'products._id':productId
+            },
+            { 
+                $set: { 'products.$.status': 'delivered' }
+            });
+
+        if(deliveredOrder){ 
+            console.log('order Delivered')
+            // const pendingOrders = await OrderModel.find({status:{$in:['pending','shipped']}});
+            const pendingOrders = await OrderModel.find({
+                products: {
+                    $elemMatch: {
+                        status: { $in: ['pending', 'shipped'] }
+                    }
+                }
+            });
+              
+            res.render("admin/pending-orders",{pendingOrders});
+        }
+    }else{
+        console.log('order not found')
+    }
+}
+
+const orderShipped = async(req,res)=>{
+    const orderId = req.query.id;
+    const productId = req.query.pro_id;
+
+    console.log(orderId);
+    const order = await OrderModel.findOne({_id:orderId})
+    if(order){
+        console.log('order found',order);
+        const shippedOrders = await OrderModel.updateOne({_id:orderId,'products._id':productId},{ $set: { 'products.$.status': 'shipped' }});
+        if(shippedOrders){ 
+            console.log('order has been shipped');
+            // const pendingOrders = await OrderModel.find({status:{$in:['pending','shipped']}});
+            const pendingOrders = await OrderModel.find({
+                products: {
+                    $elemMatch: {
+                        status: { $in: ['pending', 'shipped'] }
+                    }
+                }
+            });
+            res.render("admin/pending-orders",{pendingOrders});
+        }
+    }
+}
+
+
+
+
 
 const pendingOrdersView = async(req,res)=>{
-    const pendingOrders = await OrderModel.find({status:{$in:['pending','shipped']}});
+    // const pendingOrders = await OrderModel.find({status:{$in:['pending','shipped']}});
+    const pendingOrders = await OrderModel.find({
+        products: {
+            $elemMatch: {
+                status: { $in: ['pending', 'shipped'] }
+            }
+        }
+    });
+      
     res.render("admin/pending-orders",{pendingOrders});
 }
 const deliveredOrdersView = async(req,res)=>{
@@ -180,36 +210,46 @@ const orderDetailView = async(req,res)=>{
     res.render("admin/order-details",{orderDetails})
 }
 
-
+// to add new coupon page
 const addCouponView = (req,res) =>{
   res.render("admin/add-coupon");
 }
 
+// to add new coupon fucntion
 const addNewCoupon = async(req,res)=>{
-    const {couponName,couponType,percentageValue,description} = req.body;
-    const data = {
-      couponCode:couponName,
-      offerPercentage:percentageValue,
-      couponType:couponType,
-      description:description,
-      listStatus:true
-    }
-    if(couponName !== ''){
+    const {couponName,couponType,description} = req.body;
+    var percentageValue =req.body.percentageValue;
 
+    // if(percentageValue >= 0 ){
+    //     console.log('roger')
+    //     percentageValue = 0;
+    // }
+
+    const data = {
+        couponCode:couponName,
+        offerPercentage:percentageValue,
+        couponType:couponType,
+        description:description,
+        listStatus:true
+    }
+
+    console.log(typeof percentageValue,'percentageValue')
+    console.log(couponName, 'couponName')
+    if(couponName !== '' && typeof percentageValue !== String && couponType !== undefined ){
           console.log(data,'dataaaaaa')
           const couponExists = await CouponModel.findOne({couponCode:couponName});
           if(!couponExists){
-              console.log("coupon deos'nt exists")
-              const coupon = await CouponModel.create(data)
-              if(coupon){
-                console.log('coupon created')
-                let msgTrue = true;
-                res.render("admin/add-coupon",{msgTrue})
-              }else{
-                console.log('coupon not created')
-                let msgFalse = true;
-                res.render("admin/add-coupon",{msgFalse});
-              }
+                console.log("coupon deos'nt exists")
+                const coupon = await CouponModel.create(data)
+                if(coupon){
+                    console.log('coupon created')
+                    let msgTrue = true;
+                    res.render("admin/add-coupon",{msgTrue})
+                }else{
+                    console.log('coupon not created')
+                    let msgFalse = true;
+                    res.render("admin/add-coupon",{msgFalse});
+                }
           }else{
             console.log('coupon already exists')
             let msgExists = true;
@@ -243,9 +283,19 @@ const listUnlistCoupon = async(req,res)=>{
 
 
 const returnPending =  async (req,res)=>{
-    const returnPending = await OrderModel.find({status:{$in:['returnNonDefective','returnDefective']}})
-    res.render("admin/return-pending",{returnPending});
+    // const returnPending = await OrderModel.find({status:{$in:['returnNonDefective','returnDefective']}})
+
+    const returnPending = await OrderModel.find({
+        products: {
+            $elemMatch: {
+                status: { $in: ['returnNonDefective', 'returnDefective'] }
+            }
+        }
+    }) 
+
+    res.render("admin/return-pending",{returnPending})
 }
+
 
 const returnDefective = async(req,res)=>{
     const returnDefective = await OrderModel.find({status:'returnAcceptDef'})
@@ -257,17 +307,43 @@ const returnNonDefective = async(req,res)=>{
     res.render("admin/return-non-defective",{returnAcceptNonDef});
 }
 
-const orderCancel = async(req,res)=>{
-    const orderId = req.query.id;
-    const defective = await OrderModel.findOne({orderId:orderId,status:'returnDefective'})
-    const nonDefective = await OrderModel.findOne({orderId:orderId,status:'returnNonDefective'}); 
+const orderCancel = async(req,res)=>{//// I have made some terribl changes here 
+    const orderId = req.query.orderId;
+    const productId = req.query.productId;
+    
+    console.log(orderId,'orderId')
+    console.log(productId,'proudctId')
+
+    // const defective = await OrderModel.findOne({orderId:orderId,status:'returnDefective'})
+    const defective = await OrderModel.find({
+        products: {
+            $elemMatch: {
+                status:'returnDefective'
+            }
+        }
+    });
+    // const nonDefective = await OrderModel.findOne({orderId:orderId,status:'returnNonDefective'}); 
+    const nonDefective = await OrderModel.find({
+        products: {
+            $elemMatch: {
+                status: 'returnNonDefective'
+            }
+        }
+    });
     if(defective){
-        const updated = await OrderModel.updateOne({orderId:orderId},{$set:{status:'returnAcceptDef'}})
+        // const updated = await OrderModel.updateOne({orderId:orderId},{$set:{status:'returnAcceptDef'}})
+        const updated = await OrderModel.updateOne(
+            {
+                _id:orderId,  'products._id':productId
+            },
+            { 
+                $set: { 'products.$.status': 'returnAcceptDef' }
+            });
     }else{
         const updated = await OrderModel.updateOne({orderId:orderId},{$set:{status:'returnAcceptNonDef'}})
     }
 
-}
+}//// I have made some terribl changes here 
 
 const returnAccept = async (req, res) => {
     try {
@@ -275,28 +351,78 @@ const returnAccept = async (req, res) => {
     } catch (err) {
         res.status(500).render("user/error-handling");
     }
-    const orderId = req.query.id
+    const orderId = req.query.orderId
+    const productId = req.query.productId
+    console.log(productId,'productId');
+    console.log(orderId,'orderId');
+
     const status = req.query.status
     const order = await OrderModel.findOne({_id:orderId});
-    const returnPending = await OrderModel.find({status:{$in:['returnNonDefective','returnDefective']}})
+    // const returnPending = await OrderModel.find({status:{$in:['returnNonDefective','returnDefective']}})
+    const returnPending = await OrderModel.find({
+        products: {
+            $elemMatch: {
+                status: { $in: ['returnNonDefective', 'returnDefective'] }
+            }
+        }
+    });
+
     const orderDetails = await OrderModel.findOne({_id:orderId});
     const currentDate = new Date();
     const formattedDate = formatDate(currentDate);
 
-    if(order.status === 'returnDefective'){
-      console.log('Status:',order.status)
-      const orderUpdate = await OrderModel.updateOne({ _id:orderId},{$set:{status:'returnAcceptDef'}})
+
+    // const product = await OrderModel.find({
+    //     products: {
+    //         $elemMatch: {
+    //             _id:productId 
+    //         }
+    //     }
+    // });
+
+    const product = await OrderModel.find({
+        products: {
+            $elemMatch: {
+                _id: productId
+            }
+        }
+    }, {
+        'products.$':  1 // Projection to get the matched product
+    }).lean(); // Convert the result to plain JavaScript objects
+    
+    // Access the price of the first matching product
+    const price = product.products[0].price;
+
+    if(status === 'returnDefective'){
+      console.log('Status:',status)
+    //   const orderUpdate = await OrderModel.updateOne({ _id:orderId},{$set:{status:'returnAcceptDef'}})
+
+      const orderUpdate = await OrderModel.updateOne(
+        {
+            _id:orderId,  'products._id':productId
+        },
+        { 
+            $set: { 'products.$.status': 'returnAcceptDef' }
+        });
+        
     }else{
-      console.log('Status:',order.status)
-      const orderUpdate = await OrderModel.updateOne({ _id:orderId},{$set:{status:'returnAcceptNonDef'}})
+      console.log('Status:',status)
+    //   const orderUpdate = await OrderModel.updateOne({ _id:orderId},{$set:{status:'returnAcceptNonDef'}})
+      const orderUpdate = await OrderModel.updateOne(
+        {
+            _id:orderId,  'products._id':productId
+        },
+        { 
+            $set: { 'products.$.status': 'returnAcceptNonDef' }
+        });
     }
     const transaction = {
         transaction:"Credited",
-        amount:orderDetails.amount,
+        amount:price,
         orderId:orderDetails.orderId,
         date:formattedDate
     }
-    console.log(orderDetails.amount)
+    console.log(price,'price')
     const walletUpdate = await UserModel.updateOne({ _id: orderDetails.userId }, { $inc: { wallet: orderDetails.amount } }); // Here I'm adding back the amount to the user's wallet.
     const walletHistory = await UserModel.updateOne({_id:orderDetails.userId},{$push:{walletHistory:transaction}}) // here I'm journaling transaction history to the user model
 
@@ -325,13 +451,15 @@ const editCoupon = async(req,res)=>{
         offerPercentage:percentageValue,
         description:description
     }
-    const couponExist = await CouponModel.findOne({_id:id})
-    if(couponExist){
-        const update = await CouponModel.updateOne({_id:id},{$set: updateData});
-        if(update){
-            const updated = true;
-            const listedCoupon = await CouponModel.find();
-            res.render('admin/listed-coupon',{updated,listedCoupon});
+    if(couponName !== '' && couponType !== undefined && percentageValue >0 ){
+        const couponExist = await CouponModel.findOne({_id:id})
+        if(couponExist){
+            const update = await CouponModel.updateOne({_id:id},{$set: updateData});
+            if(update){
+                const updated = true;
+                const listedCoupon = await CouponModel.find();
+                res.render('admin/listed-coupon',{updated,listedCoupon});
+            }
         }
     }
 }
@@ -413,37 +541,96 @@ const editCategory = async(req,res)=>{
   }
 }
 
+const productOfferList = async(req,res)=>{
+    const productsOffer = await ProductModel.find({productOffer:true});
+    const productsNoOffer = await ProductModel.find({productOffer:false});
+    
+    res.render("admin/product-offer-list",{productsOffer,productsNoOffer});
+}
+
+const addPrdouctOfferView = async(req,res)=> {
+    const productId = req.query.id;
+    const singleProduct = await ProductModel.findOne({_id:productId});
+    res.render("admin/add-product-offer-view",{singleProduct});
+}
+
+const addProductOffer = async(req,res)=>{
+    const {id,offerPercentage} = req.body;
+    console.log(req.body.id,'id');
+    console.log(offerPercentage,'offer percentage');
+    const product = await ProductModel.findOne({_id:id});
+    // const offer = product.price * offerPercentage / 100
+
+    const offer = adminFunc.reducePercentageFromPrice(product.price,offerPercentage);
+
+    const offerPrice = product.price-offer;
+
+
+    if(offerPercentage > 0 ){
+        const addOffer = await ProductModel.updateOne({_id:id},{$set:{offerPrice:offerPrice,productOffer:true}})
+        if(addOffer){
+            const msg = true;
+            const productsOffer = await ProductModel.find({productOffer:true});
+            const productsNoOffer = await ProductModel.find({productOffer:false});
+            res.render("admin/product-offer-list",{productsOffer,productsNoOffer,msg});
+        }else{
+            const errMsg = true;
+            const singleProduct = await ProductModel.findOne({_id:id});
+            res.render("admin/add-product-offer-view",{singleProduct,errMsg});
+        }
+    }else{
+        const empty =true;
+        const singleProduct = await ProductModel.findOne({_id:id});
+        res.render("admin/add-product-offer-view",{singleProduct,empty});
+    }
+}
+
+const editProductOfferView = async(req,res)=>{
+    const productId = req.query.id;
+    const singleProduct = await ProductModel.findOne({_id:productId});
+
+    const percentage = adminFunc.calculatePercentageDifference(singleProduct.price, singleProduct.offerPrice)
+
+    res.render("admin/edit-product-offer-view",{singleProduct,percentage});
+
+}
+
  module.exports = {
-   loginView,
-   dashboardView,
-   userBlockUnblock,
-   adminLogout,
-   addCategory,
-   addProductView,
-   editProductView,
-   categoryListView,
-   deletedProductsView,
-   loginAdmin,
-   userList,
-   addCategory,
-   pendingOrdersView,
-   deliveredOrdersView,
-   cancelledOrdersView,
-   orderDelivered,
-   orderShipped,
-   orderDetailView,
-   addCouponView,
-   addNewCoupon,
-   couponListView,
-   listUnlistCoupon,
-   returnPending,
-   returnDefective,
-   returnNonDefective,
-   orderCancel,
-   returnAccept,
-   editCouponDetails,
-   editCoupon,
-   deleteCoupon,
-   editCategoryView,
-   editCategory
+    loginView,
+    dashboardView,
+    userBlockUnblock,
+    adminLogout,
+    addCategory,
+    addProductView,
+    editProductView,
+    categoryListView,
+    deletedProductsView,
+    loginAdmin,
+    userList,
+    addCategory,
+    pendingOrdersView,
+    deliveredOrdersView,
+    cancelledOrdersView,
+    orderDelivered,
+    orderShipped,
+    orderDetailView,
+    addCouponView,
+    addNewCoupon,
+    couponListView,
+    listUnlistCoupon,
+    returnPending,
+    returnDefective,
+    returnNonDefective,
+    orderCancel,
+    returnAccept,
+    editCouponDetails,
+    editCoupon,
+    deleteCoupon,
+    editCategoryView,
+    editCategory,
+    productOfferList,
+    addPrdouctOfferView,
+    addProductOffer,
+    editProductOfferView
+
 }  
