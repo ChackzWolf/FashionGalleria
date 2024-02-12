@@ -469,8 +469,11 @@
 
           <div class="card">
             <div class="card-body">
-                {{#if msg}}
+{{#if msg}}
 <p class="text-center text-success small">Offer added successfuly</p>
+{{/if}}
+{{#if removed}}
+<p class="text-center text-removed small">Offer removed successfully</p>
 {{/if}}
 {{#if productsOffer}}
 <div style="display: flex; justify-content: space-between; align-items: center; max: width 100px;">
@@ -529,7 +532,7 @@
                         <div class="modal-body">Are you sure you want to Remove  this offer?</div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Cancel</button>
-                            <a href="/admin/remove-offer/{{this._id}}">
+                            <a href="/admin/remove-product-offer/{{this._id}}">
                               <button type="button" class="btn btn-primary">Remove</button>
                             </a>
                         </div>
@@ -591,9 +594,12 @@
                     <td>{{name}}</td>
                     <td>{{category}}</td>
                     <td>{{price}}</td>
-                    <td>{{offerPrice}}</td>
- 
-
+                    <td>
+                        {{#if (eq offerPrice 0)}}
+                        No offer
+                        {{else}}
+                        {{offerPrice}}</td>
+                        {{/if}}
                     <td>
 
                       <a href="/admin/add-product-offer?id={{this._id}}"><button

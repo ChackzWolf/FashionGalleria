@@ -1,27 +1,20 @@
-
-function calculatePercentageDifference(num1, num2) {
-    // Calculate the absolute difference between the two numbers
-    var absoluteDifference = Math.abs(num1 - num2);
-    
-    // Calculate the average of the two numbers
-    var average = (num1 + num2) / 2;
-    
-    // Calculate the percentage difference
-    var percentageDifference = (absoluteDifference / average) * 100;
-    
-    return percentageDifference.toFixed(2); // Round to 2 decimal places
-}
+function calculatePercentageDifference(originalPrice, discountPrice) {
+    let  result = ((discountPrice-originalPrice)/originalPrice)*100
+    result = Math.trunc(result);
+    result = Math.abs(result);
+    return result;
+}    
 
 
+
+// Function to apply a percentage reduction to a price
 function reducePercentageFromPrice(price, percentage) {
-    // Calculate the amount to be reduced
-    var reductionAmount = (percentage / 100) * price;
-    
-    // Subtract the reduction amount from the original price
-    var reducedPrice = price - reductionAmount;
-    
-    return reducedPrice;
+    const amount = (price*percentage)/100
+    let result = price-amount
+    result = Math.trunc(result)
+    return result;
 }
 
 
-module.exports = {calculatePercentageDifference,reducePercentageFromPrice}
+
+module.exports = {calculatePercentageDifference,reducePercentageFromPrice}; 

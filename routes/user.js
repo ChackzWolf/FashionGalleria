@@ -10,7 +10,9 @@ router.get("/",userLoginVarify,userControllers.indexView);
 router.get("/login",userLoginChecker,userControllers.loginView);
 router.get("/signup",userLoginChecker,userControllers.signupView);
 router.get("/userLogout",userLoginVarify,userControllers.userLogout);
+
 router.get("/productlist",userControllers.productList); // I have to check about this.
+
 router.get("/shop",userLoginVarify,userControllers.shopView);
 router.get("/product-details",userControllers.productDetailsView);
 router.get("/blog",userLoginVarify,userControllers.blogView);
@@ -20,6 +22,8 @@ router.get("/otp",userControllers.otpView);
 router.get("/cart",userLoginVarify,userControllers.cartView);
 
 router.get("/addToCart",userLoginVarify,userControllers.addToCart);
+router.get("/report",userControllers.loadReport)
+router.get("/report-generate",userControllers.generateReport)
 
 router.get("/checkout",userLoginVarify,userControllers.checkout);
 router.get("/delete-cart-item",userLoginVarify,userControllers.deleteCartItem);

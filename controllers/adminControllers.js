@@ -7,14 +7,46 @@ const CategoryModel = require("../models/Category");
 const Swal = require('sweetalert2');
 const OrderModel = require("../models/Order");
 const CouponModel = require("../models/Coupon");
+const BannerModel = require("../models/Banner");
 const { findOne } = require("../models/Address");
 const formatDate = require("../utils/dateGenerator");
 const adminFunc = require("../controllers/adminFunctions");
+const puppeteer = require("puppeteer")
+const fileHandler = require("../utils/files")
 
 
- const dashboardView= (req,res) =>{
-    res.render("admin/index")
- }
+//  const dashboardView = (req,res) =>{
+//     res.render("admin/index")
+//  }
+
+
+ const dashboardView = async (req, res) => {
+    try {
+        let totalDeliveredAmount = 0;
+        // const recentOrders = await OrderModel.find({ status: 'delivered' })
+        const recentOrders = await OrderModel.find({ status: 'delivered' }).populate('userId');
+        const countOfDeliveredOrders = await OrderModel.countDocuments({ status: 'delivered' });
+        const countOfUsers = await UserModel.countDocuments();
+        const user = await UserModel.find({_id:recentOrders.userId});
+        
+        recentOrders.forEach(order => {
+            totalDeliveredAmount += order.amount;
+        });
+
+        res.render("admin/index", { recentOrders, countOfDeliveredOrders, totalDeliveredAmount, countOfUsers,user })
+    } catch (err) {
+        res.status(500).render("user/error-handling");
+    }
+}
+
+const adminChartLoad = async (req, res) => {
+    try {
+        const data = await OrderModel.find()
+        res.json(data);
+    } catch (error) {
+        res.status(500).render("user/error-handling");
+    }
+};
 
  const loginView = (req,res)=>{
    res.render("admin/login")
@@ -44,8 +76,7 @@ const addCategory = async(req,res)=>{
 
 const addProductView = async(req,res)=>{
     const category = await CategoryModel.find()
-    const subCategory =await CategoryModel.distinct("subCategory")
-    res.render("admin/add-product",{category,subCategory})
+    res.render("admin/add-product",{category})
 }
 
 
@@ -561,11 +592,7 @@ const addProductOffer = async(req,res)=>{
     const product = await ProductModel.findOne({_id:id});
     // const offer = product.price * offerPercentage / 100
 
-    const offer = adminFunc.reducePercentageFromPrice(product.price,offerPercentage);
-
-    const offerPrice = product.price-offer;
-
-
+    const offerPrice = adminFunc.reducePercentageFromPrice(product.price,offerPercentage);
     if(offerPercentage > 0 ){
         const addOffer = await ProductModel.updateOne({_id:id},{$set:{offerPrice:offerPrice,productOffer:true}})
         if(addOffer){
@@ -588,12 +615,137 @@ const addProductOffer = async(req,res)=>{
 const editProductOfferView = async(req,res)=>{
     const productId = req.query.id;
     const singleProduct = await ProductModel.findOne({_id:productId});
-
     const percentage = adminFunc.calculatePercentageDifference(singleProduct.price, singleProduct.offerPrice)
-
     res.render("admin/edit-product-offer-view",{singleProduct,percentage});
 
 }
+
+const removeProductOffer = async(req,res)=>{
+    const productId = req.params.id;
+    console.log(productId)
+    const removeProduct = await ProductModel.updateOne({_id:productId},{$set:{offerPrice:0,productOffer:false}});
+    const removed = true;
+    const productsOffer = await ProductModel.find({productOffer:true});
+    const productsNoOffer = await ProductModel.find({productOffer:false});
+    res.render("admin/product-offer-list",{productsOffer,productsNoOffer,removed})
+}
+
+const mainBannerView = async(req,res)=>{
+    const banner = await BannerModel.findOne()
+    res.render("admin/main-banner-view",{banner})
+    
+}
+const addBanner = async(req,res)=>{
+
+    const {caption,description} = req.body;
+    const images = req.files
+                .filter((file) =>
+                      file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/webp")
+                .map((file) => file.filename);
+    console.log(images,'imagesdd')
+    if(images.length === 1){
+        const data = {
+            caption:caption,
+            description:description,
+            imageUrl:images
+            
+        }
+
+        console.log('data',data);
+        let banner = await BannerModel.create(data);
+        console.log(banner);
+
+    }else{
+        console.log("image is empty")
+    }
+
+}
+
+const bannerListView = async(req,res)=>{
+    const banner = await BannerModel.find();
+    res.render("admin/banner-list",{banner})
+}
+
+const listUnlistBanner = async(req,res)=>{
+    const bannerId = req.params.id;
+    const singleBanner = await BannerModel.findById({_id:bannerId});
+    if(singleBanner){
+        const updateBanner = await BannerModel.updateOne({_id:bannerId},{$set:{listStatus:!singleBanner.listStatus}});
+        if(updateBanner){
+            console.log('updated')
+            const banner = await BannerModel.find();
+            res.render("admin/banner-list",{banner})
+        }else{
+            const errMsg = true
+            const banner = await BannerModel.find()
+            res.render("admin/banner-list",{banner,errMsg})
+        }
+    }else{
+        const errMsg = true
+        const banner = await BannerModel.find()
+        res.render("admin/banner-list",{banner,errMsg})
+    }
+}
+
+const deleteBanner = async(req,res)=>{
+    const bannerId = req.params.id;
+    const chosenBanner = await BannerModel.findById({_id:bannerId})
+    if(!chosenBanner){
+        return res.status(404).json({message: "banner not found."});
+    }else{
+        // Delete each image associated with the product
+        for (const imageUrl of chosenBanner.imageUrl) {
+            fileHandler.deleteFile(imageUrl);
+        }
+        await BannerModel.deleteOne({_id:bannerId});
+        console.log('Deleted')
+        const banner = await BannerModel.find();
+        res.render("admin/banner-list",{banner})
+        
+    }
+}
+
+
+const generateReport = async (req, res) => {
+
+    try {
+        console.log('1')
+      const browser = await puppeteer.launch({
+        headless: false //
+      });
+      console.log('2')
+
+      const page = await browser.newPage();
+      await page.goto(`${req.protocol}://${req.get("host")}` + "/report", {
+        waitUntil: "networkidle2"
+      })
+      console.log('3')
+
+      await page.setViewport({ width: 1680, height: 1050 })
+      const todayDate = new Date()
+      const pdfn = await page.pdf({
+        path: `${path.join(__dirname, "../public/files", todayDate.getTime() + ".pdf")}`,
+        printBackground: true,
+        format: "A4"
+      })
+      console.log('4')
+
+      if (browser) await browser.close()
+      console.log('if browser')
+
+      const pdfURL = path.join(__dirname, "../public/files", todayDate.getTime() + ".pdf")
+      res.download(pdfURL, function (err) {
+        if (err) {
+            console.log('err')
+          res.status(500).render("user/error-handling");
+        }
+      })
+    } catch (error) {
+      res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    }
+  }
+  
+
 
  module.exports = {
     loginView,
@@ -631,6 +783,14 @@ const editProductOfferView = async(req,res)=>{
     productOfferList,
     addPrdouctOfferView,
     addProductOffer,
-    editProductOfferView
+    editProductOfferView,
+    removeProductOffer,
+    mainBannerView,
+    addBanner,
+    bannerListView,
+    listUnlistBanner,
+    adminChartLoad,
+    generateReport,
+    deleteBanner
 
 }  

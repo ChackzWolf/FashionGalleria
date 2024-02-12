@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
-
+const UserModel = require("./User")
 
 const OrderSchema = mongoose.Schema({
     userId:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',
         require:true,
     },
     orderId:{

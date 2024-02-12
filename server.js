@@ -19,8 +19,6 @@ app.set("view engine","hbs");
 
 
 
-
-
 //directory connection
 
 app.set('views', path.join(__dirname, 'views'));
@@ -29,15 +27,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const partialsPath = path.join(__dirname,"views/partials")
 hbs.registerPartials(partialsPath)
-
-
-
-
-
-  
-
-
-
 
 // Register a Handlebars helper function
 hbs.registerHelper('isInArray', function (value, array, options) {
@@ -70,7 +59,7 @@ hbs.registerHelper('or', function (a, b) {  //using in orders page
 });
 
 hbs.registerHelper('ne', function (a, b) {  //using in orders page
-  return a !== b;
+    return a !== b;
 });
 
 hbs.registerHelper("inc", function(value, options)
@@ -80,8 +69,6 @@ hbs.registerHelper("inc", function(value, options)
 hbs.registerHelper('increment', function(value) {
   return value + 1;
 });
-
-
 
 
 
@@ -98,14 +85,14 @@ app.use(function(req, res, next) {
 //session
 app.set('trust proxy', 1) // trust first proxy
 app.use(session({  
-  name: `daffyduck`,
-  secret: 'some-secret-example',  
-  resave: false,
-  saveUninitialized: false,
-  cookie: { 
-    secure: false, // This will only work if you have https enabled!
-    maxAge: 60000000 // 1000 min
-  } 
+    name: `daffyduck`,
+    secret: 'some-secret-example',  
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        secure: false, // This will only work if you have https enabled!
+        maxAge: 60000000 // 1000 min
+    } 
 }))
 
 connectDB()

@@ -4,6 +4,7 @@ const { upload } = require('../utils/imageHandler');
 const fs = require('fs');
 const Swal = require('sweetalert2');
 const CategoryModel = require("../models/Category");
+const fileHandler = require("../utils/files")
 
 
 const  addProduct = async (req,res) =>{
@@ -11,6 +12,9 @@ const  addProduct = async (req,res) =>{
 
   console.log('started adding product')
     const {name,price,description,stockLarge,stockMedium,stockSmall} = req.body;
+
+    const categoryId = req.body.category;
+    console.log(categoryId,'categoryId')
 
 
     const sizeStock = {
@@ -45,7 +49,7 @@ const  addProduct = async (req,res) =>{
                   name,
                   price,
                   description,
-                  cat:categoryConnect,
+                  category:categoryId,
                   sizeStock:sizeStock,
                   imageUrl:images,
                   listStatus:true,
@@ -57,19 +61,19 @@ const  addProduct = async (req,res) =>{
               
                 if(product){
                   let success = true
-                  console.log("success")
-                  const category = await ProductModel.aggregate([{$match:{_id:product._id}},
-                                                                      {$lookup:{from:'categories',
-                                                                      localField:'cat',
-                                                                      foreignField:'_id',
-                                                                      as:'cat'}}]);
+                //   console.log("success")
+                //   const category = await ProductModel.aggregate([{$match:{_id:product._id}},
+                //                                                       {$lookup:{from:'categories',
+                //                                                       localField:'cat',
+                //                                                       foreignField:'_id',
+                //                                                       as:'cat'}}]);
                   
-                  console.log(category[0].cat[0].name, 'this is the thing')
+                //   console.log(category[0].cat[0].name, 'this is the thing')
                   
-                  const updatedCategory = category[0].cat[0].name;
+                //   const updatedCategory = category[0].cat[0].name;
                   
-                  product = await ProductModel.updateOne({_id: product._id},{$set:{category: updatedCategory}});
-                  console.log('category added',product);
+                //   product = await ProductModel.updateOne({_id: product._id},{$set:{category: updatedCategory}});
+                //   console.log('category added',product);
                   
                   
                   console.log(product)                                                      
@@ -102,8 +106,8 @@ const listUnlistProduct = async(req,res)=>{
     const update = await ProductModel.updateOne({_id:product.id}, {$set: {listStatus:!product.listStatus}})
     if(update){
       console.log("step3")
-      const products = await ProductModel.find({deleteStatus:false})
-      res.render("admin/edit-product",{products})
+      const products = await ProductModel.find({deleteStatus:false});
+      res.render("admin/edit-product",{products});
     }else{
       console('not updated.')
       res.render("admin/edit-product")
@@ -219,8 +223,10 @@ const deleteProduct = async(req,res)=>{
     return res.status(404).json({message: "product not found."})
   }else{
     
-    for(const imageUrl of product.imageUrl){
-      deleteFile(imageUrl)
+
+    // Delete each image associated with the product
+    for (const imageUrl of product.imageUrl) {
+        fileHandler.deleteFile(imageUrl);
     }
 
     await ProductModel.updateOne({_id:productID}, {$set:{deleteStatus: true}})

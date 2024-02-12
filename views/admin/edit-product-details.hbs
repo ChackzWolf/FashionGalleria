@@ -512,14 +512,14 @@
                   <div class="col-sm-10">
                    
                   
-<div class="form-check">
-    <select id="subCategoryDropdown" name="category" class="form-select" onchange="toggleTextInput()">
-        <option value="0">Select category</option>
-        {{#each category}}
-            <option value="{{name}}">{{name}}</option>
-        {{/each}}
-    </select>
-</div> 
+                <div class="form-check">
+                    <select id="subCategoryDropdown" name="category" class="form-select" onchange="toggleTextInput()">
+                        <option value="0">Select category</option>
+                        {{#each category}}
+                            <option value="{{name}}">{{name}}</option>
+                        {{/each}}
+                    </select>
+                </div> 
              
                 <div class="container mt-4">
                   <fieldset class="row mb-5">
@@ -530,7 +530,6 @@
                       <div class="form-check mb-3">
                         <input class="form-check-input" name="sizeLarge" type="checkbox" value="Large" id="sizeLarge"
                           checked>
-
                         <label class="form-check-label" for="sizeLarge">
                           Large
                         </label>

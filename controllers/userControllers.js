@@ -10,6 +10,7 @@ const CartModel = require("../models/Cart");
 const CategoryModel =require("../models/Category");
 const AddressModel = require("../models/Address");
 const OrderModel =require("../models/Order")
+const BannerModel = require("../models/Banner")
 const formatDate = require("../utils/dateGenerator");
 const generateRandomOrderId = require("../utils/orderIdGenerator");
 const { sendMessage } = require("fast-two-sms");
@@ -18,6 +19,9 @@ const { resolve } = require("path");
 const CouponModel = require("../models/Coupon")
 const moment =require("moment");
 const WishlistModel = require("../models/Wishlist");
+const puppeteer = require("puppeteer")
+const path = require("path")
+
 
 var instance = new Razorpay({
     key_id: 'rzp_test_lc7R4jCpEpM90Q',
@@ -29,14 +33,19 @@ const loginView = (req,res) => {
 }
 
 const indexView = async (req,res) => {
+    
+
+    const category = await CategoryModel.find()
+    const mensCategory = await CategoryModel.find({_id:'65996c9ed92f9b905b20f697'});
+    const womensCategory = await CategoryModel.find({_id:'65996cabd92f9b905b20f69d'})
+    console.log('mensCategory',mensCategory);
 
     const products = await ProductModel.find({listStatus: true, deleteStatus: false}).limit(8)
-    const mensProduct = await ProductModel.find({listStatus: true, deleteStatus: false,category:"Men"}).limit(8)
-    const womensProduct = await ProductModel.find({listStatus:true,deleteStatus:false,category:'Women'}).limit(8);
-    const category = await CategoryModel.find()
-    console.log("Women's",womensProduct)
-    console.log("Men's",mensProduct)
-    res.render("user/index",{products,mensProduct,womensProduct,category});        
+    const mensProduct = await ProductModel.find({listStatus: true, deleteStatus: false,category:mensCategory[0]._id}).limit(8).populate('category')
+    const womensProduct = await ProductModel.find({listStatus:true,deleteStatus:false,category:womensCategory[0]._id}).limit(8).populate('category')
+
+    const banner = await BannerModel.find({listStatus:true});
+    res.render("user/index",{products,mensProduct,womensProduct,category,banner,mensCategory,womensCategory});        
 }
 
 const signupView = (req,res) => {
@@ -72,16 +81,10 @@ const shopView = async (req,res) => {
         console.log(maxAmount,typeof maxAmount);
 
     }
-
-
-
-
     console.log(req.query.category,'222222222222')
 
-
-    
     // if(req.query.sort || req.query.category){
-    if(req.query.category || minAmount || maxAmount){
+    if(req.query.category && minAmount && maxAmount){
         const category = req.query.category;
         console.log('reached',maxAmount,category)
 
@@ -150,12 +153,10 @@ const shopView = async (req,res) => {
         const categoryName = await CategoryModel.find();
         res.render("user/shop", { products,men, women, small, medium, large ,categoryName})
     }else{
-        console.log('going through else.')
+        console.log('going through else.',req.query.category,'category')
         let products = await ProductModel.find({listStatus: true, deleteStatus: false});
-        if(req.query.category === "men"){ // "/shop?category=men" from front end
-            products = await ProductModel.find({category:"men",listStatus: true, deleteStatus: false})
-        }else if(req.query.category === "women"){// "/shop?category=women" from back end
-            products = await ProductModel.find({category:"women",listStatus: true,deleteStatus: false})
+        if(req.query.category){ // "/shop?category=men" from front end
+            products = await ProductModel.find({category:req.query.category,listStatus: true, deleteStatus: false})
         }
         const categoryName = await CategoryModel.find();
         return res.render("user/shop",{products,categoryName});
@@ -172,6 +173,57 @@ const blogView = (req,res)=> {
     return res.render("user/blog");
 };
 
+const loadReport = async (req, res) => {
+
+    try {
+      const recentOrders = await OrderModel.find({ status: 'delivered' })
+      res.render("admin/sales-report", { recentOrders })
+    } catch (err) {
+      res.status(500).render("user/error-handling");
+    }
+  
+  }
+
+const generateReport = async (req, res) => {
+
+    // try {
+        console.log('1')
+      const browser = await puppeteer.launch({
+        headless: false //
+      });
+      console.log('2')
+
+      const page = await browser.newPage();
+      await page.goto(`${req.protocol}://${req.get("host")}` + "/report", {
+        waitUntil: "networkidle2"
+      })
+      console.log(page,'3')
+
+      await page.setViewport({ width: 1680, height: 1050 })
+      const todayDate = new Date()
+      console.log('33',todayDate)
+      const pdfn = await page.pdf({
+        path: `${path.join(__dirname, "../public/files", todayDate.getTime() + ".pdf")}`,
+        printBackground: true,
+        format: "A4"
+      })
+      console.log('4')
+
+      if (browser) await browser.close()
+      console.log('if browser')
+
+      const pdfURL = path.join(__dirname, "../public/files", todayDate.getTime() + ".pdf")
+      res.download(pdfURL, function (err) {
+        if (err) {
+            console.log('err')
+          res.status(500).render("user/error-handling");
+        }
+      })
+    // } catch (error) {
+    //   res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    // }
+  }
+  
 const contactView = async(req,res) =>{
     const email = session.email
     await sendMail(email);
@@ -1268,7 +1320,6 @@ module.exports = {
     wishlistView,
     walletHistory,
     transactionOrderDetailView,
-    
     ///////////////////////////////////////////post
     otpVerification,
     otpVerificationPassword,
@@ -1288,6 +1339,8 @@ module.exports = {
     otpVerificationPassword,
     verifyPayment,
     couponValidate,
-    filteredShop
+    filteredShop,
+    generateReport,
+    loadReport
     // addToCartProductDetails
 }

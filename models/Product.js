@@ -41,7 +41,7 @@ const ProductSchema = new mongoose.Schema({
             }
         }
     },
-    cat:{
+    category:{
         type:Schema.Types.ObjectId,
         ref:'Category',
         required: true
@@ -62,7 +62,7 @@ const ProductSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    category:{
+    cat:{
         type:String,
     },
     productOffer:{

@@ -11,6 +11,10 @@ const CategorySchema = new mongoose.Schema({
     },offer:{
         type:Number,
         default:0
+    },
+    deleteStatus:{
+        type:Boolean,
+        default:false
     }
 })
  

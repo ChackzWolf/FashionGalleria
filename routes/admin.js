@@ -1,5 +1,7 @@
 const express = require("express");
 const  adminControllers = require("../controllers/adminControllers");
+const userControllers = require("../controllers/userControllers")
+
 const productControllers = require("../controllers/productControllers")
 const {adminLoginChecker,adminLoginVarify} =require("../middlewares/middlewares");
 const { upload } = require('../utils/imageHandler')
@@ -9,15 +11,19 @@ const router = express.Router();
  /////////////////////////////////////////////////////////////////////////////////////////////
 //------------------------------------Get methods------------------------------------------//
 
-router.get("/",adminLoginChecker,adminControllers.dashboardView);
+
 router.get("/login",adminLoginVarify,adminControllers.loginView);
 router.get("/adminLogout",adminControllers.adminLogout)
 router.get("/userList",adminLoginChecker,adminControllers.userList);
 router.get("/block-unblock",adminLoginChecker,adminControllers.userBlockUnblock);
 
+//dashboard
+router.get("/",adminLoginChecker,adminControllers.dashboardView);
+router.get("/adminChartLoad", adminControllers.adminChartLoad);
+
 //product management
 router.get("/add-Product",adminLoginChecker,adminControllers.addProductView);
-router.get("/edit-product",adminLoginChecker,adminControllers.editProductView);
+router.get("/edit-product",adminControllers.editProductView);
 router.get("/list-unlist-product/:id",adminLoginChecker,productControllers.listUnlistProduct);
 router.get("/edit-productDetails",adminLoginChecker,productControllers.editProductDetailsView)
 router.get("/delete-product/:id",adminLoginChecker,productControllers.deleteProduct);
@@ -48,13 +54,20 @@ router.get("/delete-coupon/:id",adminControllers.deleteCoupon);
 router.get("/return-pending",adminControllers.returnPending);
 router.get("/return-defective",adminControllers.returnDefective);
 router.get("/return-non-defective",adminControllers.returnNonDefective);
-router.get("order-cancelled",adminControllers.orderCancel);
+router.get("/order-cancelled",adminControllers.orderCancel);
 router.get("/return-accept",adminControllers.returnAccept);
 
 //offer management
 router.get("/product-offer",adminControllers.productOfferList);
 router.get("/add-product-offer",adminControllers.addPrdouctOfferView);
 router.get("/edit-product-offer",adminControllers.editProductOfferView);
+router.get("/remove-product-offer/:id",adminControllers.removeProductOffer);
+
+//banner management
+router.get("/add-banner-view",adminControllers.mainBannerView);
+router.get("/banner-list",adminControllers.bannerListView)
+router.get("/list-unlist-banner/:id",adminControllers.listUnlistBanner);
+router.get("/delete-banner/:id",adminControllers.deleteBanner);
 
 
 
@@ -77,6 +90,10 @@ router.post("/edit-coupon",adminControllers.editCoupon)
 
 //offer
 router.post("/add-product-offer",adminControllers.addProductOffer);
+
+//banner
+router.post("/add-banner",upload.array('image',3),adminControllers.addBanner);
+
 
 
 module.exports = router
