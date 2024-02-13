@@ -29,164 +29,190 @@ var instance = new Razorpay({
 });
 
 const loginView = (req,res) => {
-    return res.render("user/login");
+    try{
+        return res.render("user/login");
+    }catch(error){
+        res.status(500).json({ status: false, error: "Something went wrong on the server. Can't login try again later" });
+    }
+
 }
 
 const indexView = async (req,res) => {
+    try{
+        const category = await CategoryModel.find()
+        const mensCategory = await CategoryModel.find({_id:'65996c9ed92f9b905b20f697'});
+        const womensCategory = await CategoryModel.find({_id:'65996cabd92f9b905b20f69d'})
+        console.log('mensCategory',mensCategory);
     
+        const products = await ProductModel.find({listStatus: true, deleteStatus: false}).limit(8)
+        const mensProduct = await ProductModel.find({listStatus: true, deleteStatus: false,category:mensCategory[0]._id}).limit(8).populate('category')
+        const womensProduct = await ProductModel.find({listStatus:true,deleteStatus:false,category:womensCategory[0]._id}).limit(8).populate('category')
+    
+        const banner = await BannerModel.find({listStatus:true});
+        res.render("user/index",{products,mensProduct,womensProduct,category,banner,mensCategory,womensCategory}); 
+    }catch(error){
+        res.status(500).json({ status: false, error: "Something went wrong on the server." });
 
-    const category = await CategoryModel.find()
-    const mensCategory = await CategoryModel.find({_id:'65996c9ed92f9b905b20f697'});
-    const womensCategory = await CategoryModel.find({_id:'65996cabd92f9b905b20f69d'})
-    console.log('mensCategory',mensCategory);
-
-    const products = await ProductModel.find({listStatus: true, deleteStatus: false}).limit(8)
-    const mensProduct = await ProductModel.find({listStatus: true, deleteStatus: false,category:mensCategory[0]._id}).limit(8).populate('category')
-    const womensProduct = await ProductModel.find({listStatus:true,deleteStatus:false,category:womensCategory[0]._id}).limit(8).populate('category')
-
-    const banner = await BannerModel.find({listStatus:true});
-    res.render("user/index",{products,mensProduct,womensProduct,category,banner,mensCategory,womensCategory});        
+    }    
 }
 
 const signupView = (req,res) => {
-    return res.render("user/signup");
+    try{
+        return res.render("user/signup");
+    }catch(error){
+        res.status(500).json({ status: false, error: "Something went wrong on the server." });
+    }
 }
 
+
 const shopView = async (req,res) => {
-
-    const pageNum =  req.query.page;
-    const perPage = 6
-    let docCount
-    let pages
-
-    let strMin = req.query.minamount;
-    let strMax = req.query.maxamount;
-    let minAmount;
-    let maxAmount;
-
-    if(typeof strMin === 'string' && typeof strMax === 'string'){
-        
-        // Split the string into an array of characters
-        const charArrayMin = strMin.split('');
-        const charArrayMax = strMax.split('');
-        // Filter out non-numeric characters
-        const numericArrayMin = charArrayMin.filter(char => !isNaN(char));
-        const numericArrayMax = charArrayMax.filter(char => !isNaN(char));
-        // Join the filtered characters back into a string
-        const minAmountStr = numericArrayMin.join('');
-        const maxAmountStr = numericArrayMax.join('');
-        // Convert the cleaned string to a number
-        minAmount = Number(minAmountStr);
-        maxAmount = Number(maxAmountStr);
-        console.log(maxAmount,typeof maxAmount);
-
-    }
-    console.log(req.query.category,'222222222222')
-
-    // if(req.query.sort || req.query.category){
-    if(req.query.category && minAmount && maxAmount){
-        const category = req.query.category;
-        console.log('reached',maxAmount,category)
-
-
-        const products = await ProductModel.find({$and:[{category:category},{ price: { $gt: minAmount, $lt: maxAmount }},{listStatus: true}, {deleteStatus: false}]}).skip((pageNum - 1) * perPage).limit(perPage);
-
-        const documents = await ProductModel.countDocuments({
-            $and:[
-                {category:category},
-                {price:{$gt:minAmount,$lt:maxAmount}}
-            ]
-        });
-
-        console.log('products',products);
-        console.log('documets',documents)
-        
-        docCount = documents
-        pages = Math.ceil(docCount / perPage)
-
-        let countPages = []
-        for (let i = 0; i < pages; i++) {
-
-            countPages[i] = i + 1
+    try{
+        const pageNum =  req.query.page;
+        const perPage = 6
+        let docCount
+        let pages
+    
+        let strMin = req.query.minamount;
+        let strMax = req.query.maxamount;
+        let minAmount;
+        let maxAmount;
+        console.log(req.query.category,'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjcccccccccccccccccccccccccccccc')
+        if(typeof strMin === 'string' && typeof strMax === 'string'){
+            
+            // Split the string into an array of characters
+            const charArrayMin = strMin.split('');
+            const charArrayMax = strMax.split('');
+            // Filter out non-numeric characters
+            const numericArrayMin = charArrayMin.filter(char => !isNaN(char));
+            const numericArrayMax = charArrayMax.filter(char => !isNaN(char));
+            // Join the filtered characters back into a string
+            const minAmountStr = numericArrayMin.join('');
+            const maxAmountStr = numericArrayMax.join('');
+            // Convert the cleaned string to a number
+            minAmount = Number(minAmountStr);
+            maxAmount = Number(maxAmountStr);
+            console.log(maxAmount,typeof maxAmount);
+    
         }
-
-        let small = 0;
-        let medium = 0;
-        let large = 0;
-        let men = 0
-        let women = 0
-
-        // sizes
-        // if (Array.isArray(sizes)) {
-        //     for (let i = 0; i < sizes.length; i++) {
-        //         if (sizes[i] === "Small") {
-        //             small++;
-        //         } else if (sizes[i] === "Medium") {
-        //             medium++;
-        //         } else if (sizes[i] === "Large") {
-        //             large++;
-        //         }
-        //     }
-        // } else if (sizes === "Small") {
-        //     small++;
-        // } else if (sizes === "Medium") {
-        //     medium++;
-        // } else if (sizes === "Large") {
-        //     large++;
-        // }
-
-        //category 
-        if (Array.isArray(category)) {
-            for (let i = 0; i < category.length; i++) {
-                if (category[i] === "Men") {
-                    men++
-                } else if (category[i] === "Women") {
-                    women++
-                }
+        console.log(req.query.category,'222222222222')
+    
+        // if(req.query.sort || req.query.category){
+        if(req.query.category && minAmount && maxAmount){
+            const category = req.query.category;
+            console.log('reached',maxAmount,category)
+    
+    
+            const products = await ProductModel.find({$and:[{category:category},{ price: { $gt: minAmount, $lt: maxAmount }},{listStatus: true}, {deleteStatus: false}]}).skip((pageNum - 1) * perPage).limit(perPage);
+    
+            const documents = await ProductModel.countDocuments({
+                $and:[
+                    {category:category},
+                    {price:{$gt:minAmount,$lt:maxAmount}}
+                ]
+            });
+    
+            console.log('products',products);
+            console.log('documets',documents)
+            
+            docCount = documents
+            pages = Math.ceil(docCount / perPage)
+    
+            let countPages = []
+            for (let i = 0; i < pages; i++) {
+    
+                countPages[i] = i + 1
             }
-        } else if (category === "Men") {
-            men++ ;
-        } else if (category === "Women") {
-            women++ ;
-        };
-        docCount= documents
-        const categoryName = await CategoryModel.find();
-        res.render("user/shop", { products,men, women, small, medium, large ,categoryName})
-    }else{
-        console.log('going through else.',req.query.category,'category')
-        let products = await ProductModel.find({listStatus: true, deleteStatus: false});
-        if(req.query.category){ // "/shop?category=men" from front end
-            products = await ProductModel.find({category:req.query.category,listStatus: true, deleteStatus: false})
+    
+            let small = 0;
+            let medium = 0;
+            let large = 0;
+            let men = 0
+            let women = 0
+    
+            // sizes
+            // if (Array.isArray(sizes)) {
+            //     for (let i = 0; i < sizes.length; i++) {
+            //         if (sizes[i] === "Small") {
+            //             small++;
+            //         } else if (sizes[i] === "Medium") {
+            //             medium++;
+            //         } else if (sizes[i] === "Large") {
+            //             large++;
+            //         }
+            //     }
+            // } else if (sizes === "Small") {
+            //     small++;
+            // } else if (sizes === "Medium") {
+            //     medium++;
+            // } else if (sizes === "Large") {
+            //     large++;
+            // }
+    
+            //category 
+            if (Array.isArray(category)) {
+                for (let i = 0; i < category.length; i++) {
+                    if (category[i] === "Men") {
+                        men++
+                    } else if (category[i] === "Women") {
+                        women++
+                    }
+                }
+            } else if (category === "Men") {
+                men++ ;
+            } else if (category === "Women") {
+                women++ ;
+            };
+            docCount= documents
+            const categoryName = await CategoryModel.find({deleteStatus:false,listStatus:true});
+            res.render("user/shop", { products,men, women, small, medium, large ,categoryName})
+        }else{
+            console.log('going through else.',req.query.category,'category')
+            let products = await ProductModel.find({listStatus: true, deleteStatus: false});
+            if(req.query.category){ // "/shop?category=men" from front end
+                products = await ProductModel.find({category:req.query.category,listStatus: true, deleteStatus: false})
+            }
+            const categoryName = await CategoryModel.find({deleteStatus:false,listStatus:true});
+            return res.render("user/shop",{products,categoryName});
         }
-        const categoryName = await CategoryModel.find();
-        return res.render("user/shop",{products,categoryName});
+    }catch(error){
+        res.status(500).json({ status: false, error: "Something went wrong on the server." }); 
     }
 };
 
+
 const productDetailsView = async (req,res) => {
-    const products = await ProductModel.aggregate([{$match:{listStatus:true,deleteStatus:false}}]).limit(4);
-    const singleProduct = await ProductModel.findOne({_id:req.query.id});
-    return res.render("user/product-details",{singleProduct,products});
+    try{
+        const products = await ProductModel.aggregate([{$match:{listStatus:true,deleteStatus:false}}]).limit(4);
+        const singleProduct = await ProductModel.findOne({_id:req.query.id});
+        return res.render("user/product-details",{singleProduct,products});
+    }catch(error){
+        res.status(500).json({ status: false, error: "Something went wrong on the server." }); 
+    }
 };
 
 const blogView = (req,res)=> {
-    return res.render("user/blog");
+    try{
+        return res.render("user/blog");
+    }catch(error){
+        res.status(500).json({ status: false, error: "Something went wrong on the server." });
+    }
+
 };
 
 const loadReport = async (req, res) => {
 
     try {
-      const recentOrders = await OrderModel.find({ status: 'delivered' })
-      res.render("admin/sales-report", { recentOrders })
+        const recentOrders = await OrderModel.find({ status: 'delivered' })
+        res.render("admin/sales-report", { recentOrders })
     } catch (err) {
-      res.status(500).render("user/error-handling");
+        res.status(500).render("user/error-handling");
     }
-  
-  }
+
+}
 
 const generateReport = async (req, res) => {
 
-    // try {
+    try {
         console.log('1')
       const browser = await puppeteer.launch({
         headless: false //
@@ -219,52 +245,73 @@ const generateReport = async (req, res) => {
           res.status(500).render("user/error-handling");
         }
       })
-    // } catch (error) {
-    //   res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
-    // }
+    } catch (error) {
+      res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    }
   }
   
 const contactView = async(req,res) =>{
-    const email = session.email
-    await sendMail(email);
-    return res.render("user/contact");
+    try{
+        const email = session.email
+        await sendMail(email);
+        return res.render("user/contact");
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    }
 };
 
 const otpView = (req,res)=>{
-    const email = session.email
-    sendMail(email)
-    return res.redirect("user/otp");
+    try{
+        const email = session.email
+        sendMail(email)
+        return res.redirect("user/otp");
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    }
 };
 
 const otpViewPass = async(req,res)=>{
-    const email = session.email
-    sendMail(email);
-    return res.render("user/forgot-password-otp");
+    try{
+        const email = session.email
+        sendMail(email);
+        return res.render("user/forgot-password-otp");
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    }
 };
 
 const productList= (req,res) =>{
-    res.render("user/product-list")
+    try{
+        res.render("user/product-list")
+
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    }
 }
 
 const wishlistView = async(req,res)=>{
-    const userId = req.session.user._id;
-    const wishlist = await WishlistModel.find({userId:userId});
-    const productId = wishlist.wishlist.productId;
-    console.log('Idddd',productId);
-
-    const products = await ProductModel.find({_id:productId});
-    console.log(products,'products')
-    res.render("user/wishlist",{products});
+    try{
+        const userId = req.session.user._id;
+        const wishlist = await WishlistModel.find({userId:userId});
+        const productId = wishlist.wishlist.productId;
+        console.log('Idddd',productId);
+    
+        const products = await ProductModel.find({_id:productId});
+        console.log(products,'products')
+        res.render("user/wishlist",{products});
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    }
 } 
 
 
 ////////////////////////////////////////////////////////////////////////////////////     POST Methods     >>>>>>>>>>>>>>>>
-const filteredShop =  async (req,res)=>{
-    const {name,minamount,maxamount,sizeSmall,sizeMedium,sizeLarge} = req.body;
-      
-};
+
 
 const loginUser = async (req,res) => {
+    try{
+
+    
         const data = {
             email: req.body.email,
             password: req.body.password
@@ -302,110 +349,133 @@ const loginUser = async (req,res) => {
             const emptyField = true;
             res.redirect(`/login?emptyField=${emptyField}`);
             console.log("empty form");
-
         }
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    }
 }
 
 const userLogout = (req,res)=>{
-    req.session.destroy(()=>{
-        res.redirect("/login")
-    })
+    try{
+        req.session.destroy(()=>{
+            res.redirect("/login")
+        })
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
+    }
 }
 
+
 const signupUser  = async (req,res) =>{
-    const {name,email,number,password,referenceId}= req.body;
+    try{
+        const {name,email,number,password,referenceId}= req.body;
 
-    const currentDate = new Date();
-    const formattedDate = formatDate(currentDate);
-
-    let wallet = 50;
-    let walletHistory=[{transaction:'credited',amount:100,orderId:'Joining bonus',date:formattedDate}];
-
-    if(referenceId){
-        var referralOffer = await userFunc.referenceIdApplyOffer(referenceId);
-        if(referralOffer){
-            wallet = wallet+100
-            const dataHistory = {
-                                transaction:'credited',
-                                amount:50,
-                                orderId:'Referral joining bonus',
-                                date:formattedDate
-                            }
-            walletHistory.push(dataHistory);
+        const currentDate = new Date();
+        const formattedDate = formatDate(currentDate);
+    
+        let wallet = 50;
+        let walletHistory=[{transaction:'credited',amount:100,orderId:'Joining bonus',date:formattedDate}];
+    
+        if(referenceId){
+            var referralOffer = await userFunc.referenceIdApplyOffer(referenceId);
+            if(referralOffer){
+                wallet = wallet+100
+                const dataHistory = {
+                                    transaction:'credited',
+                                    amount:50,
+                                    orderId:'Referral joining bonus',
+                                    date:formattedDate
+                                }
+                walletHistory.push(dataHistory);
+            }
         }
+    
+        sendMail(email)
+        session.email = email
+      
+        UserModel.findOne({email: req.body.email}).then(async (user)=> {
+            if(user){
+                console.log("Email already exists.");
+                res.render("user/signup")
+            }else{
+                const data = {
+                    name: req.body.name,
+                    number: req.body.number,
+                    email : req.body.email,
+                    password : req.body.password,
+                    status: true,
+                    wallet:wallet,
+                    walletHistory:walletHistory,
+                    referenceId: userFunc.generateRandomReferenceId()
+                }
+                // data.password = await bcrypt.hash(data.password,saltRound)
+                // await UserModel.insertMany([data])
+                console.log("data inserted")
+                session.userData = data;
+                if(session.userData){
+                    res.render("user/otp")
+                }
+            }
+        })
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
     }
-
-    sendMail(email)
-    session.email = email
-  
-    UserModel.findOne({email: req.body.email}).then(async (user)=> {
-        if(user){
-            console.log("Email already exists.");
-            res.render("user/signup")
-        }else{
-            const data = {
-                name: req.body.name,
-                number: req.body.number,
-                email : req.body.email,
-                password : req.body.password,
-                status: true,
-                wallet:wallet,
-                walletHistory:walletHistory,
-                referenceId: userFunc.generateRandomReferenceId()
-            }
-            // data.password = await bcrypt.hash(data.password,saltRound)
-            // await UserModel.insertMany([data])
-            console.log("data inserted")
-            session.userData = data;
-            if(session.userData){
-                res.render("user/otp")
-            }
-        }
-    })
 }
 
 const emailVerifyOtp = async (req,res)=>{
-    const email = req.body.email;
-    await sendMail(email)
-    const userExist = await UserModel.findOne({email:email})
-    session.email = email
-    console.log(session.email)
-    if(userExist){ 
-        console.log('userExist');
-        res.render("user/forgot-password-otp")
+    try{
+        const email = req.body.email;
+        await sendMail(email)
+        const userExist = await UserModel.findOne({email:email})
+        session.email = email
+        console.log(session.email)
+        if(userExist){ 
+            console.log('userExist');
+            res.render("user/forgot-password-otp")
+        }
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
     }
 }
 
 const otpVerification = async(req,res)=>{
-    const {otpNum1,otpNum2,otpNum3,otpNum4,otpNum5,otpNum6} =  req.body;
-    const fullOTP = otpNum1 + otpNum2 + otpNum3 + otpNum4 + otpNum5 + otpNum6;
-    
-    if(fullOTP == session.otp){
-        data = session.userData;
-        const user = await UserModel.create(data);
-        res.redirect('/');
-    }else{
-        msg = true
-         res.render("user/otp",{msg});
+    try{
+        const {otpNum1,otpNum2,otpNum3,otpNum4,otpNum5,otpNum6} =  req.body;
+        const fullOTP = otpNum1 + otpNum2 + otpNum3 + otpNum4 + otpNum5 + otpNum6;
+        
+        if(fullOTP == session.otp){
+            data = session.userData;
+            const user = await UserModel.create(data);
+            res.redirect('/');
+        }else{
+            msg = true
+             res.render("user/otp",{msg});
+        }
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
     }
 }
 
 const otpVerificationPassword = async(req,res)=>{
-    const {otpNum1,otpNum2,otpNum3,otpNum4,otpNum5,otpNum6} =  req.body;
-    const fullOTP = otpNum1 + otpNum2 + otpNum3 + otpNum4 + otpNum5 + otpNum6;
-    console.log('entered Otp',fullOTP);
-    console.log(session.otp);
-    if(fullOTP == session.otp){
-        email = session.email;
-        res.render('user/forgot-password-change');
-    }else{
-        msg = true
-         res.render("user/otp",{msg});
+    try{
+        const {otpNum1,otpNum2,otpNum3,otpNum4,otpNum5,otpNum6} =  req.body;
+        const fullOTP = otpNum1 + otpNum2 + otpNum3 + otpNum4 + otpNum5 + otpNum6;
+        console.log('entered Otp',fullOTP);
+        console.log(session.otp);
+        if(fullOTP == session.otp){
+            email = session.email;
+            res.render('user/forgot-password-change');
+        }else{
+            msg = true
+             res.render("user/otp",{msg});
+        }
+    }catch(error){
+        res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
     }
 }
 
 const cartView = async(req,res) =>{
-//    try{
+   try{
         const stockLimit = req.query.stockLimit;
         const userId = req.session.user._id;
         const cartItems = await userFunc.getProducts(userId);
@@ -416,12 +486,11 @@ const cartView = async(req,res) =>{
 
         console.log(total,"in cartview")
         res.render("user/cart",{cartItems,total,stockLimit}); //pass tthe cart Object to the render function
-    //return cartItems
-//    }
-//    catch(err){
-//     console.log("cart View error.")
-//         res.status(500).render("user/error-handling");
-//    }
+
+   }catch(err){
+    console.log("cart View error.")
+        res.status(500).render("user/error-handling");
+   }
 }
 
 const  addToCart = async(req,res)=>{
@@ -629,165 +698,168 @@ const checkout = async(req,res)=>{
         total = total[0] ? total[0].total : 0;
 
         res.render("user/checkout",{newAddress,userDetails,total,coupons});
-        } catch (error) {
-            console.error("Error in changeProductQuantity:", error);
-            res.status(500).json({error: "Internal Server Error"});
-        } 
+    } catch (error) {
+        console.error("Error in changeProductQuantity:", error);
+        res.status(500).json({error: "Internal Server Error"});
+    } 
 }
 
  const placeOrder = async(req,res)=>{
-    // try{
-    let response;
-    const userId = req.session.user._id;
-    const selectedAddressId = req.body.selectedAddressId;
-    console.log('sekkkkkkkkkkkkkkk',selectedAddressId)
-    const randomOrderId = generateRandomOrderId();
-    const currentDate = new Date();
-    const formattedDate = formatDate(currentDate);
-    const finalAmount = req.body.finalAmount;
-    let userAddress = await  AddressModel.findOne({userId: userId});
-    console.log('userAddress',userAddress)
-    
-    const address = userAddress.address.find(address => address._id.equals(selectedAddressId));
-    const cartItems = await userFunc.getProducts(userId);
+    try{
+        let response;
+        const userId = req.session.user._id;
+        const selectedAddressId = req.body.selectedAddressId;
+        console.log('sekkkkkkkkkkkkkkk',selectedAddressId)
+        const randomOrderId = generateRandomOrderId();
+        const currentDate = new Date();
+        const formattedDate = formatDate(currentDate);
+        const finalAmount = req.body.finalAmount;
+        let userAddress = await  AddressModel.findOne({userId: userId});
+        console.log('userAddress',userAddress)
+        
+        const address = userAddress.address.find(address => address._id.equals(selectedAddressId));
+        const cartItems = await userFunc.getProducts(userId);
 
-    console.log("---------------------1111111111111111111---------------------",address)
-    console.log(cartItems)
-    
-    // const products = cartItems.map(cartItems =>({
-    //     productId: cartItems.product._id,
-    //     name:cartItems.product.name,//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //     price: cartItems.product.price,//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //     count:cartItems.count,
-    //     size: cartItems.size,
-    //     status:'pending'
-    // }));
+        console.log("---------------------1111111111111111111---------------------",address)
+        console.log(cartItems)
+        
+        // const products = cartItems.map(cartItems =>({
+        //     productId: cartItems.product._id,
+        //     name:cartItems.product.name,//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //     price: cartItems.product.price,//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //     count:cartItems.count,
+        //     size: cartItems.size,
+        //     status:'pending'
+        // }));
 
-    const products = cartItems.map(({ product, count, size }) => ({
-        productId: product._id,
-        name: product.name,
-        price: product.price,
-        count: count,
-        size: size,
-        status: 'pending'
-    }));
-    
-    console.log("==========",products)
-    const data = {
-        "userId":userId,
-        "orderId":randomOrderId,
-        "address":address,
-        "date":formattedDate,
-        products:products,
-        "amount":finalAmount,
-        "paymentMethod":'COD',
-        "status":"pending"
-    }
-    const transaction = {
-        transaction:'debited',
-        amount:finalAmount,
-        orderId:randomOrderId,
-        date:formattedDate
-    }
+        const products = cartItems.map(({ product, count, size }) => ({
+            productId: product._id,
+            name: product.name,
+            price: product.price,
+            count: count,
+            size: size,
+            status: 'pending'
+        }));
 
-    console.log(req.body.paymentMethod,'payment method req');
-    console.log("data",data)
-    const order = await OrderModel.create(data)
-    console.log("data created :::::::",order);
-    if(order){
-        if(req.body.paymentMethod == 'Wallet'){
-            console.log('-------------------Wallet')
-            let stockUpdate = userFunc.stockQuantityUpdate();
-            if(stockUpdate){
-                await UserModel.updateOne({_id:userId},{$inc:{wallet: -finalAmount}})
-                await UserModel.updateOne({_id:userId},{$push:{walletHistory:transaction}})
-                const pendingOrders = await OrderModel.findOne({orderId:order.orderId})
-                const updateDetails = await OrderModel.updateOne({orderId:order.orderId},{$set:{paymentMethod: 'Wallet'}});
-            
-                if(updateDetails){
-                    response ={status:true,pendingOrders}
-                    res.json(response);
-                }else{
-                    response = {status:false}
-                    res.json(response);
+        console.log("==========",products)
+        const data = {
+            "userId":userId,
+            "orderId":randomOrderId,
+            "address":address,
+            "date":formattedDate,
+            products:products,
+            "amount":finalAmount,
+            "paymentMethod":'COD',
+            "status":"pending"
+        }
+        const transaction = {
+            transaction:'debited',
+            amount:finalAmount,
+            orderId:randomOrderId,
+            date:formattedDate
+        }
+
+        console.log(req.body.paymentMethod,'payment method req');
+        console.log("data",data)
+        const order = await OrderModel.create(data)
+        console.log("data created :::::::",order);
+        if(order){
+            if(req.body.paymentMethod == 'Wallet'){
+                console.log('-------------------Wallet')
+                let stockUpdate = userFunc.stockQuantityUpdate();
+                if(stockUpdate){
+                    await UserModel.updateOne({_id:userId},{$inc:{wallet: -finalAmount}})
+                    await UserModel.updateOne({_id:userId},{$push:{walletHistory:transaction}})
+                    const pendingOrders = await OrderModel.findOne({orderId:order.orderId})
+                    const updateDetails = await OrderModel.updateOne({orderId:order.orderId},{$set:{paymentMethod: 'Wallet'}});
+                
+                    if(updateDetails){
+                        response ={status:true,pendingOrders}
+                        res.json(response);
+                    }else{
+                        response = {status:false}
+                        res.json(response);
+                    }
                 }
-            }
-        }else if(req.body.paymentMethod == 'Online'){
-            console.log('------------------------Online')
-            const order = await generateRazorpay(randomOrderId,finalAmount);
-            
-            response = {status:true,order}
-            console.log(response)
-            res.json(response);
-        }else{
-            console.log("stage1111111111111111");
-            let stockUpdate = userFunc.stockQuantityUpdate();
-            if(stockUpdate){
-                console.log("stage 2222222222222222222222222");
-                const pendingOrders = await OrderModel.findOne({orderId:order.orderId});
-                console.log("pending order//:",pendingOrders)
-                const deleteCart = await CartModel.deleteMany({});
-                if(deleteCart){
-                    console.log('cart deleted');
-                    response = {status:true,pendingOrders}
-                    res.json(response);
+            }else if(req.body.paymentMethod == 'Online'){
+                console.log('------------------------Online')
+                const order = await generateRazorpay(randomOrderId,finalAmount);
+
+                response = {status:true,order}
+                console.log(response)
+                res.json(response);
+            }else{
+                console.log("stage1111111111111111");
+                let stockUpdate = userFunc.stockQuantityUpdate();
+                if(stockUpdate){
+                    console.log("stage 2222222222222222222222222");
+                    const pendingOrders = await OrderModel.findOne({orderId:order.orderId});
+                    console.log("pending order//:",pendingOrders)
+                    const deleteCart = await CartModel.deleteMany({});
+                    if(deleteCart){
+                        console.log('cart deleted');
+                        response = {status:true,pendingOrders}
+                        res.json(response);
+                    }
                 }
             }
         }
+    }catch(error){
+        console.error("", error);
+        res.status(500).json({error: "Internal Server Error"});
     }
-// }catch(error){
-//     console.error("", error);
-//     res.status(500).json({error: "Internal Server Error"});
-// }
 }
 
 
 const verifyPayment = async (req,res)=>{
-
-    console.log('payment verification req.body', req.body['order[receipt]']);
-    const verificationSuccess = await userFunc.paymentVarification(req.body);
-    console.log('jjjjjjjjjjjfjjjjjjjjfjfjj')
-    let response;
-    console.log(verificationSuccess)
-    if(verificationSuccess){
-        console.log('verificationSuccess')
-        const success = await userFunc.changePaymentStatus(req.body['order[receipt]'])
-        if(success){
-            console.log('success')
-            const onlineDetails  = await OrderModel.findOne({ orderId: req.body['order[receipt]'] })
-            const stockUpdate = await userFunc.stockQuantityUpdate()
-            if(stockUpdate){
-                console.log('stock updated')
-                response = {status:true,onlineDetails}
-                res.json(response);
+    try{
+        console.log('payment verification req.body', req.body['order[receipt]']);
+        const verificationSuccess = await userFunc.paymentVarification(req.body);
+        console.log('jjjjjjjjjjjfjjjjjjjjfjfjj')
+        let response;
+        console.log(verificationSuccess)
+        if(verificationSuccess){
+            console.log('verificationSuccess')
+            const success = await userFunc.changePaymentStatus(req.body['order[receipt]'])
+            if(success){
+                console.log('success')
+                const onlineDetails  = await OrderModel.findOne({ orderId: req.body['order[receipt]'] })
+                const stockUpdate = await userFunc.stockQuantityUpdate()
+                if(stockUpdate){
+                    console.log('stock updated')
+                    response = {status:true,onlineDetails}
+                    res.json(response);
+                }else{
+                    console.log('product not updated');
+                }
             }else{
-                console.log('product not updated');
+                console.log('Not success.')
+                res.status(404).render("user/error-handling")
             }
-        }else{
-            console.log('Not success.')
-            res.status(404).render("user/error-handling")
+    
         }
-
+    }catch(error){
+        res.status(500).json({error: "Internal Server Error"});
     }
 }
 
 
 const generateRazorpay = async (randomOrderId, finalAmount) => {
     try {
-      const order = await instance.orders.create({
-        amount: finalAmount * 100,
-        currency: "INR",
-        receipt: randomOrderId,
-        notes: {
-          key1: "value3",
-          key2: "value2"
-        }
-      });
-      console.log(order,'order-------------------')
-      return order;
+        const order = await instance.orders.create({
+          amount: finalAmount * 100,
+          currency: "INR",
+          receipt: randomOrderId,
+          notes: {
+            key1: "value3",
+            key2: "value2"
+          }
+        });
+        console.log(order,'order-------------------')
+        return order;
     } catch (error) {
-      console.error(error);
-      throw error; // Throw the error again
+        console.error(error);
+        res.status(500).json({error: "Internal Server Error"});
     }
  };
 
@@ -795,20 +867,24 @@ const generateRazorpay = async (randomOrderId, finalAmount) => {
 
 
 const orderResponseView =  (req,res)=>{
-    res.render('user/order-response')
+    try{
+        res.render('user/order-response')
+    }catch(error){
+        res.status(500).json({error: "Internal Server Error"});
+    }
 }
 
 
 const ordersView =  async(req,res) =>{
     try{
-    const userId = req.session.user._id
-    const pendingOrders = await OrderModel.find({userId:userId}).sort({$natural: -1});
-    console.log(pendingOrders,'pendingOrderssssssssssssssss');
-    res.render('user/orders',{pendingOrders});
-} catch (error) {
-    console.error("Error in changeProductQuantity:", error);
-    res.status(500).json({error: "Internal Server Error"});
-}
+        const userId = req.session.user._id
+        const pendingOrders = await OrderModel.find({userId:userId}).sort({$natural: -1});
+        console.log(pendingOrders,'pendingOrderssssssssssssssss');
+        res.render('user/orders',{pendingOrders});
+    } catch (error) {
+        console.error("Error in changeProductQuantity:", error);
+        res.status(500).json({error: "Internal Server Error"});
+    }
 }
 
 const cancelUserOrder = async(req,res)=>{
@@ -887,67 +963,74 @@ const cancelUserOrder = async(req,res)=>{
 }
 
 const orderDetailView = async(req,res)=>{
-  
-    const orderId = req.query.id;
-    const orderDetails = await OrderModel.findById({_id:orderId});
-
-    if(!orderDetails){
-      return res.status(404).json({message:'Order not found.'});
+    try{
+        const orderId = req.query.id;
+        const orderDetails = await OrderModel.findById({_id:orderId});
+    
+        if(!orderDetails){
+          return res.status(404).json({message:'Order not found.'});
+        }
+    
+        const today = new Date();
+        const formattedDeliveryDate = moment(orderDetails.date,'DD/MM/YYYY').format('YYYY-MM-DD');
+    
+        const deliveryDate = new Date(formattedDeliveryDate);
+    
+        if(isNaN(deliveryDate.getTime())){
+          return res.status(404).json({message:"invalid delivery date."})
+        }
+    
+        const daysDifference = Math.floor((today-deliveryDate)/(1000*60*60*24)) + 1;
+    
+        console.log(daysDifference)
+        let orderReturn = false;
+    
+        if(daysDifference<=7){
+          orderReturn = true;
+        }
+        res.render("user/order-detail-view",{orderDetails,orderReturn});
+    }catch(error){
+        res.status(500).json({error: "Internal Server Error"});
     }
-
-    const today = new Date();
-    const formattedDeliveryDate = moment(orderDetails.date,'DD/MM/YYYY').format('YYYY-MM-DD');
-
-    const deliveryDate = new Date(formattedDeliveryDate);
-
-    if(isNaN(deliveryDate.getTime())){
-      return res.status(404).json({message:"invalid delivery date."})
-    }
-
-    const daysDifference = Math.floor((today-deliveryDate)/(1000*60*60*24)) + 1;
-
-    console.log(daysDifference)
-    let orderReturn = false;
-
-    if(daysDifference<=7){
-      orderReturn = true;
-    }
-    res.render("user/order-detail-view",{orderDetails,orderReturn});
 }
 
 
 const transactionOrderDetailView = async(req,res)=>{
+    try{
+        const orderId = req.query.id;
+        const orderDetails = await OrderModel.findOne({orderId:orderId});
+    
+        if(!orderDetails){
+          return res.ststus(404).json({message:'Order not found.'});
+        }
+    
+    
+        const today = new Date();
+        const formattedDeliveryDate = moment(orderDetails.date,'DD/MM/YYYY').format('YYYY-MM-DD');
+    
+        const deliveryDate = new Date(formattedDeliveryDate);
+    
+        if(isNaN(deliveryDate.getTime())){
+          return res.status(404).json({message:"invalid delivery date."})
+        }
+    
+        const daysDifference = Math.floor((today-deliveryDate)/(1000*60*60*24)) + 1;
+        console.log(daysDifference)
+        let orderReturn = false;
+    
+        if(daysDifference<=7){
+          orderReturn = true;
+        }
+        res.render("user/order-detail-view",{orderDetails,orderReturn});
+    }catch(error){
 
-    const orderId = req.query.id;
-    const orderDetails = await OrderModel.findOne({orderId:orderId});
-
-    if(!orderDetails){
-      return res.ststus(404).json({message:'Order not found.'});
     }
 
-
-    const today = new Date();
-    const formattedDeliveryDate = moment(orderDetails.date,'DD/MM/YYYY').format('YYYY-MM-DD');
-
-    const deliveryDate = new Date(formattedDeliveryDate);
-
-    if(isNaN(deliveryDate.getTime())){
-      return res.status(404).json({message:"invalid delivery date."})
-    }
-
-    const daysDifference = Math.floor((today-deliveryDate)/(1000*60*60*24)) + 1;
-console.log(daysDifference)
-    let orderReturn = false;
-
-    if(daysDifference<=7){
-      orderReturn = true;
-    }
-    res.render("user/order-detail-view",{orderDetails,orderReturn});
 }
 
 
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const userProfile = async(req,res)=>{
     // try{

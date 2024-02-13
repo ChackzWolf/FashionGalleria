@@ -12,85 +12,78 @@ const  addProduct = async (req,res) =>{
 
   console.log('started adding product')
     const {name,price,description,stockLarge,stockMedium,stockSmall} = req.body;
-
-    const categoryId = req.body.category;
-    console.log(categoryId,'categoryId')
-
-
-    const sizeStock = {
-      sizeLarge: {
-        large: "Large",
-        stock: parseInt(stockLarge) || 0
-      },
-      sizeMedium: {
-        medium: "Medium",
-        stock: parseInt(stockMedium) || 0
-      },
-      sizeSmall: {
-        small: "Small",
-        stock: parseInt(stockSmall) || 0
-      }
-    }
-    console.log('0000000000000000000')
-
-        console.log('1111111111111111111')
-        
-            const categoryConnect = await CategoryModel.findOne({name:req.body.category})
-        
-            console.log(req.files) ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        console.log('2222222222222222222')
-            const images = req.files
-                                .filter((file) =>
-                                      file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/webp")
-                                .map((file) => file.filename);   
-            console.log(images)
-            if(images.length ===3){
-                const data = {
-                  name,
-                  price,
-                  description,
-                  category:categoryId,
-                  sizeStock:sizeStock,
-                  imageUrl:images,
-                  listStatus:true,
-                  deleteStatus:false,
-                }
-                console.log('33333333333333333333333')
-                console.log(data);
-                let product = await ProductModel.create(data);
-              
-                if(product){
-                  let success = true
-                //   console.log("success")
-                //   const category = await ProductModel.aggregate([{$match:{_id:product._id}},
-                //                                                       {$lookup:{from:'categories',
-                //                                                       localField:'cat',
-                //                                                       foreignField:'_id',
-                //                                                       as:'cat'}}]);
-                  
-                //   console.log(category[0].cat[0].name, 'this is the thing')
-                  
-                //   const updatedCategory = category[0].cat[0].name;
-                  
-                //   product = await ProductModel.updateOne({_id: product._id},{$set:{category: updatedCategory}});
-                //   console.log('category added',product);
-                  
-                  
-                  console.log(product)                                                      
-                  // alert("Product has listed",product);
-                  // res.status(200).json({ success: true, msg: "Product has been listed", data: product });
-                  // res.status(200).send({success:true,msg:"Product details", data:product});
-                  res.redirect(`/admin/add-product?success=${success}`);
-                  
-                }else{
-                  let unsuccess = true
-                  res.redirect(`/admin/add-product?success=${unsuccess}`);
-                }
-        }else{
-            const wrongEntry = true;
-            res.redirect(`/admin/add-product?worngEntry=${wrongEntry}`)
+    console.log(name,price,description,stockLarge,stockMedium,stockSmall)
+    const category = await CategoryModel.find()
+    if(name == '' || price<1 || description == ''){
+      console.log('was empty')
+      let notFilled = true
+      let unsuccess = true
+    //   res.redirect(`/admin/add-product?notFilled=${notFilled}`);
+      res.render("admin/add-product",{notFilled,category})
+    }else{
+      const categoryId = req.body.category;
+      console.log(categoryId,'categoryId')
+  
+  
+      const sizeStock = {
+        sizeLarge: {
+          large: "Large",
+          stock: parseInt(stockLarge) || 0
+        },
+        sizeMedium: {
+          medium: "Medium",
+          stock: parseInt(stockMedium) || 0
+        },
+        sizeSmall: {
+          small: "Small",
+          stock: parseInt(stockSmall) || 0
         }
-    
+      }
+      console.log('0000000000000000000')
+  
+          console.log('1111111111111111111')
+          
+              const categoryConnect = await CategoryModel.findOne({name:req.body.category})
+          
+              console.log(req.files) ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          console.log('2222222222222222222')
+              const images = req.files
+                                  .filter((file) =>
+                                        file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/webp")
+                                  .map((file) => file.filename);   
+              console.log(images)
+              if(images.length ===3){
+                  const data = {
+                    name,
+                    price,
+                    description,
+                    category:categoryId,
+                    sizeStock:sizeStock,
+                    imageUrl:images,
+                    listStatus:true,
+                    deleteStatus:false,
+                  }
+                  console.log('33333333333333333333333')
+                  console.log(data);
+                  let product = await ProductModel.create(data);
+                
+                  if(product){
+                    let success = true                           
+                    console.log(product)                                                      
+
+                    res.render("admin/add-product",{success,category});
+                    
+                  }else{
+                    let unsuccess = true
+                    res.render("admin/add-product",{unsuccess,category});
+                  }
+          }else{
+              const wrongEntry = true;
+              res.render("admin/add-product",{wrongEntry,category})
+          }
+      
+    }
+  
 }                           
   
   
@@ -115,27 +108,6 @@ const listUnlistProduct = async(req,res)=>{
   }
 }
 
-const listUnlistCategory = async(req,res)=>{
-    console.log('step1')
-    const categoryName = req.body.category;
-    const subCategory = req.body.subCategory;
-    console.log(categoryName);
-    console.log(subCategory);
-    const category = await ProductModel.findById({_id:req.params.id})
-    console.log(category)
-    if(category){
-        console.log(category);
-        const update = await CategoryModel.updateOne({category:categoryName,subCategory:subCategory},{$set:{listStatus:!category.listStatus}});
-        if(update){
-            console.log(update);
-            const categories = await CategoryModel.find()
-            res.render("admin/category-list",{categories});
-        }else{
-            console.log('not updated');
-            res.render("admin/category-list");
-        }
-    } 
-}
 
 const editedProductDetails = async (req,res)=>{
   const {id, name, price , description, stockLarge, stockMedium, stockSmall, category } = req.body;
@@ -296,5 +268,5 @@ module.exports = {
     editedProductDetails,
     deleteProduct,
     addCategory,
-    listUnlistCategory
+
 }

@@ -308,6 +308,11 @@
             </a>
           </li>
           <li>
+            <a href="/admin/product-offer">
+              <i class="bi bi-circle"></i><span>Product offer</span>
+            </a>
+          </li>
+          <li>
             <a href="/admin/deleted-products">
               <i class="bi bi-circle"></i><span>Deleted Products</span>
             </a>
@@ -425,6 +430,30 @@
 
 
         </ul>
+
+      </li><!-- End Forms Nav -->
+            <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav7" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Banner Management</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav7" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/add-banner-view">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Add banner</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/banner-list">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Banner list</span></i>
+            </a>
+          </li>
+          <li>
+            <a class="nav-link collapsed" data-bs-target="#tables-nav2" href="/admin/return-non-defective">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Return Non-Defective</span></i>
+            </a>
+          </li>
+        </ul>
       </li><!-- End Forms Nav -->
 
 
@@ -451,12 +480,12 @@
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Form Elements</h1>
+      <h1>Add Banner</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="admin/index">Home</a></li>
           <li class="breadcrumb-item">Forms</li>
-          <li class="breadcrumb-item active">Edit Product details</li>
+          <li class="breadcrumb-item active">Add Banner</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -469,8 +498,8 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Edit with new Details</h5>
-              {{#if msg}}
-              <p class="text-center text-danger small">Not Updated.Please Try again</p>
+              {{#if noImage}}
+              <p class="text-center text-danger small">Image should be added</p>
               {{/if}}
 
 
@@ -486,8 +515,8 @@
                            <input type="file" name="image" id="image1" style="display: none;"
                            123  onchange="displaySelectedImage(this,'previewImage1'); displayFileName('image1', this)" accept="image/png, image/webp, image/jpeg">
                            <label for="image1"
-                             style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Image
-                             1 <span id="image1Label"></span> </label><span class="close-button"
+                             style="padding: 8px 16px; font-size: 14px; font-weight: bold; color: #fff; background-color: #3498db; cursor: pointer; border-radius: 10px; border: none; text-align: center; display: inline-block; margin: 5px;">Add image
+                              <span id="image1Label"></span> </label><span class="close-button"
                              onclick="clearImage('image1')"><span class="close-icon btn"><i
                                  class="fa-solid fa-x "></i></span></span>
                     </div>
@@ -497,14 +526,14 @@
                 <div class="row mb-3">
                   <label for="inputText" class="col-sm-2 col-form-label">Caption</label>
                   <div class="col-sm-10">
-                    <input type="text" name="caption" class="form-control">
+                    <input type="text" name="caption" placeholder="( Optional )" class="form-control">
                   </div>
                 </div>
 
                 <div class="row mb-3">
                   <label for="inputPassword" class="col-sm-2 col-form-label">Description</label>
                   <div class="col-sm-10">
-                    <textarea name="description" class="form-control"
+                    <textarea name="description" placeholder="( Optional )" class="form-control"
                       style="height: 100px"></textarea>
                   </div>
                 </div>

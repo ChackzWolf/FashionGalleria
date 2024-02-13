@@ -33,8 +33,8 @@ router.get("/deleted-products",adminLoginChecker,adminControllers.deletedProduct
 router.get("/add-category",adminLoginChecker,adminControllers.addCategory);
 router.get("/category-list",adminLoginChecker,adminControllers.categoryListView);
 router.get("/edit-category",adminControllers.editCategoryView);
-router.get("/list-unlist-category",adminLoginChecker,productControllers.listUnlistCategory);
-
+router.get("/list-unlist-category/:id",adminControllers.listUnlistCategory)
+router.get("/delete-category",adminControllers.deleteCategory);
 //order management
 router.get("/pending-orders",adminLoginChecker,adminControllers.pendingOrdersView);
 router.get("/delivered-orders",adminLoginChecker,adminControllers.deliveredOrdersView);
