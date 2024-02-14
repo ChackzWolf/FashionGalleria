@@ -19,6 +19,25 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+	<style>
+		/* Hide the tooltip by default */
+		#password + .tooltip {
+		  display: none;
+		  position: absolute;
+		  background-color: #333;
+		  color: white;
+		  padding:  5px;
+		  border-radius:  4px;
+		  font-size:  12px;
+		  z-index:  1000;
+		}
+
+		/* Show the tooltip when the input is focused */
+		#password:focus + .tooltip {
+		  display: block;
+		}
+	</style>
 <!--===============================================================================================-->
 </head>
 <body>
@@ -28,6 +47,7 @@
 			<div class="wrap-login100">
 				<div class="login100-pic js-tilt" data-tilt>
 					<img src="img/logo.svg" alt="IMG">
+			
 				</div>
 
 				<form class="login100-form" action ="/signupUser" method= "post">
@@ -58,21 +78,21 @@
 						    <i class="fa fa-envelope" aria-hidden="true"></i>
 						</span>
 					</div>
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="name"  name="referenceId" placeholder="Reference code(optional)">
+						<span class="focus-input100"></span>
+				
+					</div>
+					<div class="wrap-input100 validate-input" data-validate = "Password is required">
+						
+						<input class="input100" id="password" type="password"    name="password" placeholder="Create password">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+						    <i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+							<p style="font-size: small; color: red;">{{isPasswordValid}}</p>
 
-					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="password" name="password" placeholder="Password">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
-						    <i class="fa fa-lock" aria-hidden="true"></i>
-						</span>
-					</div>
-					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="name" name="referenceId" placeholder="Reference code(optional)">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
-						    <i class="fa fa-lock" aria-hidden="true"></i>
-						</span>
-					</div>
 					<div class="container-login100-form-btn">
 						<button class="login100-form-btn">
 							Login
@@ -118,6 +138,24 @@
 	</script>
 <!--===============================================================================================-->
 	<script src="js/mains.js"></script>
+
+	<script>
+		document.getElementById('password').addEventListener('focus', function() {
+  // Create the tooltip element if it doesn't exist
+  var tooltip = document.createElement('div');
+  tooltip.className = 'tooltip';
+  tooltip.innerHTML = this.dataset.tooltipText;
+  this.parentNode.appendChild(tooltip);
+});
+
+// Optionally, hide the tooltip when the input loses focus
+document.getElementById('password').addEventListener('blur', function() {
+  var tooltip = this.nextElementSibling;
+  if (tooltip && tooltip.classList.contains('tooltip')) {
+    tooltip.style.display = 'none';
+  }
+});
+	</script>
 
 </body>
 </html>

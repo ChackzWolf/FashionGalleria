@@ -468,11 +468,8 @@
         <a class="nav-link collapsed" data-bs-target="#tables-nav" href="/admin/userList">
           <i class="bi bi-layout-text-window-reverse"></i><span>User List</span></i>
         </a>
-
       </li><!-- End Forms Nav -->
-
     </ul>
-
   </aside><!-- End Sidebar-->
 
 
@@ -499,7 +496,9 @@
             <div class="card-body">
 <div style="display: flex; justify-content: space-between; align-items: center; max: width 100px;">
   <h5 class="card-title" style="margin-right: auto;">Categories</h5>
-
+  {{#if delete}}
+  <p class="text-center text-danger small">Category has been deleted successfuly.</p>
+  {{/if}}
   {{#if msg}}
   <p class="text-center text-danger small">Cause some error. Try again</p>
   {{/if}}

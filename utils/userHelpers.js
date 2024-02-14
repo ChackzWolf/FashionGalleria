@@ -4,22 +4,55 @@ const ProductModel = require('../models/Product');
 const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 const AddressModel = require("../models/Address");
-const formatDate = require("../utils/dateGenerator");
+const formatDate = require("./dateGenerator");
 const UserModel = require("../models/User")
 
 
-function calculatePercentageDifference(num1, num2) {
-    // Calculate the absolute difference between the two numbers
-    var absoluteDifference = Math.abs(num1 - num2);
-    
-    // Calculate the average of the two numbers
-    var average = (num1 + num2) / 2;
-    
-    // Calculate the percentage difference
-    var percentageDifference = (absoluteDifference / average) * 100;
-    
-    return percentageDifference.toFixed(2); // Round to 2 decimal places
+
+
+function validateEmail(email) {
+    // Regular expression for validating an email address
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
 }
+
+const validatePassword = (password)=> {
+    // Define password requirements
+    const minLength = 8;
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
+    const numberRegex = /[0-9]/;
+    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+
+    // Check length
+    if (password.length < minLength) {
+        return "Password must be at least " + minLength + " characters long.";
+    }
+
+    // Check for uppercase letters
+    if (!uppercaseRegex.test(password)) {
+        return "Password must contain at least one uppercase letter.";
+    }
+
+    // Check for lowercase letters
+    if (!lowercaseRegex.test(password)) {
+        return "Password must contain at least one lowercase letter.";
+    }
+
+    // Check for numbers
+    if (!numberRegex.test(password)) {
+        return "Password must contain at least one number.";
+    }
+
+    // Check for special characters
+    if (!specialCharRegex.test(password)) {
+        return "Password must contain at least one special character.";
+    }
+
+    // Password meets all requirements
+    return true;
+}
+
 
 
 const getTotalAmount = async (req,res)=>{
@@ -401,5 +434,7 @@ module.exports = {
     changePaymentStatus,
     generateRandomReferenceId,
     referenceIdApplyOffer,
+    validatePassword,
+    validateEmail
 
 }

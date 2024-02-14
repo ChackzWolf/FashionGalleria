@@ -10,7 +10,7 @@ const CouponModel = require("../models/Coupon");
 const BannerModel = require("../models/Banner");
 const { findOne } = require("../models/Address");
 const formatDate = require("../utils/dateGenerator");
-const adminFunc = require("../controllers/adminFunctions");
+const adminFunc = require("../utils/adminHelpers");
 const puppeteer = require("puppeteer")
 const fileHandler = require("../utils/files")
 
@@ -62,22 +62,22 @@ const adminChartLoad = async (req, res) => {
        req.session.destroy((err)=>{
            console.log("session deleted")
            res.redirect("/admin/login")
-           }) 
+           }) ;
     }catch{
        res.status(500).render("user/error-handling");
     }
 }
 
- const userList = async (req,res)=>{
-    try{
-        const users = await UserModel.find()
-        Swal.fire("SweetAlert2 is working!");
-        res.render("admin/user-list",{users})
-    }catch(error){
-        res.status(500).render("user/error-handling");
-    }
 
- }
+const userList = async (req,res)=>{
+   try{
+       const users = await UserModel.find()
+       Swal.fire("SweetAlert2 is working!");
+       res.render("admin/user-list",{users})
+   }catch(error){
+       res.status(500).render("user/error-handling");
+   }
+}
 
 
 const addCategory = async(req,res)=>{
@@ -97,7 +97,6 @@ const addProductView = async(req,res)=>{
     }catch(error){
         res.status(500).render("user/error-handling");
     }
-
 }
 
 
@@ -117,7 +116,7 @@ const userBlockUnblock = async (req,res) => {
     try{
         const userData = await UserModel.findOne({_id: req.query.id});
         await UserModel.updateOne({_id:req.query.id},{$set: {status: !userData.status}})
-        const users = await UserModel.find()
+        const users = await UserModel.find();
         res.render("admin/user-list",{users});
     }catch(error){
         res.status(500).render("user/error-handling"); 
@@ -127,47 +126,33 @@ const userBlockUnblock = async (req,res) => {
 
 const loginAdmin = async (req,res)=>{
     try{
-        const data = {
-            email : req.body.adminID,
-            password: req.body.password
-         }
-     
-         console.log("Triggered")
-     
          const adminData = await AdminModel.findOne({adminID:req.body.adminID})
-         if(req.body.adminID != ''){
-            if(adminData){
-              console.log("email checked")
-     
-              if(admin = req.body.password === adminData.password){
-                 req.session.admin = admin;
-                 
-                 console.log("password matched")
-                 console.log("session:",req.session.admin)
+        if(req.body.adminID != ''){// Making sure admin id is not empty
+            if(adminData){    
+              if(admin = req.body.password === adminData.password){ //checking id password matches
+                 req.session.admin = admin; //storing admin true value to session;
                  res.redirect('/admin')
-                 
               }
               else{
-                const failedPassword = true;
+                const failedPassword = true; // if password deos'nt matches
                 res.redirect(`/admin/login?failedPassword=${failedPassword}`)
                 console.log("Password not matching.")
               }
-           }
-           else{
-              const failedEmail = true
-              res.redirect(`/admin/login?failedEmail=${failedEmail}`);
-              console.log("email is not matching.")
-           }
-         }else{
-          let fieldEmpty = true
-          res.redirect(`/admin/login?fieldEmpty=${fieldEmpty}`);
-          console.log("Field is empty");
-         }
+           }else{
+                const failedEmail = true // if admin Id deos'nt matches
+                res.redirect(`/admin/login?failedEmail=${failedEmail}`);
+                console.log("email is not matching.")
+            }
+        }else{
+            const fieldEmpty = true
+            res.redirect(`/admin/login?fieldEmpty=${fieldEmpty}`);
+            console.log("Field is empty");
+        }
     }catch(error){
         res.status(500).render("user/error-handling"); 
     }
+}
 
- }
 
 const deletedProductsView = async(req,res)=>{
     try{
@@ -177,6 +162,8 @@ const deletedProductsView = async(req,res)=>{
         res.status(500).render("user/error-handling")
     }    
 }
+
+
 const categoryListView = async(req,res)=>{
     try{
         const categories = await CategoryModel.find({deleteStatus:false});
@@ -185,6 +172,7 @@ const categoryListView = async(req,res)=>{
         res.status(500).render("user/error-handling")
     }
 }
+
 
 const orderDelivered = async(req,res)=>{
     try{
@@ -222,8 +210,8 @@ const orderDelivered = async(req,res)=>{
     }catch(error){
         res.status(500).render("user/error-handling")
     }
-
 }
+
 
 const orderShipped = async(req,res)=>{
     try{
@@ -251,7 +239,6 @@ const orderShipped = async(req,res)=>{
     }catch(error){
         res.status(500).render("user/error-handling")
     }
-
 }
 
 
@@ -264,7 +251,6 @@ const pendingOrdersView = async(req,res)=>{
                 }
             }
         });
-      
         res.render("admin/pending-orders",{pendingOrders});
     }catch(error){
         res.status(500).render("user/error-handling") 
@@ -279,10 +265,7 @@ const deliveredOrdersView = async(req,res)=>{
     }catch(error){
         res.status(500).render("user/error-handling") 
     }
-
 }
-
-
 
 
 const cancelledOrdersView = async(req,res)=>{
@@ -304,6 +287,7 @@ const orderDetailView = async(req,res)=>{
         res.status(500).render("user/error-handling")
     }
 }
+
 
 // to add new coupon page
 const addCouponView = (req,res) =>{
@@ -360,6 +344,7 @@ const addNewCoupon = async(req,res)=>{
     }
 }
 
+
 const couponListView = async(req,res)=>{
     try{
         const listedCoupon = await CouponModel.find();
@@ -370,19 +355,17 @@ const couponListView = async(req,res)=>{
 
 }
 
+
 const listUnlistCoupon = async(req,res)=>{
     try{
-        console.log("step1");
         const coupon = await CouponModel.findById({_id:req.params.id});
         if(coupon){
-            console.log('step2');
             const update = await CouponModel.updateOne({_id:coupon.id},{$set:{listStatus:!coupon.listStatus}});
             if(update){
-                console.log('list status updated')
                 const listedCoupon = await CouponModel.find();
                 res.render("admin/listed-coupon",{listedCoupon})
             }
-        }
+        }    
     }catch(error){
         res.status(500).render("user/error-handling")
     }
@@ -391,7 +374,7 @@ const listUnlistCoupon = async(req,res)=>{
 
 const returnPending =  async (req,res)=>{
     try{
-        const returnPending = await OrderModel.find({
+        const returnPending = await OrderModel.find({// matching only return defective and non defective.
             products: {
                 $elemMatch: {
                     status: { $in: ['returnNonDefective', 'returnDefective'] }
@@ -424,6 +407,7 @@ const returnNonDefective = async(req,res)=>{
     }
 }
 
+
 const orderCancel = async(req,res)=>{//// I have made some terribl changes here 
     try{
         const orderId = req.query.orderId;
@@ -431,20 +415,11 @@ const orderCancel = async(req,res)=>{//// I have made some terribl changes here
         
         console.log(orderId,'orderId')
         console.log(productId,'proudctId')
-    
-        // const defective = await OrderModel.findOne({orderId:orderId,status:'returnDefective'})
+
         const defective = await OrderModel.find({
             products: {
                 $elemMatch: {
                     status:'returnDefective'
-                }
-            }
-        });
-        // const nonDefective = await OrderModel.findOne({orderId:orderId,status:'returnNonDefective'}); 
-        const nonDefective = await OrderModel.find({
-            products: {
-                $elemMatch: {
-                    status: 'returnNonDefective'
                 }
             }
         });
@@ -458,7 +433,8 @@ const orderCancel = async(req,res)=>{//// I have made some terribl changes here
                     $set: { 'products.$.status': 'returnAcceptDef' }
                 });
         }else{
-            const updated = await OrderModel.updateOne({orderId:orderId},{$set:{status:'returnAcceptNonDef'}})
+            // updating  non defenctive products
+            await OrderModel.updateOne({orderId:orderId},{$set:{status:'returnAcceptNonDef'}})
         }
     }catch(error){
         res.status(500).render("user/error-handling")
@@ -501,10 +477,9 @@ const returnAccept = async (req, res) => {
         const price = product.products[0].price;
     
         if(status === 'returnDefective'){
-            console.log('Status:',status)
-        //   const orderUpdate = await OrderModel.updateOne({ _id:orderId},{$set:{status:'returnAcceptDef'}})
-    
-            const orderUpdate = await OrderModel.updateOne(
+
+            // updating order status here to return accept defective product (returnAcceptDef) 
+            await OrderModel.updateOne(
                 {
                     _id:orderId,  'products._id':productId
                 },
@@ -513,9 +488,8 @@ const returnAccept = async (req, res) => {
                 });
             
         }else{
-          console.log('Status:',status)
-        //   const orderUpdate = await OrderModel.updateOne({ _id:orderId},{$set:{status:'returnAcceptNonDef'}})
-          const orderUpdate = await OrderModel.updateOne(
+          // updating order status here ot return accept non-defective product (returnAcceptNonDef)
+          await OrderModel.updateOne(
             {
                 _id:orderId,  'products._id':productId
             },
@@ -531,10 +505,8 @@ const returnAccept = async (req, res) => {
         }
         console.log(price,'price')
         const walletUpdate = await UserModel.updateOne({ _id: orderDetails.userId }, { $inc: { wallet: orderDetails.amount } }); // Here I'm adding back the amount to the user's wallet.
-        const walletHistory = await UserModel.updateOne({_id:orderDetails.userId},{$push:{walletHistory:transaction}}) // here I'm journaling transaction history to the user model
-    
-    
-      
+        await UserModel.updateOne({_id:orderDetails.userId},{$push:{walletHistory:transaction}}) // here I'm journaling transaction history to the user model
+
         // Check the result of the update
         if (walletUpdate) {
           console.log(walletUpdate)
@@ -542,7 +514,6 @@ const returnAccept = async (req, res) => {
         } else {
             res.render("admin/return-pending",{returnPending});
         }
-
     } catch (err) {
         res.status(500).render("user/error-handling");
     }
@@ -556,8 +527,8 @@ const editCouponDetails = async(req,res)=>{
     }catch(error){
 
     }
-
 }
+
 
 const editCoupon = async(req,res)=>{
     try{
@@ -583,6 +554,7 @@ const editCoupon = async(req,res)=>{
         res.status(500).render("user/error-handling");
     }
 }
+
 
 const deleteCoupon = async(req,res)=>{
     try{
@@ -614,7 +586,7 @@ const editCategoryView = async(req,res)=>{
     }
 }
 
-// const walletUpdate = await UserModel.updateOne({ _id: orderDetails.userId }, { $inc: { wallet: orderDetails.amount } });
+
 const editCategory = async(req,res)=>{
     try{
         const {id,name,offer} = req.body;
@@ -625,11 +597,6 @@ const editCategory = async(req,res)=>{
             listStatus:true,
             offer:offerNum
         }
-      
-      
-        console.log(updateData)
-        
-      //   const updateCategory = await CategoryModel.updateOne({_id:id},{$set:{updateData}})
         const update = await CategoryModel.updateOne({_id:id},{$set:{name:name,offer:offerNum}});
         console.log(update,'update');
         if(offerNum >0){
@@ -656,8 +623,6 @@ const editCategory = async(req,res)=>{
               console.log('updated')
               let success = true
               res.redirect(`/admin/category-list?success=${success}`)
-          }else{
-              console.log('failed');  
           }
     }catch(error){
         res.status(500).render("user/error-handling");
@@ -691,8 +656,6 @@ const addProductOffer = async(req,res)=>{
         console.log(req.body.id,'id');
         console.log(offerPercentage,'offer percentage');
         const product = await ProductModel.findOne({_id:id});
-        // const offer = product.price * offerPercentage / 100
-    
         const offerPrice = adminFunc.reducePercentageFromPrice(product.price,offerPercentage);
         if(offerPercentage > 0 ){
             const addOffer = await ProductModel.updateOne({_id:id},{$set:{offerPrice:offerPrice,productOffer:true}})
@@ -721,6 +684,7 @@ const editProductOfferView = async(req,res)=>{
     try{
         const productId = req.query.id;
         const singleProduct = await ProductModel.findOne({_id:productId});
+        // percentage defference of orginal value and discount value
         const percentage = adminFunc.calculatePercentageDifference(singleProduct.price, singleProduct.offerPrice)
         res.render("admin/edit-product-offer-view",{singleProduct,percentage});
     }catch{
@@ -792,6 +756,7 @@ const bannerListView = async(req,res)=>{
     }
 }
 
+
 const listUnlistBanner = async(req,res)=>{
     try{
         const bannerId = req.params.id;
@@ -818,6 +783,7 @@ const listUnlistBanner = async(req,res)=>{
 
 }
 
+
 const deleteBanner = async(req,res)=>{
     try{
         const bannerId = req.params.id;
@@ -830,10 +796,8 @@ const deleteBanner = async(req,res)=>{
                 fileHandler.deleteFile(imageUrl);
             }
             await BannerModel.deleteOne({_id:bannerId});
-            console.log('Deleted')
             const banner = await BannerModel.find();
-            res.render("admin/banner-list",{banner})
-            
+            res.render("admin/banner-list",{banner})  
         }
     }catch(error){
         res.status(500).render("user/error-handling"); 
@@ -841,22 +805,15 @@ const deleteBanner = async(req,res)=>{
 }
 
 
-
 const generateReport = async (req, res) => {
-
-    try {
-        console.log('1')
+    try{
         const browser = await puppeteer.launch({
           headless: false //
         });
-        console.log('2')
-
         const page = await browser.newPage();
         await page.goto(`${req.protocol}://${req.get("host")}` + "/report", {
           waitUntil: "networkidle2"
         })
-        console.log('3')
-
         await page.setViewport({ width: 1680, height: 1050 })
         const todayDate = new Date()
         const pdfn = await page.pdf({
@@ -864,22 +821,20 @@ const generateReport = async (req, res) => {
           printBackground: true,
           format: "A4"
         })
-        console.log('4')
-
         if (browser) await browser.close()
         console.log('if browser')
-
         const pdfURL = path.join(__dirname, "../public/files", todayDate.getTime() + ".pdf")
         res.download(pdfURL, function (err) {
-          if (err) {
-              console.log('err')
-            res.status(500).render("user/error-handling");
-          }
+            if (err) {
+                console.log('err')
+                  res.status(500).render("user/error-handling");
+            }
         })
-    } catch (error) {
+    }catch(error) {
         res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
     }
-  }
+}
+
 
 const listUnlistCategory = async (req,res)=>{
     try{
@@ -907,12 +862,12 @@ const deleteCategory = async (req,res)=>{
     try{
         const categoryId = req.params.id;
         const deleteCategory = await CategoryModel.updateOne({_id:categoryId},{$set:{deleteStatus:true}});
-    
         if(deleteCategory){
             const deleteProducts = await CategoryModel.updateMany({category:categoryId},{$set:{deleteStatus:true}});
             if(deleteProducts){
                 const deleted = true
                 const categories = await CategoryModel.find({deleteStatus:false});
+                res.render("admin/category-list",{categories,deleted});
             }
         }
     }catch(error){

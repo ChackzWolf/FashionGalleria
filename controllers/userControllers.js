@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt")
 const saltRounds = 10;
 const UserModel = require("../models/User")
 const ProductModel = require("../models/Product")
-const userFunc = require("../controllers/userFunctions");
+const userFunc = require("../utils/userHelpers");
 const { response } = require("express");
 const sendMail = require("../utils/nodeMailer");
 const session = require("express-session");
@@ -76,9 +76,7 @@ const shopView = async (req,res) => {
         let strMax = req.query.maxamount;
         let minAmount;
         let maxAmount;
-        console.log(req.query.category,'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjcccccccccccccccccccccccccccccc')
         if(typeof strMin === 'string' && typeof strMax === 'string'){
-            
             // Split the string into an array of characters
             const charArrayMin = strMin.split('');
             const charArrayMax = strMax.split('');
@@ -92,11 +90,8 @@ const shopView = async (req,res) => {
             minAmount = Number(minAmountStr);
             maxAmount = Number(maxAmountStr);
             console.log(maxAmount,typeof maxAmount);
-    
         }
-        console.log(req.query.category,'222222222222')
-    
-        // if(req.query.sort || req.query.category){
+
         if(req.query.category && minAmount && maxAmount){
             const category = req.query.category;
             console.log('reached',maxAmount,category)
@@ -122,49 +117,11 @@ const shopView = async (req,res) => {
     
                 countPages[i] = i + 1
             }
-    
-            let small = 0;
-            let medium = 0;
-            let large = 0;
-            let men = 0
-            let women = 0
-    
-            // sizes
-            // if (Array.isArray(sizes)) {
-            //     for (let i = 0; i < sizes.length; i++) {
-            //         if (sizes[i] === "Small") {
-            //             small++;
-            //         } else if (sizes[i] === "Medium") {
-            //             medium++;
-            //         } else if (sizes[i] === "Large") {
-            //             large++;
-            //         }
-            //     }
-            // } else if (sizes === "Small") {
-            //     small++;
-            // } else if (sizes === "Medium") {
-            //     medium++;
-            // } else if (sizes === "Large") {
-            //     large++;
-            // }
-    
-            //category 
-            if (Array.isArray(category)) {
-                for (let i = 0; i < category.length; i++) {
-                    if (category[i] === "Men") {
-                        men++
-                    } else if (category[i] === "Women") {
-                        women++
-                    }
-                }
-            } else if (category === "Men") {
-                men++ ;
-            } else if (category === "Women") {
-                women++ ;
-            };
+
+            console.log('category',category)
             docCount= documents
             const categoryName = await CategoryModel.find({deleteStatus:false,listStatus:true});
-            res.render("user/shop", { products,men, women, small, medium, large ,categoryName})
+            res.render("user/shop", { products,categoryName,category,minAmount,maxAmount})
         }else{
             console.log('going through else.',req.query.category,'category')
             let products = await ProductModel.find({listStatus: true, deleteStatus: false});
@@ -369,54 +326,66 @@ const userLogout = (req,res)=>{
 const signupUser  = async (req,res) =>{
     try{
         const {name,email,number,password,referenceId}= req.body;
-
-        const currentDate = new Date();
-        const formattedDate = formatDate(currentDate);
-    
-        let wallet = 50;
-        let walletHistory=[{transaction:'credited',amount:100,orderId:'Joining bonus',date:formattedDate}];
-    
-        if(referenceId){
-            var referralOffer = await userFunc.referenceIdApplyOffer(referenceId);
-            if(referralOffer){
-                wallet = wallet+100
-                const dataHistory = {
-                                    transaction:'credited',
-                                    amount:50,
-                                    orderId:'Referral joining bonus',
-                                    date:formattedDate
-                                }
-                walletHistory.push(dataHistory);
-            }
-        }
-    
-        sendMail(email)
-        session.email = email
-      
-        UserModel.findOne({email: req.body.email}).then(async (user)=> {
-            if(user){
-                console.log("Email already exists.");
-                res.render("user/signup")
+        const isPasswordValid = userFunc.validatePassword(password)
+        if(isPasswordValid !== true){
+            const isEmailValid = validateEmail(email);
+            if(isEmailValid){
+                const currentDate = new Date();
+                const formattedDate = formatDate(currentDate);
+            
+                let wallet = 50;
+                let walletHistory=[{transaction:'credited',amount:100,orderId:'Joining bonus',date:formattedDate}];
+            
+                if(referenceId){
+                    var referralOffer = await userFunc.referenceIdApplyOffer(referenceId);
+                    if(referralOffer){
+                        wallet = wallet+100
+                        const dataHistory = {
+                                            transaction:'credited',
+                                            amount:50,
+                                            orderId:'Referral joining bonus',
+                                            date:formattedDate
+                                        }
+                        walletHistory.push(dataHistory);
+                    }
+                }
+            
+                sendMail(email)
+                session.email = email
+                
+                UserModel.findOne({email: req.body.email}).then(async (user)=> {
+                    if(user){
+                        console.log("Email already exists.");
+                        res.render("user/signup")
+                    }else{
+                        const data = {
+                            name: req.body.name,
+                            number: req.body.number,
+                            email : req.body.email,
+                            password : req.body.password,
+                            status: true,
+                            wallet:wallet,
+                            walletHistory:walletHistory,
+                            referenceId: userFunc.generateRandomReferenceId()
+                        }
+                        // data.password = await bcrypt.hash(data.password,saltRound)
+                        // await UserModel.insertMany([data])
+                        console.log("data inserted")
+                        session.userData = data;
+                        if(session.userData){
+                            res.render("user/otp")
+                        }
+                    }
+                })
             }else{
-                const data = {
-                    name: req.body.name,
-                    number: req.body.number,
-                    email : req.body.email,
-                    password : req.body.password,
-                    status: true,
-                    wallet:wallet,
-                    walletHistory:walletHistory,
-                    referenceId: userFunc.generateRandomReferenceId()
-                }
-                // data.password = await bcrypt.hash(data.password,saltRound)
-                // await UserModel.insertMany([data])
-                console.log("data inserted")
-                session.userData = data;
-                if(session.userData){
-                    res.render("user/otp")
-                }
+                const errorMessage = "Please enter a valid email."
+                res.render("user/signup",{errorMessage})
             }
-        })
+        }else{
+            const errorMessage = isPasswordValid
+            res.render("user/signup",{errorMessage})
+        }
+        
     }catch(error){
         res.status(500).json({ status: false, error: 'Something went wrong on the server.' });
     }
@@ -709,28 +678,16 @@ const checkout = async(req,res)=>{
         let response;
         const userId = req.session.user._id;
         const selectedAddressId = req.body.selectedAddressId;
-        console.log('sekkkkkkkkkkkkkkk',selectedAddressId)
         const randomOrderId = generateRandomOrderId();
         const currentDate = new Date();
         const formattedDate = formatDate(currentDate);
         const finalAmount = req.body.finalAmount;
         let userAddress = await  AddressModel.findOne({userId: userId});
-        console.log('userAddress',userAddress)
-        
+        console.log('userAddress',userAddress) 
         const address = userAddress.address.find(address => address._id.equals(selectedAddressId));
         const cartItems = await userFunc.getProducts(userId);
-
-        console.log("---------------------1111111111111111111---------------------",address)
         console.log(cartItems)
         
-        // const products = cartItems.map(cartItems =>({
-        //     productId: cartItems.product._id,
-        //     name:cartItems.product.name,//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //     price: cartItems.product.price,//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //     count:cartItems.count,
-        //     size: cartItems.size,
-        //     status:'pending'
-        // }));
 
         const products = cartItems.map(({ product, count, size }) => ({
             productId: product._id,
@@ -1030,10 +987,10 @@ const transactionOrderDetailView = async(req,res)=>{
 
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const userProfile = async(req,res)=>{
-    // try{
+    try{
         console.log('user profile');
         const userId = req.session.user._id
         const userDetails = await UserModel.findById({_id:userId});
@@ -1045,10 +1002,10 @@ const userProfile = async(req,res)=>{
         console.log(newAddress);
 
         res.render('user/user-profile',{userDetails,newAddress});
-    // } catch (error) {
-    //     console.error("Error in changeProductQuantity:", error);
-    //     res.status(500).json({error: "Internal Server Error"});
-    // }
+     } catch (error) {
+         console.error("Error in changeProductQuantity:", error);
+         res.status(500).json({error: "Internal Server Error"});
+     }
 }
 
 
@@ -1149,7 +1106,6 @@ const editProfile = async(req,res)=>{
         res.render('user/user-profile',{errOccured,userDetails,newAddress});
     }
     } catch (error) {
-        console.error("Error in changeProductQuantity:", error);
         res.status(500).json({error: "Internal Server Error"});
     }
 }
@@ -1198,21 +1154,27 @@ const changePassword = async (req, res) => { // changing existing password from 
 }
 
 const createNewPasswrod = async(req,res)=>{ // for forgot password
-    const currentPassword = req.body.password
+    try{
+        const currentPassword = req.body.password
       
-    let newPassword = req.body.newPassword
-    const renewPassword = req.body.renewPassword;
-    console.log(newPassword)
-    const email = session.email;
-    console.log('email',email);
-    if(newPassword === renewPassword){
-        console.log('password updated')
-        const update = await UserModel.updateOne({email:email},{$set:{password:newPassword}})
-        if(update){
-            console.log('password really updated');
-            res.render('user/login');
+        let newPassword = req.body.newPassword
+        const renewPassword = req.body.renewPassword;
+        console.log(newPassword)
+        const email = session.email;
+        console.log('email',email);
+        if(newPassword === renewPassword){
+            console.log('password updated')
+            const update = await UserModel.updateOne({email:email},{$set:{password:newPassword}})
+            if(update){
+                console.log('password really updated');
+                res.render('user/login');
+            }
         }
+    }catch{
+        console.error(error);
+        res.status(500).json({error: "Internal Server Error"});
     }
+
 }
 
 const changeProductQuantity = async (req, res) => {
@@ -1273,106 +1235,119 @@ const changeProductQuantity = async (req, res) => {
 
 
 const emailVerify = (req,res)=>{
-    res.render("user/email-verify");
+    try{
+        res.render("user/email-verify");
+    }catch{
+        res.status(500).json({error: "Internal server Error"});
+    }
 }
 
 
 
 const couponValidate = async (req,res)=>{
-    let response
-    const couponCode = req.body.couponCode; // code from user side
-    const totalAmount = req.body.totalAmount 
-    const userId = req.session.user._id;
-    const couponValidate = await CouponModel.findOne({couponCode:couponCode}); //checking if coupon code exists
-    console.log('step 1', couponValidate)
-    if(couponValidate){
-        const usedCoupon = await OrderModel.findOne({userId:userId,couponCode:couponCode}) //checking if coupon is already userd by coupon
-        if(usedCoupon){
-            console.log('coupon already used', usedCoupon);//if the coupon already exists. It will not be used
-            response = {status:false} 
+    try{
+        let response
+        const couponCode = req.body.couponCode; // code from user side
+        const totalAmount = req.body.totalAmount 
+        const userId = req.session.user._id;
+        const couponValidate = await CouponModel.findOne({couponCode:couponCode}); //checking if coupon code exists
+        console.log('step 1', couponValidate)
+        if(couponValidate){
+            const usedCoupon = await OrderModel.findOne({userId:userId,couponCode:couponCode}) //checking if coupon is already userd by coupon
+            if(usedCoupon){
+                console.log('coupon already used', usedCoupon);//if the coupon already exists. It will not be used
+                response = {status:false} 
+            }else{
+                console.log('coupon not used')
+                //if coupon havent used before by user
+                const couponDiscount = (totalAmount * couponValidate.offerPercentage)/100 //finding discount price
+                const discountTotal = (totalAmount-couponDiscount); //creating discounted price
+                response = {status:true,discountTotal}
+            }
         }else{
-            console.log('coupon not used')
-            //if coupon havent used before by user
-            const couponDiscount = (totalAmount * couponValidate.offerPercentage)/100 //finding discount price
-            const discountTotal = (totalAmount-couponDiscount); //creating discounted price
-            response = {status:true,discountTotal}
+            console.log('not validating coupon')
+            response={status:false};
         }
-    }else{
-        console.log('not validating coupon')
-        response={status:false};
-    }
-    res.json(response);
+        res.json(response);
+    }catch(error){
+        res.status(500).json({error: "Internal server Error"});
+    }   
 }
 
 
 const search = async (req,res)=>{
-    let searchs = req.query.search;
-    // let searchProduct = await productHelper.searchProduct(search);
-    var search = new RegExp(searchs, 'i')
-  
-    const searchProduct = await ProductModel.find({ $or: [{ name: search }, { category: search }] })
-  
-    res.json(searchProduct);
+    try{
+        let searchs = req.query.search;
+        // let searchProduct = await productHelper.searchProduct(search);
+        var search = new RegExp(searchs, 'i')
+        const searchProduct = await ProductModel.find({ $or: [{ name: search }, { category: search }] })
+        res.json(searchProduct);
+    }catch{
+        res.status(500).json({error: "Internal server Error"});
+    }
+
 }
 
 
 const returnUserOrder = async(req,res)=>{
-    console.log('start')
-    const orderId = req.query.orderId;
-    const productId =req.query.pro_id;
-
-    console.log(orderId,"orderId")
-    console.log(productId,'productId');
-
-    const returnType = req.query.returnType;
-
-    console.log(orderId,'orderId');
-    console.log(returnType,"return type");
-
-    if(returnType === '1'){
-        const orderDetails = await OrderModel.findById({_id:orderId});
-        console.log('step1')
-        for(const product of orderDetails.products){
-            const productDetails = await ProductModel.findById(productId); 
-            console.log('step 2')
-            if(productDetails && productDetails.sizeStock[product.size].stock >= product.count){
-                console.log('step 3')
-                // increasing the stock count for that perticular size.
-                const updateStock = productDetails.sizeStock[product.size].stock + product.count;
-                productDetails.sizeStock[product.size].stock = updateStock;
-
-                //saving updated product model
-                await productDetails.save();
+    try{
+    
+        const orderId = req.query.orderId;
+        const productId =req.query.pro_id;    
+        const returnType = req.query.returnType;
+        if(returnType === '1'){
+            const orderDetails = await OrderModel.findById({_id:orderId});
+            console.log('step1')
+            for(const product of orderDetails.products){
+                const productDetails = await ProductModel.findById(productId); 
+                console.log('step 2')
+                if(productDetails && productDetails.sizeStock[product.size].stock >= product.count){
+                    console.log('step 3')
+                    // increasing the stock count for that perticular size.
+                    const updateStock = productDetails.sizeStock[product.size].stock + product.count;
+                    productDetails.sizeStock[product.size].stock = updateStock;
+    
+                    //saving updated product model
+                    await productDetails.save();
+                }else{
+                    res.ststus(404).render("user/error-handling");
+                    // I will handle insufficient stock scenario  here, eg. notify the user
+                }
+            }
+            // const returnNonDefective = await OrderModel.updateOne({_id:orderId},{$set:{status:"returnNonDefective"}});
+            const returnNonDefective = await OrderModel.updateOne({_id:orderId,'products._id':productId},{ $set: { 'products.$.status': 'returnNonDefective' }});
+            if(returnNonDefective){
+                const orderDetails = await OrderModel.find() 
+                res.render("user/orders",{returnSuccess:true,pendingOrders:orderDetails});
             }else{
-                res.ststus(404).render("user/error-handling");
-                // I will handle insufficient stock scenario  here, eg. notify the user
+                res.render("user/orders",{returnErr:true});
+            }
+        }else{
+            // const returnDefective = await OrderModel.updateOne({_id:orderId},{$set:{status:"returnDefective"}})
+            const returnDefective = await OrderModel.updateOne({_id:orderId,'products._id':productId},{ $set: { 'products.$.status': 'returnDefective' }});
+            if(returnDefective){
+                const orderDetails = await OrderModel.find() 
+                res.render("user/orders",{returnSuccess:true,pendingOrders:orderDetails});
+            }else{
+                res.render("user/orders",{returnErr:true});
             }
         }
-        // const returnNonDefective = await OrderModel.updateOne({_id:orderId},{$set:{status:"returnNonDefective"}});
-        const returnNonDefective = await OrderModel.updateOne({_id:orderId,'products._id':productId},{ $set: { 'products.$.status': 'returnNonDefective' }});
-        if(returnNonDefective){
-            const orderDetails = await OrderModel.find() 
-            res.render("user/orders",{returnSuccess:true,pendingOrders:orderDetails});
-        }else{
-            res.render("user/orders",{returnErr:true});
-        }
-    }else{
-        // const returnDefective = await OrderModel.updateOne({_id:orderId},{$set:{status:"returnDefective"}})
-        const returnDefective = await OrderModel.updateOne({_id:orderId,'products._id':productId},{ $set: { 'products.$.status': 'returnDefective' }});
-        if(returnDefective){
-            const orderDetails = await OrderModel.find() 
-            res.render("user/orders",{returnSuccess:true,pendingOrders:orderDetails});
-        }else{
-            res.render("user/orders",{returnErr:true});
-        }
+    }catch{
+        res.status(500).json({error: "Internal server Error"});
     }
+
 }
 
 
 const walletHistory = async(req,res)=>{
-    const userId = req.session.user._id
-    const user = await UserModel.findOne({_id:userId});
-    res.render("user/wallet-history",{user});
+    try{
+        const userId = req.session.user._id
+        const user = await UserModel.findOne({_id:userId});
+        res.render("user/wallet-history",{user});
+    }catch{
+        res.status(500).json({error: "Internal server Error"});
+    }
+
 }
 
 module.exports = {
@@ -1422,8 +1397,6 @@ module.exports = {
     otpVerificationPassword,
     verifyPayment,
     couponValidate,
-    filteredShop,
     generateReport,
-    loadReport
-    // addToCartProductDetails
+    loadReport,
 }

@@ -1,8 +1,20 @@
+const UserModel = require("../models/User")
 
 const fast2sms = require("fast-two-sms");
 
 const adminLoginChecker = (req,res,next)=>{
     if(req.session.admin){
+        next()
+    }else{
+        return res.redirect("/admin/login")
+    }
+}
+
+const userStatusCheck = async(req,res,next)=>{
+
+    const userId = req.session.user._id;
+    const userDetails = await UserModel.findOne({_id:userId})
+    if(userDetails.status == true){
         next()
     }else{
         return res.redirect("/admin/login")
@@ -52,5 +64,6 @@ module.exports = {
     adminLoginChecker,
     adminLoginVarify,
     userLoginChecker,
-    userLoginVarify
+    userLoginVarify,
+    userStatusCheck
 }

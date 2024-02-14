@@ -1,46 +1,45 @@
 const express = require("express")
-const {userLoginVarify,userLoginChecker,otpSend} = require("../middlewares/middlewares");
+const {userLoginVarify,userLoginChecker,otpSend,userStatusCheck} = require("../middlewares/middlewares");
 const userControllers = require("../controllers/userControllers")
 const router = express.Router();
 
-
-
 //Get methods
-router.get("/",userLoginVarify,userControllers.indexView);
+router.get("/",userLoginVarify,userStatusCheck,userControllers.indexView);
 router.get("/login",userLoginChecker,userControllers.loginView);
 router.get("/signup",userLoginChecker,userControllers.signupView);
 router.get("/userLogout",userLoginVarify,userControllers.userLogout);
 
-router.get("/productlist",userControllers.productList); // I have to check about this.
+router.get("/productlist",userStatusCheck,userControllers.productList); // I have to check about this.
 
-router.get("/shop",userLoginVarify,userControllers.shopView);
-router.get("/product-details",userControllers.productDetailsView);
-router.get("/blog",userLoginVarify,userControllers.blogView);
-router.get("/contact",userControllers.contactView);
+router.get("/shop",userLoginVarify,userStatusCheck,userControllers.shopView);
+router.get("/product-details",userStatusCheck,userControllers.productDetailsView);
+router.get("/blog",userLoginVarify,userStatusCheck,userControllers.blogView);
+router.get("/contact",userStatusCheck,userControllers.contactView);
 router.get("/otp",userControllers.otpView);
 // router.get("/otp",otpSend,userControllers.otpView);
-router.get("/cart",userLoginVarify,userControllers.cartView);
+router.get("/cart",userLoginVarify,userStatusCheck,userControllers.cartView);
 
 router.get("/addToCart",userLoginVarify,userControllers.addToCart);
-router.get("/report",userControllers.loadReport)
-router.get("/report-generate",userControllers.generateReport)
+router.get("/report",userStatusCheck,userControllers.loadReport)
+router.get("/report-generate",userStatusCheck,userControllers.generateReport)
 
-router.get("/checkout",userLoginVarify,userControllers.checkout);
-router.get("/delete-cart-item",userLoginVarify,userControllers.deleteCartItem);
-router.get("/user-profile",userLoginVarify,userControllers.userProfile);
-router.get("/remove-new-address-user",userLoginVarify,userControllers.removeAddress);
-router.get("/remove-new-address-checkout",userLoginVarify,userControllers.removeAddressCheckout);
-router.get("/default-address",userLoginVarify,userControllers.defaultAddress);
+router.get("/checkout",userStatusCheck,userLoginVarify,userControllers.checkout);
+router.get("/delete-cart-item",userStatusCheck,userLoginVarify,userControllers.deleteCartItem);
+router.get("/user-profile",userStatusCheck,userLoginVarify,userControllers.userProfile);
+router.get("/remove-new-address-user",userStatusCheck,userLoginVarify,userControllers.removeAddress);
+router.get("/remove-new-address-checkout",userLoginVarify,userStatusCheck,userControllers.removeAddressCheckout);
+router.get("/default-address",userLoginVarify,userStatusCheck,userControllers.defaultAddress);
 
-router.get("/order-response",userControllers.orderResponseView);
-router.get("/orders",userLoginVarify,userControllers.ordersView);
-router.get("/order-detail-view",userControllers.orderDetailView);
-router.get("/cancel-user-order",userControllers.cancelUserOrder);
-router.get("/return-user-order",userControllers.returnUserOrder)
+router.get("/order-response",userStatusCheck,userControllers.orderResponseView);
+router.get("/orders",userLoginVarify,userStatusCheck,userControllers.ordersView);
+router.get("/order-detail-view",userStatusCheck,userControllers.orderDetailView);
+router.get("/cancel-user-order",userStatusCheck,userControllers.cancelUserOrder);
+router.get("/return-user-order",userStatusCheck,userControllers.returnUserOrder)
 router.get('/email-verify',userControllers.emailVerify);
 router.get("/otp-pass",otpSend,userControllers.otpViewPass);
-router.get("/transaction-order-details-view",userControllers.transactionOrderDetailView);
-router.get("/wallet-history",userControllers.walletHistory);
+router.get("/transaction-order-details-view",userStatusCheck,userControllers.transactionOrderDetailView);
+router.get("/wallet-history",userStatusCheck,userControllers.walletHistory);
+
 
 
 //post methods  ------------------
@@ -58,7 +57,7 @@ router.post("/otp-verify-passwordChange",userControllers.otpVerificationPassword
 router.post("/verify-payment",userControllers.verifyPayment);
 router.post("/add-new-address-checkout",userControllers.addNewAddressCheckout);
 router.post("/coupon-validate",userControllers.couponValidate);
-router.post("/filtered-shop",userControllers.filteredShop);
+
 // router.post("/change-password",userControllers.changePassword);
 
 module.exports = router;

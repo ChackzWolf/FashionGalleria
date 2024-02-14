@@ -309,6 +309,87 @@
                         </div>
                     </div>
 
+
+
+
+
+
+
+
+
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="shop__cart__table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Size</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {{#each cartItems}}
+                                    <tr>
+                                        <td class="cart__product__item">
+                                            <img src="uploaded-images/{{product.imageUrl.[1]}}" alt=""
+                                                class="img-fluid img-thumbnail" style="width: 60px;">
+                                            <div class="cart__product__item__title">
+                                                <h6>{{product.name}}</h6>
+                                                <div class="rating">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                            </div>
+                                        </td>
+                                         {{#if (eq size "sizeSmall")}}
+                                        <td>Small</td>
+                                        {{/if}}
+                                        {{#if (eq size "sizeMedium")}}
+                                        <td>Medium</td>
+                                        {{/if}}
+                                         {{#if (eq size "sizeLarge")}}
+                                        <td>Large</td>
+                                        {{/if}}
+                                        {{#if (gt product.offerPrice 0)}}
+                                        <td class="cart__price">₹ {{product.offerPrice}}</td>
+                                        {{else}}
+                                        <td class="cart__price">₹ {{product.price}}</td>
+                                        {{/if}}
+                                        <td class="pro-qty-container">
+                                            {{count}}
+                                        </td>
+
+                                    </tr>
+
+                                    {{/each}}
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
                     <div class="col-lg-4">
                         <div class="discount__content m-3">
                             <h6>Discount codes</h6>

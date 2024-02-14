@@ -8,10 +8,9 @@ const { upload } = require('../utils/imageHandler')
 const router = express.Router();
 
 
+
  /////////////////////////////////////////////////////////////////////////////////////////////
 //------------------------------------Get methods------------------------------------------//
-
-
 router.get("/login",adminLoginVarify,adminControllers.loginView);
 router.get("/adminLogout",adminControllers.adminLogout)
 router.get("/userList",adminLoginChecker,adminControllers.userList);

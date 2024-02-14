@@ -99,31 +99,6 @@
         <div class="loader"></div>
     </div>
 
-    {{!-- <!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__close">+</div>
-        <ul class="offcanvas__widget">
-            <li><span class="icon_search search-switch"></span></li>
-            <li><a href="#"><span class="icon_heart_alt"></span>
-                <div class="tip">2</div>
-            </a></li>
-            <li><a href="#"><span class="icon_bag_alt"></span>
-                <div class="tip">2</div>
-            </a></li>
-        </ul>
-        <div class="offcanvas__logo">
-             <img src="" alt="SVG Image" width="100" height="100">
-            <a href="/index"><img src="#Logooooo" alt=""></a>
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__auth">
-            <a href="#">Login</a>
-            <a href="#">Register</a>
-        </div>
-    </div>
-    <!-- Offcanvas Menu End --> --}}
-
     <!-- Header Section Begin -->
     <header class="header">
         <div class="container-fluid">
@@ -133,11 +108,7 @@
                         <a href="/"><img src="img/logo.svg" alt=""></a>
                     </div>
                 </div>
-                {{!-- <div class="col-xl-3 col-lg-2" style="padding: 0% !important">
-                    <div class="header__logo" style="max-height:100px max-width:200px padding:0% !important">
-                        <a href="/"><img src="img/logo.svg" alt="fashionGaballeria" style="padding: 0% !important" ></a>
-                    </div>
-                </div> --}}
+
                 <div class="col-xl-3 col-lg-3">
                     <nav class="header__menu">
                         <ul>
@@ -179,10 +150,7 @@
                 </div>  
                 <div class="col-lg-3 col-xl-3">
                     <div class="header__right">
-                        {{!-- <div class="header__right__auth">
-                            <a href="#">Login</a>
-                            <a href="#">Register</a>
-                        </div> --}}
+
 
                         <ul class="header__right__widget">
                             <li><a href="#"><i class="fas fa-heart"></i>
@@ -242,20 +210,24 @@
                             <div class="section-title">
                                 <h4>Categories</h4>
                             </div>
-                            <div class="size__list">
-                                <ul>
-                                    <a href="/shop"><li style="display: block; margin-bottom: 5px; color:black"  class="active" data-filter="*">All</li></a>
-                                    {{#each categoryName}}
-                                    <li style="display: block; margin-bottom: 5px;"> <!-- Added display: block -->
-                                        <label for="{{name}}">
-                                            {{name}}
-                                            <input type="checkbox" name="category" value="{{_id}}" id="{{name}}">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </li>
-                                    {{/each}}
-                                </ul>
-                            </div>
+<div class="size__list">
+    <ul>
+        <a href="/shop"><li style="display: block; margin-bottom: 5px; color:black"  class="active" data-filter="*">All</li></a>
+        {{#each categoryName}}
+        <li style="display: block; margin-bottom: 5px;">
+            <label for="{{name}}">
+                {{name}}
+                <input type="checkbox" name="category" value="{{_id}}" id="{{name}}">
+                <span class="checkmark"></span>
+            </label>
+        </li>
+        {{/each}}
+    </ul>
+</div>
+
+
+
+
                         </div>
                         <div class="sidebar__filter">
                             <div class="section-title">
@@ -266,14 +238,19 @@
                                 data-min="1000" data-max="2000"></div>
                                 <div class="range-slider">
                                     <div class="price-input" style="width: 500px;">
-                                          <input type="text" id="minamount" name="minamount">
-                                        <input type="text" id="maxamount" name="maxamount">
+                                          <input type="text" value="{{minAmount}}" id="minamount" name="minamount">
+                                        <input type="text" id="maxamount" value="{{minAmount}}" name="maxamount">
                                     </div>
                                 </div>
                             </div><br><br>
      
                         </div>
  
+
+
+
+
+
                     </div>
                       <button type="submit" class="btn btn-danger">Filter</button>
                     </form>
@@ -597,6 +574,52 @@
         }
 
 
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get all checkboxes with name "category"
+        var checkboxes = document.querySelectorAll('input[name="category"]');
+        
+        // Get the category value from the server-side variable or wherever it's stored
+        var categoryValue = "{{category}}"; // Replace "{{category}}" with the actual value
+        console.log('category value', categoryValue);
+        
+        // Convert categoryValue to an array if it's a comma-separated string
+        if (categoryValue.includes(',')) {
+            categoryValue = categoryValue.split(',');
+        }
+
+        // Loop through each checkbox
+        checkboxes.forEach(function(checkbox) {
+            // Check if categoryValue is an array
+            if (Array.isArray(categoryValue)) {
+                console.log('if');
+                // Check if the checkbox value is included in the category array
+                if (categoryValue.includes(checkbox.value)) {
+                    checkbox.checked = true;
+                }
+                console.log('issssssssssss');
+            } else {
+                console.log('else');
+                // Check if the checkbox value matches the category value
+                if (checkbox.value === categoryValue) {
+                    checkbox.checked = true; // If match, check the checkbox
+                }
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the current values for minamount and maxamount from the backend
+        var minAmountValue = "{{minAmount}}"; // Replace "{{minamount}}" with the actual value
+        var maxAmountValue = "{{maxAmount}}"; // Replace "{{maxamount}}" with the actual value
+        
+        // Set the current values for minamount and maxamount inputs
+        document.getElementById("minamount").value = minAmountValue;
+        document.getElementById("maxamount").value = maxAmountValue;
+    });
 
     </script>    
 </body>
